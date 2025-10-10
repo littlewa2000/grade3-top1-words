@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>國字手寫練習（注音抽題 + 自評）</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --brand: #2563eb;
+      --ok: #16a34a;
+      --bad: #dc2626;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: var(--text); background: var(--bg);
+    }
+    .wrap {
+      max-width: 920px; margin: 24px auto; padding: 16px;
+    }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,.05);
+      padding: 16px;
+    }
+    h1 { font-size: 20px; margin: 0 0 8px; }
+    .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 840px) {
+      .row { grid-template-columns: 1.1fr 1.3fr; }
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #eef2ff; color: #1e3a8a; border: 1px solid #c7d2fe;
+      padding: 8px 12px; border-radius: 999px; font-weight: 600;
+    }
+    .zhuyin { font-size: 48px; line-height: 1; letter-spacing: .05em; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    button, select, input[type="range"] {
+      appearance: none; border: 1px solid var(--border); background: white; color: var(--text);
+      border-radius: 10px; padding: 10px 14px; font-size: 14px;
+    }
+    button.primary { background: var(--brand); color: white; border-color: var(--brand); }
+    canvas {
+      width: 100%; height: 60vh; max-height: 560px; background: white; border: 1px solid var(--border); border-radius: 16px;
+      touch-action: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>國字手寫練習（注音抽題 + 自評）</h1>
+      <div class="row">
+        <div>
+          <span class="pill">注音題目：<span id="zhuyin" class="zhuyin">—</span></span>
+          <div class="controls">
+            <button id="btnNext" class="primary">換一題</button>
+            <button id="btnClear">清除畫布</button>
+            <label>筆粗：<input id="penSize" type="range" min="4" max="32" step="1" value="10" /></label>
+          </div>
+        </div>
+        <div>
+          <canvas id="pad" width="900" height="900"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
