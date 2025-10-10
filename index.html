@@ -20,33 +20,35 @@
       margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
       color: var(--text); background: var(--bg);
     }
-    .wrap {
-      max-width: 920px; margin: 24px auto; padding: 16px;
-    }
+    .wrap { max-width: 960px; margin: 24px auto; padding: 16px; }
     .card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,.05);
-      padding: 16px;
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.05); padding: 16px;
     }
     h1 { font-size: 20px; margin: 0 0 8px; }
     .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 840px) {
-      .row { grid-template-columns: 1.1fr 1.3fr; }
-    }
+    @media (min-width: 840px) { .row { grid-template-columns: 1.1fr 1.3fr; } }
     .pill {
       display: inline-flex; align-items: center; gap: 8px;
       background: #eef2ff; color: #1e3a8a; border: 1px solid #c7d2fe;
       padding: 8px 12px; border-radius: 999px; font-weight: 600;
     }
     .zhuyin { font-size: 48px; line-height: 1; letter-spacing: .05em; }
-    .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-    button, select, input[type="range"], input[type="color"] {
-      appearance: none; border: 1px solid var(--border); background: white; color: var(--text);
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px; }
+    .controls label { display: inline-flex; align-items: center; gap: 6px; }
+    button, input[type="range"], input[type="color"] {
+      appearance: none; border: 1px solid var(--border); background: #fff; color: var(--text);
       border-radius: 10px; padding: 10px 14px; font-size: 14px;
     }
     button.primary { background: var(--brand); color: white; border-color: var(--brand); }
+    .hint { color: var(--muted); font-size: 13px; }
+    .meter { height: 10px; background: #eef2ff; border-radius: 999px; overflow: hidden; border: 1px solid #c7d2fe; }
+    .meter > span { display: block; height: 100%; background: linear-gradient(90deg,#93c5fd,#60a5fa); width: 0%; }
     canvas {
-      width: 100%; height: 60vh; max-height: 560px; background: white; border: 1px solid var(--border); border-radius: 16px;
+      width: 100%; height: 60vh; max-height: 560px; background: #fff; border: 1px solid var(--border); border-radius: 16px;
       touch-action: none;
+      background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+      background-size: 16px 16px;
     }
   </style>
 </head>
@@ -55,26 +57,55 @@
     <div class="card">
       <h1>國字手寫練習（注音抽題 + 自評）</h1>
       <div class="row">
+        <!-- 左側：題目與控制 -->
         <div>
-          <span class="pill">注音題目：<span id="zhuyin" class="zhuyin">—</span></span>
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
+            <span class="pill">注音題目：<span id="zhuyin" class="zhuyin">—</span></span>
+            <span class="hint">（只顯示注音，請在右側畫布寫出對應的國字）</span>
+          </div>
+
           <div class="controls">
             <button id="btnNext" class="primary">換一題</button>
             <button id="btnClear">清除畫布</button>
+
             <label>筆粗：
               <input id="penSize" type="range" min="4" max="32" step="1" value="10" />
               <span id="penSizeVal">10</span> px
             </label>
+
             <label>筆色：
               <input id="penColor" type="color" value="#000000" />
             </label>
+
+            <label>
+              <input type="checkbox" id="cbTrace" />
+              顯示描紅
+            </label>
+
+            <label>描紅濃淡：
+              <input id="traceAlpha" type="range" min="5" max="40" step="1" value="12" />
+              <span id="traceAlphaVal">12</span> %
+            </label>
           </div>
+
+          <div style="margin:12px 0 6px;">
+            <div class="meter"><span id="meterBar"></span></div>
+            <div id="result" style="margin-top:8px; font-weight:600;">相似度：—</div>
+            <div id="explain" class="hint"></div>
+          </div>
+
+          <div class="hint">＊描紅僅輔助臨摹，不影響分數；評分採像素重疊（Jaccard）。</div>
         </div>
+
+        <!-- 右側：畫布 -->
         <div>
-          <canvas id="pad" width="900" height="900"></canvas>
+          <canvas id="pad" width="900" height="900" aria-label="手寫練習畫布"></canvas>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- 先載 data.js，再載 app.js -->
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
