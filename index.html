@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>國字手寫練習（注音抽題 + 自評）</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <style>
     :root {
       --bg: #f7f7fb;
@@ -40,7 +39,7 @@
     }
     .zhuyin { font-size: 48px; line-height: 1; letter-spacing: .05em; }
     .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-    button, select, input[type="range"] {
+    button, select, input[type="range"], input[type="color"] {
       appearance: none; border: 1px solid var(--border); background: white; color: var(--text);
       border-radius: 10px; padding: 10px 14px; font-size: 14px;
     }
@@ -61,7 +60,13 @@
           <div class="controls">
             <button id="btnNext" class="primary">換一題</button>
             <button id="btnClear">清除畫布</button>
-            <label>筆粗：<input id="penSize" type="range" min="4" max="32" step="1" value="10" /></label>
+            <label>筆粗：
+              <input id="penSize" type="range" min="4" max="32" step="1" value="10" />
+              <span id="penSizeVal">10</span> px
+            </label>
+            <label>筆色：
+              <input id="penColor" type="color" value="#000000" />
+            </label>
           </div>
         </div>
         <div>
