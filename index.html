@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>國字手寫練習（注音抽題 + 自評）</title>
+  <title>國字手寫練習（注音抽題 + 描紅）</title>
   <style>
     :root {
       --bg: #f7f7fb; --card: #ffffff; --text: #0f172a; --muted: #64748b;
-      --brand: #2563eb; --ok: #16a34a; --bad: #dc2626; --border: #e5e7eb;
+      --brand: #2563eb; --border: #e5e7eb;
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; color: var(--text); background: var(--bg); }
@@ -21,20 +21,23 @@
     .hint { color: var(--muted); font-size: 13px; }
     .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px; }
     .controls label { display: inline-flex; align-items: center; gap: 6px; }
-    button, input[type="range"], input[type="color"] { appearance: none; border: 1px solid var(--border); background: #fff; color: var(--text); border-radius: 10px; padding: 10px 14px; font-size: 14px; }
+    button, input[type="range"], input[type="color"] {
+      appearance: none; border: 1px solid var(--border); background: #fff; color: var(--text);
+      border-radius: 10px; padding: 10px 14px; font-size: 14px;
+    }
     button.primary { background: var(--brand); color: white; border-color: var(--brand); }
-    .meter { height: 10px; background: #eef2ff; border-radius: 999px; overflow: hidden; border: 1px solid #c7d2fe; }
-    .meter > span { display: block; height: 100%; background: linear-gradient(90deg,#93c5fd,#60a5fa); width: 0%; }
     canvas {
       width: 100%; height: 60vh; max-height: 560px; background: #fff; border: 1px solid var(--border); border-radius: 16px;
-      touch-action: none; background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 16px 16px;
+      touch-action: none;
+      background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+      background-size: 16px 16px;
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>國字手寫練習（注音抽題 + 自評）</h1>
+      <h1>國字手寫練習（注音抽題 + 描紅）</h1>
       <div class="row">
         <!-- 左側：題目與控制 -->
         <div>
@@ -43,7 +46,7 @@
               注音題目：<span id="zhuyin" class="zhuyin">—</span>
               <span id="lessonInfo" class="hint"></span>
             </span>
-            <span class="hint">（只顯示注音，請在右側畫布寫出對應的國字）</span>
+            <span class="hint">（請在右側畫布書寫；可開關描紅、調濃淡）</span>
           </div>
 
           <div class="controls">
@@ -59,21 +62,16 @@
               <input id="penColor" type="color" value="#000000" />
             </label>
 
-            <label><input type="checkbox" id="cbTrace" /> 顯示描紅</label>
+            <label>
+              <input type="checkbox" id="cbTrace" checked />
+              顯示描紅
+            </label>
 
             <label>描紅濃淡：
               <input id="traceAlpha" type="range" min="5" max="40" step="1" value="12" />
               <span id="traceAlphaVal">12</span> %
             </label>
           </div>
-
-          <div style="margin:12px 0 6px;">
-            <div class="meter"><span id="meterBar"></span></div>
-            <div id="result" style="margin-top:8px; font-weight:600;">相似度：—</div>
-            <div id="explain" class="hint"></div>
-          </div>
-
-          <div class="hint">＊描紅僅輔助臨摹，不影響分數；評分採像素重疊（Jaccard）。</div>
         </div>
 
         <!-- 右側：畫布 -->
