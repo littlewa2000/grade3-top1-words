@@ -242,15 +242,7 @@ const data = [
   }
 ];
 
-// （保險）再把「術」校正一次：若陣列裡有錯字標成 ㄅㄨˋ，就改回 ㄕㄨˋ
-for (const sec of data) {
-  if (!Array.isArray(sec?.words)) continue;
-  for (const w of sec.words) {
-    if (w["字"] === "術" && w["注音"] !== "ㄕㄨˋ") {
-      w["注音"] = "ㄕㄨˋ";
-    }
-  }
-}
+
 
 // A 方案轉接橋：轉成 {char, zhuyin} 並掛到 window.DATA（app.js 會自動讀取）
 window.DATA = data.map(lesson => ({
