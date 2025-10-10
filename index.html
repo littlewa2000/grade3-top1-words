@@ -6,49 +6,28 @@
   <title>國字手寫練習（注音抽題 + 自評）</title>
   <style>
     :root {
-      --bg: #f7f7fb;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --brand: #2563eb;
-      --ok: #16a34a;
-      --bad: #dc2626;
-      --border: #e5e7eb;
+      --bg: #f7f7fb; --card: #ffffff; --text: #0f172a; --muted: #64748b;
+      --brand: #2563eb; --ok: #16a34a; --bad: #dc2626; --border: #e5e7eb;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-      color: var(--text); background: var(--bg);
-    }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; color: var(--text); background: var(--bg); }
     .wrap { max-width: 960px; margin: 24px auto; padding: 16px; }
-    .card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,.05); padding: 16px;
-    }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,.05); padding: 16px; }
     h1 { font-size: 20px; margin: 0 0 8px; }
     .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
     @media (min-width: 840px) { .row { grid-template-columns: 1.1fr 1.3fr; } }
-    .pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: #eef2ff; color: #1e3a8a; border: 1px solid #c7d2fe;
-      padding: 8px 12px; border-radius: 999px; font-weight: 600;
-    }
+    .pill { display: inline-flex; align-items: center; gap: 8px; background: #eef2ff; color: #1e3a8a; border: 1px solid #c7d2fe; padding: 8px 12px; border-radius: 999px; font-weight: 600; }
     .zhuyin { font-size: 48px; line-height: 1; letter-spacing: .05em; }
+    .hint { color: var(--muted); font-size: 13px; }
     .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px; }
     .controls label { display: inline-flex; align-items: center; gap: 6px; }
-    button, input[type="range"], input[type="color"] {
-      appearance: none; border: 1px solid var(--border); background: #fff; color: var(--text);
-      border-radius: 10px; padding: 10px 14px; font-size: 14px;
-    }
+    button, input[type="range"], input[type="color"] { appearance: none; border: 1px solid var(--border); background: #fff; color: var(--text); border-radius: 10px; padding: 10px 14px; font-size: 14px; }
     button.primary { background: var(--brand); color: white; border-color: var(--brand); }
-    .hint { color: var(--muted); font-size: 13px; }
     .meter { height: 10px; background: #eef2ff; border-radius: 999px; overflow: hidden; border: 1px solid #c7d2fe; }
     .meter > span { display: block; height: 100%; background: linear-gradient(90deg,#93c5fd,#60a5fa); width: 0%; }
     canvas {
       width: 100%; height: 60vh; max-height: 560px; background: #fff; border: 1px solid var(--border); border-radius: 16px;
-      touch-action: none;
-      background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
-      background-size: 16px 16px;
+      touch-action: none; background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 16px 16px;
     }
   </style>
 </head>
@@ -60,7 +39,10 @@
         <!-- 左側：題目與控制 -->
         <div>
           <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
-            <span class="pill">注音題目：<span id="zhuyin" class="zhuyin">—</span></span>
+            <span class="pill">
+              注音題目：<span id="zhuyin" class="zhuyin">—</span>
+              <span id="lessonInfo" class="hint"></span>
+            </span>
             <span class="hint">（只顯示注音，請在右側畫布寫出對應的國字）</span>
           </div>
 
@@ -77,10 +59,7 @@
               <input id="penColor" type="color" value="#000000" />
             </label>
 
-            <label>
-              <input type="checkbox" id="cbTrace" />
-              顯示描紅
-            </label>
+            <label><input type="checkbox" id="cbTrace" /> 顯示描紅</label>
 
             <label>描紅濃淡：
               <input id="traceAlpha" type="range" min="5" max="40" step="1" value="12" />
