@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>國字手寫練習（注音抽題 + 描紅 + 辨識）</title>
+  <title>國字手寫練習（注音抽題 + 描紅 + 辨識 + 範圍）</title>
   <style>
     :root { --bg:#f7f7fb; --card:#fff; --text:#0f172a; --muted:#64748b; --brand:#2563eb; --border:#e5e7eb; }
     *{box-sizing:border-box}
@@ -18,7 +18,10 @@
     .hint{color:var(--muted);font-size:13px}
     .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
     .controls label{display:inline-flex;align-items:center;gap:6px}
-    button,input[type="range"],input[type="color"]{appearance:none;border:1px solid var(--border);background:#fff;color:var(--text);border-radius:10px;padding:10px 14px;font-size:14px}
+    button,input[type="range"],input[type="color"],select{
+      appearance:none;border:1px solid var(--border);background:#fff;color:var(--text);
+      border-radius:10px;padding:10px 14px;font-size:14px
+    }
     button.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
     .tools{display:flex;flex-direction:column;gap:8px;margin-top:8px}
     .recog{margin-top:8px;border-top:1px dashed var(--border);padding-top:8px}
@@ -34,7 +37,7 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>國字手寫練習（注音抽題 + 描紅 + 辨識）</h1>
+      <h1>國字手寫練習（注音抽題 + 描紅 + 辨識 + 範圍）</h1>
       <div class="row">
         <!-- 左側：題目、控制、辨識 -->
         <div>
@@ -65,6 +68,16 @@
               <input id="traceAlpha" type="range" min="5" max="40" step="1" value="12" />
               <span id="traceAlphaVal">12</span> %
             </label>
+
+            <!-- ⭐ 新增：課程範圍下拉選單 -->
+            <label>測驗範圍：
+              第 1 課 ～ 
+              <select id="lessonMax">
+                <option>1</option><option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+                <option>9</option><option>10</option><option>11</option><option selected>12</option>
+              </select> 課
+            </label>
           </div>
 
           <div class="tools">
@@ -76,7 +89,7 @@
               </label>
               <label>
                 <input type="radio" name="scope" value="all" id="scopeAll" />
-                比對所有課
+                比對（上方選定範圍內）所有課
               </label>
             </div>
             <div class="recog">
