@@ -1,6 +1,6 @@
-// app.js — 描紅 + 辨識 +「測驗範圍（第1課～第N課）」下拉選單
+// app.js — 描紅同框 + 課次範圍 + 改良辨識（對稱 Chamfer + 多字型模板）
 
-// ===== 主要 UI =====
+// ===== UI 元件 =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
 const LESSON_EL  = document.getElementById('lessonInfo');
 const CANVAS     = document.getElementById('pad');
@@ -16,10 +16,10 @@ const cbTrace    = document.getElementById('cbTrace');
 const traceAlpha = document.getElementById('traceAlpha');
 const traceAlphaVal = document.getElementById('traceAlphaVal');
 
-// 新增：篩選範圍用下拉選單
+// 課程範圍下拉（第 1 課 ～ 第 N 課）
 const lessonMaxSel = document.getElementById('lessonMax');
 
-// （可選）辨識工具
+// 辨識工具（存在就啟用）
 const btnRecognize = document.getElementById('btnRecognize');
 const scopeLesson  = document.getElementById('scopeLesson');
 const scopeAll     = document.getElementById('scopeAll');
@@ -29,9 +29,9 @@ const recogList    = document.getElementById('recogList');
 let drawing = false;
 let last = null;
 let currentTarget = null; // {char, zhuyin, lesson}
-const TRACE_RATIO = 0.72;
+const TRACE_RATIO = 0.72; // 描紅/可書寫正方形邊長比例（相對較短邊）
 
-// ===== 描紅/可書寫區 =====
+// ===== 描紅/可書寫區的正方形框（置中） =====
 function getTraceBox() {
   const w = CANVAS.width, h = CANVAS.height;
   const size = Math.floor(Math.min(w, h) * TRACE_RATIO);
@@ -70,14 +70,13 @@ function pickSourceArray() {
 }
 const DB = pickSourceArray();
 
-// ===== 依選單篩選：第 1 課～第 N 課 =====
+// ===== 依下拉選單「第 1 課～第 N 課」過濾 =====
 function getMaxLesson() {
   const v = parseInt(lessonMaxSel?.value || '12', 10);
   return Number.isFinite(v) ? v : 12;
 }
 function filteredDB() {
   const max = getMaxLesson();
-  // lesson 可能為 null（沒標課次）則也納入
   return DB.filter(it => it.lesson == null || it.lesson <= max);
 }
 function filteredGroupByZhuyin() {
@@ -94,7 +93,7 @@ function filteredUniqueChars() {
   return Array.from(set);
 }
 
-// ===== 出題（依範圍） =====
+// ===== 出題（依選定範圍） =====
 function nextWord() {
   const FDB = filteredDB();
   if (!FDB.length) {
@@ -135,7 +134,7 @@ function clearCanvas() {
 function drawWritingBoxOutline() {
   const box = getTraceBox();
   CTX.save();
-  CTX.strokeStyle = '#cbd5e1';
+  CTX.strokeStyle = '#cbd5e1'; // slate-300
   CTX.lineWidth = 2;
   CTX.setLineDash([8, 6]);
   CTX.strokeRect(box.x, box.y, box.w, box.h);
@@ -153,6 +152,8 @@ function drawTrace(char) {
   CTX.fillText(char, box.x + box.w/2, box.y + box.h/2);
   CTX.restore();
 }
+
+// 筆觸
 function setLineStyle() {
   CTX.lineCap = 'round';
   CTX.lineJoin = 'round';
@@ -190,10 +191,11 @@ traceAlpha?.addEventListener('input', ()=>{
   if (traceAlphaVal) traceAlphaVal.textContent = traceAlpha.value;
   if (cbTrace?.checked) clearCanvas();
 });
-// ⭐ 當變更「測驗範圍」時，立即重抽一題
 lessonMaxSel?.addEventListener('change', () => nextWord());
 
-// =====（可選）辨識：模板比對（Top-5），候選依範圍 =====
+// ================================
+// 改良版辨識器：對稱 Chamfer 距離 + 多字型模板（Top-5）
+// ================================
 function binarize(imgData, thresh=200) {
   const { data, width, height } = imgData;
   const mask = new Uint8Array(width*height);
@@ -216,45 +218,111 @@ function extractAndNormalize(ctx, size=192) {
   const img = ctx.getImageData(box.x, box.y, box.w, box.h);
   const { mask, width, height } = binarize(img, 220);
   const box2 = getBBox(mask, width, height);
+
   const out = document.createElement('canvas'); out.width=size; out.height=size;
-  const octx = out.getContext('2d'); octx.fillStyle='#fff'; octx.fillRect(0,0,size,size);
+  const octx = out.getContext('2d');
+  octx.fillStyle='#fff'; octx.fillRect(0,0,size,size);
+
   if (!box2) return { mask:new Uint8Array(size*size), w:size, h:size, empty:true };
+
+  // 擷取 bbox 縮放置中
   const src = document.createElement('canvas'); src.width=box2.w; src.height=box2.h;
-  const sctx = src.getContext('2d'); const sImg = sctx.createImageData(box2.w, box2.h);
+  const sctx = src.getContext('2d');
+  const sImg = sctx.createImageData(box2.w, box2.h);
   for (let y=0;y<box2.h;y++) for (let x=0;x<box2.w;x++){
     const on = mask[(box2.y+y)*width + (box2.x+x)] ? 0 : 255;
     const idx=(y*box2.w+x)*4; sImg.data[idx]=on; sImg.data[idx+1]=on; sImg.data[idx+2]=on; sImg.data[idx+3]=255;
   }
   sctx.putImageData(sImg,0,0);
+
   const scale = 0.9 * Math.min(size/box2.w, size/box2.h);
   const renderW = Math.max(1, Math.round(box2.w*scale));
   const renderH = Math.max(1, Math.round(box2.h*scale));
   const dx=Math.round((size-renderW)/2), dy=Math.round((size-renderH)/2);
   octx.imageSmoothingEnabled=false;
   octx.drawImage(src,0,0,box2.w,box2.h,dx,dy,renderW,renderH);
+
   const oimg=octx.getImageData(0,0,size,size);
-  return { ...binarize(oimg, 220), empty:false };
+  const bin = binarize(oimg, 220);
+  return { ...bin, empty:false };
 }
-function renderGlyphMask(ch, size=192) {
-  const c = document.createElement('canvas'); c.width=size; c.height=size;
+
+// 多字型模板
+const TEMPLATE_FONTS = [
+  '"TW-Kai","BiauKai","Kaiti TC","DFKai-SB","Kai","Noto Serif TC",serif', // 楷體系
+  '"PMingLiU","Songti TC","Noto Serif TC",serif',                          // 明體系
+  '"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif'           // 黑體系
+];
+function renderGlyphMaskWithFont(ch, fontStack, size=192) {
+  const c = document.createElement('canvas');
+  c.width=size; c.height=size;
   const g = c.getContext('2d');
   g.fillStyle='#fff'; g.fillRect(0,0,size,size);
   g.fillStyle='#000'; g.textAlign='center'; g.textBaseline='middle';
-  g.font = `${Math.floor(size*0.9)}px "TW-Kai","BiauKai","Kai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC", serif`;
+  g.font = `${Math.floor(size*0.9)}px ${fontStack}`;
   g.fillText(ch, size/2, size/2);
   const { mask } = binarize(g.getImageData(0,0,size,size), 220);
   return { mask, w:size, h:size };
 }
-function jaccard(a, b) {
+
+// 距離轉換（City-block 雙向兩趟）
+function distanceTransform(mask, w, h) {
+  const INF = 1e9;
+  const dist = new Float32Array(w*h);
+  for (let i=0;i<w*h;i++) dist[i] = mask[i] ? 0 : INF;
+
+  // forward
+  for (let y=0;y<h;y++) for (let x=0;x<w;x++) {
+    const i = y*w + x;
+    if (x>0)   dist[i] = Math.min(dist[i], dist[i-1] + 1);
+    if (y>0)   dist[i] = Math.min(dist[i], dist[i-w] + 1);
+    if (x>0&&y>0) dist[i] = Math.min(dist[i], dist[i-w-1] + 2);
+    if (x<w-1&&y>0) dist[i] = Math.min(dist[i], dist[i-w+1] + 2);
+  }
+  // backward
+  for (let y=h-1;y>=0;y--) for (let x=w-1;x>=0;x--) {
+    const i = y*w + x;
+    if (x<w-1)   dist[i] = Math.min(dist[i], dist[i+1] + 1);
+    if (y<h-1)   dist[i] = Math.min(dist[i], dist[i+w] + 1);
+    if (x<w-1&&y<h-1) dist[i] = Math.min(dist[i], dist[i+w+1] + 2);
+    if (x>0&&y<h-1)   dist[i] = Math.min(dist[i], dist[i+w-1] + 2);
+  }
+  return dist;
+}
+
+// 對稱 Chamfer + 小比例 Jaccard
+function chamferSimilarity(userMask, tmplMask, dtUser, dtTmpl) {
+  const n = userMask.length;
+  let sumUT = 0, cntU = 0;
+  let sumTU = 0, cntT = 0;
+  for (let i=0;i<n;i++) {
+    if (userMask[i]) { sumUT += dtTmpl[i]; cntU++; }
+    if (tmplMask[i]) { sumTU += dtUser[i]; cntT++; }
+  }
+  if (!cntU && !cntT) return 0;
+  const avg = ( (cntU?sumUT/cntU:0) + (cntT?sumTU/cntT:0) ) / 2;
+  const MAX_D = 40; // 正規化上限（可微調）
+  return Math.max(0, 1 - (avg / MAX_D));
+}
+function jaccard(maskA, maskB) {
   let inter=0, union=0;
-  for (let i=0;i<a.length;i++){ inter += (a[i] & b[i]); union += (a[i] | b[i]); }
+  for (let i=0;i<maskA.length;i++){ inter += (maskA[i] & maskB[i]); union += (maskA[i] | maskB[i]); }
   return union ? (inter/union) : 0;
 }
-const GLYPH_CACHE = new Map();
-function ensureGlyph(char){
-  if (!GLYPH_CACHE.has(char)) GLYPH_CACHE.set(char, renderGlyphMask(char, 192));
-  return GLYPH_CACHE.get(char);
+
+// 模板快取：每字 x 每字型
+const GLYPH_CACHE = new Map(); // key = char+'\n'+fontIndex -> {mask, dt, w, h}
+function ensureGlyph(char, fontIndex=0) {
+  const key = `${char}\n${fontIndex}`;
+  if (!GLYPH_CACHE.has(key)) {
+    const g = renderGlyphMaskWithFont(char, TEMPLATE_FONTS[fontIndex], 192);
+    const dt = distanceTransform(g.mask, g.w, g.h);
+    GLYPH_CACHE.set(key, { ...g, dt });
+  }
+  return GLYPH_CACHE.get(key);
 }
+
+// 候選字（依範圍 + 是否只比對本課）
 function candidateChars(scope){
   const FDB = filteredDB();
   if (scope==='lesson' && currentTarget?.lesson!=null){
@@ -266,20 +334,32 @@ function candidateChars(scope){
   for (const it of FDB) set.add(it.char);
   return Array.from(set);
 }
+
+// 主辨識：多字型取最佳分數，取 Top-5
 function recognizeNow(){
   const norm = extractAndNormalize(CTX, 192);
   if (norm.empty){ renderRecog([]); return; }
+
+  const dtUser = distanceTransform(norm.mask, norm.w, norm.h);
   const scope = scopeAll?.checked ? 'all' : 'lesson';
   const pool = candidateChars(scope);
+
   const results = [];
   for (const ch of pool){
-    const g = ensureGlyph(ch);
-    const score = jaccard(norm.mask, g.mask);
-    results.push({ ch, score });
+    let best = -1;
+    for (let f=0; f<TEMPLATE_FONTS.length; f++){
+      const tmpl = ensureGlyph(ch, f);
+      const simChamfer = chamferSimilarity(norm.mask, tmpl.mask, dtUser, tmpl.dt);
+      const simJ = jaccard(norm.mask, tmpl.mask);
+      const score = 0.85 * simChamfer + 0.15 * simJ; // 權重可微調
+      if (score > best) best = score;
+    }
+    results.push({ ch, score: best });
   }
   results.sort((a,b)=>b.score-a.score);
   renderRecog(results.slice(0,5));
 }
+
 function renderRecog(items){
   if (!recogList) return;
   recogList.innerHTML = '';
