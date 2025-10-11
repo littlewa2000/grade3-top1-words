@@ -1,4 +1,4 @@
-// app.js — 描紅同框 + 課次範圍 + 改良辨識（對稱 Chamfer + 多字型模板）
+// app.js — 描紅同框 + 課次範圍 + 改良辨識（對稱 Chamfer + 多字型模板）+ 防呆修正
 
 // ===== UI 元件 =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
@@ -48,8 +48,9 @@ function pickSourceArray() {
 
   const out = [];
   const pushMaybe = (o, lessonNo) => {
-    const char   = o?.char || o?.word || o?.hanzi || o?.han || o?.c || o?.['字'];
-    const zhuyin = o?.zhuyin || o?.bopomofo || o?.phonetic || o?.z || o?.['注音'];
+    if (!o) return;
+    const char   = o.char || o.word || o.hanzi || o.han || o.c || (o && o['字']);
+    const zhuyin = o.zhuyin || o.bopomofo || o.phonetic || o.z || (o && o['注音']);
     if (char && zhuyin) out.push({ char: String(char), zhuyin: String(zhuyin).trim(), lesson: lessonNo ?? null });
   };
 
@@ -194,7 +195,7 @@ traceAlpha?.addEventListener('input', ()=>{
 lessonMaxSel?.addEventListener('change', () => nextWord());
 
 // ================================
-// 改良版辨識器：對稱 Chamfer 距離 + 多字型模板（Top-5）
+// 改良版辨識器：對稱 Chamfer 距離 + 多字型模板（Top-5）+ 防呆
 // ================================
 function binarize(imgData, thresh=200) {
   const { data, width, height } = imgData;
@@ -302,12 +303,16 @@ function chamferSimilarity(userMask, tmplMask, dtUser, dtTmpl) {
   if (!cntU && !cntT) return 0;
   const avg = ( (cntU?sumUT/cntU:0) + (cntT?sumTU/cntT:0) ) / 2;
   const MAX_D = 40; // 正規化上限（可微調）
-  return Math.max(0, 1 - (avg / MAX_D));
+  const sim = 1 - (avg / MAX_D);
+  // 防 NaN/Infinity，並夾在 [0,1]
+  if (!Number.isFinite(sim)) return 0;
+  return Math.max(0, Math.min(1, sim));
 }
 function jaccard(maskA, maskB) {
   let inter=0, union=0;
   for (let i=0;i<maskA.length;i++){ inter += (maskA[i] & maskB[i]); union += (maskA[i] | maskB[i]); }
-  return union ? (inter/union) : 0;
+  const v = union ? (inter/union) : 0;
+  return Number.isFinite(v) ? v : 0;
 }
 
 // 模板快取：每字 x 每字型
@@ -335,23 +340,28 @@ function candidateChars(scope){
   return Array.from(set);
 }
 
-// 主辨識：多字型取最佳分數，取 Top-5
+// 主辨識：多字型取最佳分數，取 Top-5（防呆）
 function recognizeNow(){
   const norm = extractAndNormalize(CTX, 192);
   if (norm.empty){ renderRecog([]); return; }
 
+  const pool = candidateChars(scopeAll?.checked ? 'all' : 'lesson');
+  if (!pool.length){
+    renderRecog([]);
+    return;
+  }
+
   const dtUser = distanceTransform(norm.mask, norm.w, norm.h);
-  const scope = scopeAll?.checked ? 'all' : 'lesson';
-  const pool = candidateChars(scope);
 
   const results = [];
   for (const ch of pool){
-    let best = -1;
+    let best = 0; // 由 0 起跳，避免 -100%
     for (let f=0; f<TEMPLATE_FONTS.length; f++){
       const tmpl = ensureGlyph(ch, f);
       const simChamfer = chamferSimilarity(norm.mask, tmpl.mask, dtUser, tmpl.dt);
       const simJ = jaccard(norm.mask, tmpl.mask);
-      const score = 0.85 * simChamfer + 0.15 * simJ; // 權重可微調
+      let score = 0.85 * simChamfer + 0.15 * simJ; // 權重可微調
+      if (!Number.isFinite(score)) score = 0;      // 防 NaN/Infinity
       if (score > best) best = score;
     }
     results.push({ ch, score: best });
@@ -365,7 +375,7 @@ function renderRecog(items){
   recogList.innerHTML = '';
   if (!items.length){
     const li = document.createElement('li');
-    li.textContent = '（沒有可顯示的結果，請先在框內書寫）';
+    li.textContent = '（沒有可顯示的結果，請先在框內書寫或調整範圍）';
     li.style.color = '#64748b';
     recogList.appendChild(li);
     return;
@@ -378,7 +388,8 @@ function renderRecog(items){
     left.style.fontFamily = '"TW-Kai","BiauKai","Kai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC", serif';
     const right = document.createElement('span');
     right.className = 'score';
-    right.textContent = `${Math.round(it.score*100)}%`;
+    const pct = Math.max(0, Math.min(100, Math.round((Number.isFinite(it.score)?it.score:0)*100)));
+    right.textContent = `${pct}%`;
     if (currentTarget && it.ch === currentTarget.char){
       li.style.borderColor = '#10b981';
       li.style.background = '#ecfdf5';
