@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>國字手寫練習（注音抽題 + 描紅 + 辨識 + 範圍）</title>
+  <title>國字手寫練習（注音抽題＋描紅＋辨識＋範圍）</title>
   <style>
     :root { --bg:#f7f7fb; --card:#fff; --text:#0f172a; --muted:#64748b; --brand:#2563eb; --border:#e5e7eb; }
     *{box-sizing:border-box}
@@ -37,7 +37,8 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>國字手寫練習（注音抽題 + 描紅 + 辨識 + 範圍）</h1>
+      <h1>國字手寫練習（注音抽題＋描紅＋辨識＋範圍）</h1>
+
       <div class="row">
         <!-- 左側：題目、控制、辨識 -->
         <div>
@@ -69,13 +70,14 @@
               <span id="traceAlphaVal">12</span> %
             </label>
 
-            <!-- ⭐ 新增：課程範圍下拉選單 -->
+            <!-- 測驗範圍：第 1 課 ～ 第 N 課 -->
             <label>測驗範圍：
-              第 1 課 ～ 
-              <select id="lessonMax">
+              第 1 課 ～
+              <select id="lessonMax" aria-label="測驗範圍（最後一課）">
                 <option>1</option><option>2</option><option>3</option><option>4</option>
                 <option>5</option><option>6</option><option>7</option><option>8</option>
-                <option>9</option><option>10</option><option>11</option><option selected>12</option>
+                <option>9</option><option>10</option><option>11</option>
+                <option selected>12</option>
               </select> 課
             </label>
           </div>
@@ -107,8 +109,9 @@
     </div>
   </div>
 
-  <!-- 先載 data.js，再載 app.js -->
+  <!-- 先載 data.js，再載 TF.js，再載 app.js -->
   <script src="data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.21.0/dist/tf.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
