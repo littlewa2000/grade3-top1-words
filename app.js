@@ -1,4 +1,5 @@
-// app.js — 筆粗固定 20px，描紅固定開啟(15%)，無辨識
+// app.js — 非深度學習手寫辨識（多模板＋方向感知 Chamfer＋Jaccard）
+// 筆粗固定 20px、描紅固定 15%、支援依課次範圍抽題
 
 // ===== UI =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
@@ -11,14 +12,18 @@ const btnClear   = document.getElementById('btnClear');
 const penColor   = document.getElementById('penColor');
 const lessonMaxSel = document.getElementById('lessonMax');
 
+const btnRecognize = document.getElementById('btnRecognize');
+const recogList    = document.getElementById('recogList');
+
 // ===== 狀態 =====
 let drawing = false;
 let last = null;
 let currentTarget = null; // {char, zhuyin, lesson}
 const TRACE_RATIO = 0.72;
 const TRACE_ALPHA = 0.15; // 15%
+const INPUT_SIZE = 160;
 
-// ===== 載入資料（支援 A 方案 data.js）=====
+// ===== 讀 data.js（A 方案）=====
 function pickSourceArray() {
   let raw = window.WORDS || window.DATA || window.G3_TOP1_WORDS || window.words || window.db;
   try { if (!raw && typeof data !== 'undefined') raw = data; } catch(e){}
@@ -37,7 +42,7 @@ function pickSourceArray() {
       if (Array.isArray(item?.words)) {
         const lessonNo = item.lesson ?? item.lsn ?? item.lessonNo ?? null;
         for (const w of item.words) pushMaybe(w, lessonNo);
-      } else { pushMaybe(item, item.lesson ?? item.lsn ?? item.lessonNo ?? null); }
+      } else pushMaybe(item, item.lesson ?? item.lsn ?? item.lessonNo ?? null);
     }
   } else if (Array.isArray(raw.words)) {
     const lessonNo = raw.lesson ?? raw.lsn ?? raw.lessonNo ?? null;
@@ -57,7 +62,7 @@ function filteredGroupByZhuyin(){
 }
 function nextWord(){
   const F = filteredDB();
-  if (!F.length){ ZHUYIN_EL.textContent='—'; LESSON_EL.textContent=''; clearCanvas(); return; }
+  if (!F.length){ ZHUYIN_EL.textContent='—'; LESSON_EL.textContent=''; clearCanvas(); renderRecog([]); return; }
   const G = filteredGroupByZhuyin(), keys = Object.keys(G);
   let item;
   if (keys.length){ const k = keys[Math.floor(Math.random()*keys.length)]; const arr = G[k]; item = arr[Math.floor(Math.random()*arr.length)]; }
@@ -65,7 +70,7 @@ function nextWord(){
   currentTarget = item;
   ZHUYIN_EL.textContent = currentTarget.zhuyin || '—';
   LESSON_EL.textContent = currentTarget.lesson ? `（第${currentTarget.lesson}課）` : '';
-  clearCanvas();
+  clearCanvas(); renderRecog([]);
 }
 
 // ===== 畫布與描紅（固定開啟）=====
@@ -117,10 +122,206 @@ window.addEventListener('pointerup', ()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 
-// ===== 控制綁定 =====
+// ===== 基本影像工具 =====
+function binarize(imgData, thresh=210){
+  const {data,width,height}=imgData; const mask=new Uint8Array(width*height);
+  for(let i=0;i<data.length;i+=4){ const v=(data[i]+data[i+1]+data[i+2])/3; mask[i>>2] = v < thresh ? 1 : 0; }
+  return {mask,width,height};
+}
+function getBBox(mask,w,h){
+  let minx=w,miny=h,maxx=-1,maxy=-1,area=0;
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+    if(mask[y*w+x]){ area++; if(x<minx)minx=x; if(x>maxx)maxx=x; if(y<miny)miny=y; if(y>maxy)maxy=y; }
+  }
+  if(!area) return null;
+  return {x:minx,y:miny,w:maxx-minx+1,h:maxy-miny+1,area};
+}
+function extractAndNormalize(ctx,size=INPUT_SIZE){
+  const b=getTraceBox();
+  const img=ctx.getImageData(b.x,b.y,b.w,b.h);
+  const bin=binarize(img, 215);
+  const bb=getBBox(bin.mask,bin.width,bin.height);
+
+  const out=document.createElement('canvas'); out.width=size; out.height=size;
+  const octx=out.getContext('2d'); octx.fillStyle='#fff'; octx.fillRect(0,0,size,size);
+  if(!bb) return {canvas:out, mask:new Uint8Array(size*size), empty:true};
+
+  // 摘出 bbox 再縮放置中
+  const src=document.createElement('canvas'); src.width=bb.w; src.height=bb.h;
+  const sctx=src.getContext('2d'); const sImg=sctx.createImageData(bb.w,bb.h);
+  for(let y=0;y<bb.h;y++) for(let x=0;x<bb.w;x++){
+    const on=bin.mask[(bb.y+y)*bin.width + (bb.x+x)] ? 0 : 255;
+    const idx=(y*bb.w+x)*4; sImg.data[idx]=on; sImg.data[idx+1]=on; sImg.data[idx+2]=on; sImg.data[idx+3]=255;
+  }
+  sctx.putImageData(sImg,0,0);
+  const scale=0.90*Math.min(size/bb.w, size/bb.h);
+  const rw=Math.max(1,Math.round(bb.w*scale));
+  const rh=Math.max(1,Math.round(bb.h*scale));
+  const dx=Math.round((size-rw)/2), dy=Math.round((size-rh)/2);
+  octx.imageSmoothingEnabled=false; octx.drawImage(src,0,0,bb.w,bb.h,dx,dy,rw,rh);
+
+  // 重新取 mask
+  const oimg=octx.getImageData(0,0,size,size);
+  const done=binarize(oimg, 215);
+  return {canvas:out, mask:done.mask, empty:false};
+}
+
+// Sobel 方向（8-bin）
+function sobelDir(mask, w, h){
+  const dir=new Uint8Array(w*h);
+  const val = (x,y)=> mask[y*w+x] ? 1 : 0;
+  for(let y=1;y<h-1;y++) for(let x=1;x<w-1;x++){
+    const gx = -val(x-1,y-1)-2*val(x-1,y)+-val(x-1,y+1) + val(x+1,y-1)+2*val(x+1,y)+val(x+1,y+1);
+    const gy = -val(x-1,y-1)-2*val(x,y-1)-val(x+1,y-1) + val(x-1,y+1)+2*val(x,y+1)+val(x+1,y+1);
+    const ang = Math.atan2(gy, gx); // -pi..pi
+    let bin = Math.round(((ang + Math.PI) / (2*Math.PI)) * 8) % 8;
+    dir[y*w+x] = bin;
+  }
+  return dir;
+}
+
+// 距離轉換（Chamfer）
+function distanceTransform(mask,w,h){
+  const INF=1e9, dist=new Float32Array(w*h);
+  for(let i=0;i<w*h;i++) dist[i] = mask[i] ? 0 : INF;
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+    const i=y*w+x;
+    if(x>0) dist[i]=Math.min(dist[i], dist[i-1]+1);
+    if(y>0) dist[i]=Math.min(dist[i], dist[i-w]+1);
+    if(x>0&&y>0) dist[i]=Math.min(dist[i], dist[i-w-1]+2);
+    if(x<w-1&&y>0) dist[i]=Math.min(dist[i], dist[i-w+1]+2);
+  }
+  for(let y=h-1;y>=0;y--) for(let x=w-1;x>=0;x--){
+    const i=y*w+x;
+    if(x<w-1) dist[i]=Math.min(dist[i], dist[i+1]+1);
+    if(y<h-1) dist[i]=Math.min(dist[i], dist[i+w]+1);
+    if(x<w-1&&y<h-1) dist[i]=Math.min(dist[i], dist[i+w+1]+2);
+    if(x>0&&y<h-1) dist[i]=Math.min(dist[i], dist[i+w-1]+2);
+  }
+  return dist;
+}
+function jaccard(a,b){
+  let inter=0,uni=0; for(let i=0;i<a.length;i++){ inter+=(a[i]&b[i]); uni+=(a[i]|b[i]); }
+  return uni? inter/uni : 0;
+}
+
+// ===== 模板：多字型 × 輕擾動 =====
+const TEMPLATE_FONTS = [
+  '"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif',
+  '"PMingLiU","Songti TC","Noto Serif TC",serif',
+  '"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif'
+];
+const VARIANTS = [
+  { rot: 0,   scale: 1.00 },
+  { rot: -6,  scale: 0.98 },
+  { rot: +6,  scale: 0.98 },
+  { rot: -3,  scale: 1.02 },
+  { rot: +3,  scale: 1.02 }
+];
+
+function renderCharVariant(ch, font, size=INPUT_SIZE, rotDeg=0, scale=1.0){
+  const c=document.createElement('canvas'); c.width=size; c.height=size;
+  const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,size,size);
+  g.save();
+  g.translate(size/2, size/2);
+  g.rotate(rotDeg*Math.PI/180);
+  g.scale(scale, scale);
+  g.fillStyle='#000'; g.textAlign='center'; g.textBaseline='middle';
+  g.font = `${Math.floor(size*0.9)}px ${font}`;
+  g.fillText(ch, 0, 0);
+  g.restore();
+  const img=g.getImageData(0,0,size,size);
+  const bin=binarize(img, 215);
+  return bin.mask;
+}
+
+const GLYPH_CACHE = new Map(); // key: `${ch}|${f}|${v}` => {mask, dir, dt}
+function ensureGlyph(char, f, v){
+  const key=`${char}|${f}|${v}`;
+  if(!GLYPH_CACHE.has(key)){
+    const m = renderCharVariant(char, TEMPLATE_FONTS[f], INPUT_SIZE, VARIANTS[v].rot, VARIANTS[v].scale);
+    const dir = sobelDir(m, INPUT_SIZE, INPUT_SIZE);
+    const dt  = distanceTransform(m, INPUT_SIZE, INPUT_SIZE);
+    GLYPH_CACHE.set(key, {mask:m, dir, dt});
+  }
+  return GLYPH_CACHE.get(key);
+}
+
+// 方向感知對稱 Chamfer
+function chamferDirectional(userMask, userDir, tmplDT, tmplMask, tmplDir, userDT){
+  const n=userMask.length; let su=0,cu=0, st=0,ct=0;
+  for(let i=0;i<n;i++){
+    if(userMask[i]){
+      if(Math.abs(userDir[i]-tmplDir[i])<=1 || Math.abs(userDir[i]-tmplDir[i])>=7){ su += tmplDT[i]; cu++; }
+    }
+    if(tmplMask[i]){
+      if(Math.abs(tmplDir[i]-userDir[i])<=1 || Math.abs(tmplDir[i]-userDir[i])>=7){ st += userDT[i]; ct++; }
+    }
+  }
+  if(!cu && !ct) return 0;
+  const avg=((cu?su/cu:0) + (ct?st/ct:0))/2;
+  const MAX_D = 40;
+  const sim = 1 - (avg / MAX_D);
+  return Math.max(0, Math.min(1, Number.isFinite(sim)?sim:0));
+}
+
+// 候選字：使用「目前範圍內所有字」
+function candidateChars(){
+  const F=filteredDB(); const s=new Set(); for(const it of F) s.add(it.char); return Array.from(s);
+}
+
+// 主辨識
+function recognizeNow(){
+  const norm = extractAndNormalize(CTX, INPUT_SIZE);
+  if (norm.empty){ renderRecog([]); return; }
+
+  const userMask = norm.mask;
+  const userDir  = sobelDir(userMask, INPUT_SIZE, INPUT_SIZE);
+  const userDT   = distanceTransform(userMask, INPUT_SIZE, INPUT_SIZE);
+
+  const pool = candidateChars();
+  if(!pool.length){ renderRecog([]); return; }
+
+  const results = [];
+  for(const ch of pool){
+    let best = 0;
+    for(let f=0; f<TEMPLATE_FONTS.length; f++){
+      for(let v=0; v<VARIANTS.length; v++){
+        const {mask:tm, dir:tdir, dt:tdt} = ensureGlyph(ch, f, v);
+        const simC = chamferDirectional(userMask, userDir, tdt, tm, tdir, userDT);
+        const simJ = jaccard(userMask, tm);
+        const score = 0.88*simC + 0.12*simJ;
+        if (score > best) best = score;
+      }
+    }
+    results.push({ ch, score: best });
+  }
+  results.sort((a,b)=>b.score-a.score);
+  renderRecog(results.slice(0,5));
+}
+
+function renderRecog(items){
+  if(!recogList) return;
+  recogList.innerHTML='';
+  if(!items.length){
+    const li=document.createElement('li'); li.textContent='（沒有結果，請在框內書寫）'; li.style.color='#64748b'; recogList.appendChild(li); return;
+  }
+  for(const it of items){
+    const li=document.createElement('li');
+    const left=document.createElement('span'); left.textContent=it.ch; left.style.fontSize='20px';
+    left.style.fontFamily='"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif';
+    const right=document.createElement('span'); right.className='score';
+    right.textContent = `${Math.round(Math.max(0,Math.min(1,it.score||0))*100)}%`;
+    if(currentTarget && it.ch===currentTarget.char){ li.style.borderColor='#10b981'; li.style.background='#ecfdf5'; }
+    li.appendChild(left); li.appendChild(right); recogList.appendChild(li);
+  }
+}
+
+// ===== 綁定 =====
 btnClear?.addEventListener('click', clearCanvas);
 btnNext?.addEventListener('click', nextWord);
 lessonMaxSel?.addEventListener('change', nextWord);
+btnRecognize?.addEventListener('click', recognizeNow);
 
 // ===== 初始化 =====
 nextWord();
