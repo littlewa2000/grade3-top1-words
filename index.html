@@ -18,7 +18,7 @@
     .hint{color:var(--muted);font-size:13px}
     .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
     .controls label{display:inline-flex;align-items:center;gap:6px}
-    button,input[type="range"],input[type="color"],select{
+    button,input[type="color"],select{
       appearance:none;border:1px solid var(--border);background:#fff;color:var(--text);
       border-radius:10px;padding:10px 14px;font-size:14px
     }
@@ -42,17 +42,12 @@
               注音題目：<span id="zhuyin" class="zhuyin">—</span>
               <span id="lessonInfo" class="hint"></span>
             </span>
-            <span class="hint">（右側畫布書寫，已固定描紅）</span>
+            <span class="hint">（右側畫布書寫，描紅固定 15%）</span>
           </div>
 
           <div class="controls">
             <button id="btnNext" class="primary">換一題</button>
             <button id="btnClear">清除畫布</button>
-
-            <label>筆粗：
-              <input id="penSize" type="range" min="4" max="32" step="1" value="10" />
-              <span id="penSizeVal">10</span> px
-            </label>
 
             <label>筆色：
               <input id="penColor" type="color" value="#000000" />
