@@ -1,4 +1,4 @@
-// app.js — 取消寫字辨識：保留注音抽題、課次範圍、描紅與畫布
+// app.js — 注音抽題、課次範圍、描紅固定開啟(15%)、畫布書寫
 
 // ===== UI =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
@@ -11,11 +11,6 @@ const btnClear   = document.getElementById('btnClear');
 const penSize    = document.getElementById('penSize');
 const penSizeVal = document.getElementById('penSizeVal');
 const penColor   = document.getElementById('penColor');
-
-const cbTrace    = document.getElementById('cbTrace');
-const traceAlpha = document.getElementById('traceAlpha');
-const traceAlphaVal = document.getElementById('traceAlphaVal');
-
 const lessonMaxSel = document.getElementById('lessonMax');
 
 // ===== 狀態 =====
@@ -23,6 +18,7 @@ let drawing = false;
 let last = null;
 let currentTarget = null; // {char, zhuyin, lesson}
 const TRACE_RATIO = 0.72;
+const TRACE_ALPHA = 0.15; // 固定 15%
 
 // ===== 載入資料（支援 A 方案 data.js）=====
 function pickSourceArray() {
@@ -74,7 +70,7 @@ function nextWord(){
   clearCanvas();
 }
 
-// ===== 畫布與描紅 =====
+// ===== 畫布與描紅（固定開啟）=====
 function getTraceBox(){
   const w=CANVAS.width, h=CANVAS.height;
   const size = Math.floor(Math.min(w,h)*TRACE_RATIO);
@@ -85,7 +81,7 @@ function clearCanvas(){
   CTX.clearRect(0,0,CANVAS.width,CANVAS.height);
   CTX.fillStyle='#fff'; CTX.fillRect(0,0,CANVAS.width,CANVAS.height);
   drawWritingBoxOutline();
-  if (cbTrace?.checked && currentTarget) drawTrace(currentTarget.char);
+  if (currentTarget) drawTrace(currentTarget.char);
 }
 function drawWritingBoxOutline(){
   const b=getTraceBox();
@@ -93,9 +89,9 @@ function drawWritingBoxOutline(){
 }
 function drawTrace(ch){
   const b=getTraceBox();
-  const alpha = traceAlpha ? Math.max(0.05, Math.min(0.6, Number(traceAlpha.value)/100)) : 0.12;
   CTX.save();
-  CTX.globalAlpha = alpha; CTX.fillStyle='#000'; CTX.textAlign='center'; CTX.textBaseline='middle';
+  CTX.globalAlpha = TRACE_ALPHA; // 固定 15%
+  CTX.fillStyle='#000'; CTX.textAlign='center'; CTX.textBaseline='middle';
   CTX.font = `${Math.floor(b.w*0.9)}px "TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
   CTX.fillText(ch, b.x+b.w/2, b.y+b.h/2);
   CTX.restore();
@@ -122,14 +118,8 @@ CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 btnClear?.addEventListener('click', clearCanvas);
 btnNext?.addEventListener('click', nextWord);
 penSize?.addEventListener('input', ()=> penSizeVal && (penSizeVal.textContent = penSize.value));
-cbTrace?.addEventListener('change', clearCanvas);
-traceAlpha?.addEventListener('input', ()=>{
-  traceAlphaVal && (traceAlphaVal.textContent = traceAlpha.value);
-  if (cbTrace?.checked) clearCanvas();
-});
 lessonMaxSel?.addEventListener('change', nextWord);
 
 // ===== 初始化 =====
 if (penSizeVal && penSize) penSizeVal.textContent = penSize.value;
-if (traceAlphaVal && traceAlpha) traceAlphaVal.textContent = traceAlpha.value;
 nextWord();
