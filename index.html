@@ -27,6 +27,10 @@
       width:100%;height:60vh;max-height:560px;background:#fff;border:1px solid var(--border);border-radius:16px;
       touch-action:none;background-image:radial-gradient(#e5e7eb 1px,transparent 1px);background-size:16px 16px;
     }
+    .recog{margin-top:10px;border-top:1px dashed var(--border);padding-top:10px}
+    .recog ul{margin:6px 0 0 0;padding:0;list-style:none}
+    .recog li{padding:6px 8px;border:1px solid var(--border);border-radius:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+    .recog .score{font-variant-numeric:tabular-nums}
   </style>
 </head>
 <body>
@@ -35,7 +39,7 @@
       <h1>國字手寫練習</h1>
 
       <div class="row">
-        <!-- 左側：題目、控制 -->
+        <!-- 左側：題目、控制、辨識 -->
         <div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
             <span class="pill">
@@ -62,6 +66,13 @@
                 <option selected>12</option>
               </select> 課
             </label>
+
+            <button id="btnRecognize">辨識</button>
+          </div>
+
+          <div class="recog">
+            <div class="hint">辨識結果（Top 5）：</div>
+            <ul id="recogList"></ul>
           </div>
         </div>
 
