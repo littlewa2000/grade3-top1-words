@@ -1,5 +1,5 @@
-// app.js — 非深度學習手寫辨識（多模板＋方向感知 Chamfer＋Jaccard）
-// 筆粗固定 20px、描紅固定 15%、支援依課次範圍抽題
+// app.js — 非深度學習手寫辨識（邊緣對邊緣 + 方向感知 Chamfer + Jaccard）
+// 需求：筆粗固定 20px、描紅固定 15%、可依課次範圍抽題
 
 // ===== UI =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
@@ -15,15 +15,16 @@ const lessonMaxSel = document.getElementById('lessonMax');
 const btnRecognize = document.getElementById('btnRecognize');
 const recogList    = document.getElementById('recogList');
 
-// ===== 狀態 =====
+// ===== 狀態/參數 =====
 let drawing = false;
 let last = null;
 let currentTarget = null; // {char, zhuyin, lesson}
 const TRACE_RATIO = 0.72;
-const TRACE_ALPHA = 0.15; // 15%
-const INPUT_SIZE = 160;
+const TRACE_ALPHA = 0.15;  // 描紅固定 15%
+const INPUT_SIZE  = 160;   // 標準化尺寸
+const BIN_THR     = 160;   // 二值化門檻：確保 15% 灰描紅 (~217) 不會被當作筆畫
 
-// ===== 讀 data.js（A 方案）=====
+// ===== 載入資料（支援 A 方案 data.js）=====
 function pickSourceArray() {
   let raw = window.WORDS || window.DATA || window.G3_TOP1_WORDS || window.words || window.db;
   try { if (!raw && typeof data !== 'undefined') raw = data; } catch(e){}
@@ -93,7 +94,7 @@ function drawWritingBoxOutline(){
 function drawTrace(ch){
   const b=getTraceBox();
   CTX.save();
-  CTX.globalAlpha = TRACE_ALPHA;
+  CTX.globalAlpha = TRACE_ALPHA; // 固定 15%
   CTX.fillStyle='#000'; CTX.textAlign='center'; CTX.textBaseline='middle';
   CTX.font = `${Math.floor(b.w*0.9)}px "TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
   CTX.fillText(ch, b.x+b.w/2, b.y+b.h/2);
@@ -122,10 +123,13 @@ window.addEventListener('pointerup', ()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 
-// ===== 基本影像工具 =====
-function binarize(imgData, thresh=210){
+// ===== 影像處理：只保留使用者「筆畫輪廓」，排除描紅 =====
+function binarize(imgData, thresh = BIN_THR){
   const {data,width,height}=imgData; const mask=new Uint8Array(width*height);
-  for(let i=0;i<data.length;i+=4){ const v=(data[i]+data[i+1]+data[i+2])/3; mask[i>>2] = v < thresh ? 1 : 0; }
+  for(let i=0;i<data.length;i+=4){
+    const v=(data[i]+data[i+1]+data[i+2])/3;
+    mask[i>>2] = v < thresh ? 1 : 0; // 只吃很黑的像素
+  }
   return {mask,width,height};
 }
 function getBBox(mask,w,h){
@@ -136,17 +140,29 @@ function getBBox(mask,w,h){
   if(!area) return null;
   return {x:minx,y:miny,w:maxx-minx+1,h:maxy-miny+1,area};
 }
+// 從填色 mask 取 1px 輪廓
+function edgeFromMask(mask,w,h){
+  const edge=new Uint8Array(w*h);
+  const val=(x,y)=> (x>=0&&x<w&&y>=0&&y<h) ? mask[y*w+x] : 0;
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+    if(!val(x,y)) continue;
+    if(x===0||y===0||x===w-1||y===h-1 || !val(x-1,y)||!val(x+1,y)||!val(x,y-1)||!val(x,y+1)){
+      edge[y*w+x]=1;
+    }
+  }
+  return edge;
+}
 function extractAndNormalize(ctx,size=INPUT_SIZE){
   const b=getTraceBox();
   const img=ctx.getImageData(b.x,b.y,b.w,b.h);
-  const bin=binarize(img, 215);
+  const bin=binarize(img);                 // 低門檻，排除描紅
   const bb=getBBox(bin.mask,bin.width,bin.height);
 
   const out=document.createElement('canvas'); out.width=size; out.height=size;
   const octx=out.getContext('2d'); octx.fillStyle='#fff'; octx.fillRect(0,0,size,size);
   if(!bb) return {canvas:out, mask:new Uint8Array(size*size), empty:true};
 
-  // 摘出 bbox 再縮放置中
+  // 摘出 bbox → 置中縮放
   const src=document.createElement('canvas'); src.width=bb.w; src.height=bb.h;
   const sctx=src.getContext('2d'); const sImg=sctx.createImageData(bb.w,bb.h);
   for(let y=0;y<bb.h;y++) for(let x=0;x<bb.w;x++){
@@ -160,30 +176,30 @@ function extractAndNormalize(ctx,size=INPUT_SIZE){
   const dx=Math.round((size-rw)/2), dy=Math.round((size-rh)/2);
   octx.imageSmoothingEnabled=false; octx.drawImage(src,0,0,bb.w,bb.h,dx,dy,rw,rh);
 
-  // 重新取 mask
+  // 重新取 mask（標準尺寸）
   const oimg=octx.getImageData(0,0,size,size);
-  const done=binarize(oimg, 215);
+  const done=binarize(oimg);
   return {canvas:out, mask:done.mask, empty:false};
 }
-
-// Sobel 方向（8-bin）
+// Sobel 方向（8-bin），對邊緣圖計算
 function sobelDir(mask, w, h){
   const dir=new Uint8Array(w*h);
-  const val = (x,y)=> mask[y*w+x] ? 1 : 0;
+  const edge=edgeFromMask(mask,w,h);
+  const val = (x,y)=> edge[y*w+x] ? 1 : 0;
   for(let y=1;y<h-1;y++) for(let x=1;x<w-1;x++){
     const gx = -val(x-1,y-1)-2*val(x-1,y)+-val(x-1,y+1) + val(x+1,y-1)+2*val(x+1,y)+val(x+1,y+1);
     const gy = -val(x-1,y-1)-2*val(x,y-1)-val(x+1,y-1) + val(x-1,y+1)+2*val(x,y+1)+val(x+1,y+1);
-    const ang = Math.atan2(gy, gx); // -pi..pi
+    const ang = Math.atan2(gy, gx);
     let bin = Math.round(((ang + Math.PI) / (2*Math.PI)) * 8) % 8;
     dir[y*w+x] = bin;
   }
-  return dir;
+  return {dir, edge};
 }
-
-// 距離轉換（Chamfer）
+// 距離轉換（Chamfer）對邊緣圖做
 function distanceTransform(mask,w,h){
   const INF=1e9, dist=new Float32Array(w*h);
-  for(let i=0;i<w*h;i++) dist[i] = mask[i] ? 0 : INF;
+  const edge=edgeFromMask(mask,w,h);
+  for(let i=0;i<w*h;i++) dist[i] = edge[i] ? 0 : INF;
   for(let y=0;y<h;y++) for(let x=0;x<w;x++){
     const i=y*w+x;
     if(x>0) dist[i]=Math.min(dist[i], dist[i-1]+1);
@@ -205,7 +221,7 @@ function jaccard(a,b){
   return uni? inter/uni : 0;
 }
 
-// ===== 模板：多字型 × 輕擾動 =====
+// ===== 模板（多字型 × 輕擾動）→ 產生「邊緣模板」=====
 const TEMPLATE_FONTS = [
   '"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif',
   '"PMingLiU","Songti TC","Noto Serif TC",serif',
@@ -230,54 +246,55 @@ function renderCharVariant(ch, font, size=INPUT_SIZE, rotDeg=0, scale=1.0){
   g.font = `${Math.floor(size*0.9)}px ${font}`;
   g.fillText(ch, 0, 0);
   g.restore();
+
   const img=g.getImageData(0,0,size,size);
-  const bin=binarize(img, 215);
-  return bin.mask;
+  const bin=binarize(img);                    // → 填色 mask
+  return edgeFromMask(bin.mask, size, size);  // → 邊緣模板
 }
 
-const GLYPH_CACHE = new Map(); // key: `${ch}|${f}|${v}` => {mask, dir, dt}
+const GLYPH_CACHE = new Map(); // key: `${ch}|${f}|${v}` => {edge, dir, dt}
 function ensureGlyph(char, f, v){
   const key=`${char}|${f}|${v}`;
   if(!GLYPH_CACHE.has(key)){
-    const m = renderCharVariant(char, TEMPLATE_FONTS[f], INPUT_SIZE, VARIANTS[v].rot, VARIANTS[v].scale);
-    const dir = sobelDir(m, INPUT_SIZE, INPUT_SIZE);
-    const dt  = distanceTransform(m, INPUT_SIZE, INPUT_SIZE);
-    GLYPH_CACHE.set(key, {mask:m, dir, dt});
+    const edge = renderCharVariant(char, TEMPLATE_FONTS[f], INPUT_SIZE, VARIANTS[v].rot, VARIANTS[v].scale);
+    const {dir} = sobelDir(edge, INPUT_SIZE, INPUT_SIZE);
+    const dt  = distanceTransform(edge, INPUT_SIZE, INPUT_SIZE);
+    GLYPH_CACHE.set(key, {edge, dir, dt});
   }
   return GLYPH_CACHE.get(key);
 }
 
-// 方向感知對稱 Chamfer
-function chamferDirectional(userMask, userDir, tmplDT, tmplMask, tmplDir, userDT){
-  const n=userMask.length; let su=0,cu=0, st=0,ct=0;
+// 方向感知對稱 Chamfer（只比較邊緣且方向相近）
+function chamferDirectional(userEdge, userDir, tmplDT, tmplEdge, tmplDir, userDT){
+  const n=userEdge.length; let su=0,cu=0, st=0,ct=0;
   for(let i=0;i<n;i++){
-    if(userMask[i]){
+    if(userEdge[i]){
       if(Math.abs(userDir[i]-tmplDir[i])<=1 || Math.abs(userDir[i]-tmplDir[i])>=7){ su += tmplDT[i]; cu++; }
     }
-    if(tmplMask[i]){
+    if(tmplEdge[i]){
       if(Math.abs(tmplDir[i]-userDir[i])<=1 || Math.abs(tmplDir[i]-userDir[i])>=7){ st += userDT[i]; ct++; }
     }
   }
   if(!cu && !ct) return 0;
   const avg=((cu?su/cu:0) + (ct?st/ct:0))/2;
-  const MAX_D = 40;
+  const MAX_D = 36; // 與 INPUT_SIZE 與擾動程度相關的常數
   const sim = 1 - (avg / MAX_D);
   return Math.max(0, Math.min(1, Number.isFinite(sim)?sim:0));
 }
 
-// 候選字：使用「目前範圍內所有字」
+// 候選字：使用目前範圍內所有字
 function candidateChars(){
   const F=filteredDB(); const s=new Set(); for(const it of F) s.add(it.char); return Array.from(s);
 }
 
-// 主辨識
+// ===== 主辨識 =====
 function recognizeNow(){
   const norm = extractAndNormalize(CTX, INPUT_SIZE);
   if (norm.empty){ renderRecog([]); return; }
 
-  const userMask = norm.mask;
-  const userDir  = sobelDir(userMask, INPUT_SIZE, INPUT_SIZE);
-  const userDT   = distanceTransform(userMask, INPUT_SIZE, INPUT_SIZE);
+  // 使用者：邊緣/方向/DT
+  const {dir:udir, edge:uedge} = sobelDir(norm.mask, INPUT_SIZE, INPUT_SIZE);
+  const udt = distanceTransform(norm.mask, INPUT_SIZE, INPUT_SIZE);
 
   const pool = candidateChars();
   if(!pool.length){ renderRecog([]); return; }
@@ -287,10 +304,12 @@ function recognizeNow(){
     let best = 0;
     for(let f=0; f<TEMPLATE_FONTS.length; f++){
       for(let v=0; v<VARIANTS.length; v++){
-        const {mask:tm, dir:tdir, dt:tdt} = ensureGlyph(ch, f, v);
-        const simC = chamferDirectional(userMask, userDir, tdt, tm, tdir, userDT);
-        const simJ = jaccard(userMask, tm);
-        const score = 0.88*simC + 0.12*simJ;
+        const {edge:tedge, dir:tdir, dt:tdt} = ensureGlyph(ch, f, v);
+        const simC = chamferDirectional(uedge, udir, tdt, tedge, tdir, udt);
+        // 邊緣 Jaccard（輕權重）
+        let inter=0, uni=0; for(let i=0;i<uedge.length;i++){ inter+=(uedge[i]&tedge[i]); uni+=(uedge[i]|tedge[i]); }
+        const simJ = uni? inter/uni : 0;
+        const score = 0.92*simC + 0.08*simJ;
         if (score > best) best = score;
       }
     }
