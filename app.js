@@ -1,4 +1,4 @@
-// app.js — 注音抽題、課次範圍、描紅固定開啟(15%)、畫布書寫
+// app.js — 筆粗固定 20px，描紅固定開啟(15%)，無辨識
 
 // ===== UI =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
@@ -8,8 +8,6 @@ const CTX        = CANVAS.getContext('2d', { willReadFrequently: true });
 
 const btnNext    = document.getElementById('btnNext');
 const btnClear   = document.getElementById('btnClear');
-const penSize    = document.getElementById('penSize');
-const penSizeVal = document.getElementById('penSizeVal');
 const penColor   = document.getElementById('penColor');
 const lessonMaxSel = document.getElementById('lessonMax');
 
@@ -18,7 +16,7 @@ let drawing = false;
 let last = null;
 let currentTarget = null; // {char, zhuyin, lesson}
 const TRACE_RATIO = 0.72;
-const TRACE_ALPHA = 0.15; // 固定 15%
+const TRACE_ALPHA = 0.15; // 15%
 
 // ===== 載入資料（支援 A 方案 data.js）=====
 function pickSourceArray() {
@@ -90,13 +88,18 @@ function drawWritingBoxOutline(){
 function drawTrace(ch){
   const b=getTraceBox();
   CTX.save();
-  CTX.globalAlpha = TRACE_ALPHA; // 固定 15%
+  CTX.globalAlpha = TRACE_ALPHA;
   CTX.fillStyle='#000'; CTX.textAlign='center'; CTX.textBaseline='middle';
   CTX.font = `${Math.floor(b.w*0.9)}px "TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
   CTX.fillText(ch, b.x+b.w/2, b.y+b.h/2);
   CTX.restore();
 }
-function setLineStyle(){ CTX.lineCap='round'; CTX.lineJoin='round'; CTX.strokeStyle=penColor?.value || '#000'; CTX.lineWidth=Number(penSize?.value||10); }
+function setLineStyle(){
+  CTX.lineCap='round';
+  CTX.lineJoin='round';
+  CTX.strokeStyle = penColor?.value || '#000';
+  CTX.lineWidth = 20; // 固定 20px
+}
 function getPos(e){
   const r=CANVAS.getBoundingClientRect(), sx=CANVAS.width/r.width, sy=CANVAS.height/r.height;
   const x=(e.touches?e.touches[0].clientX:e.clientX) - r.left;
@@ -117,9 +120,7 @@ CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 // ===== 控制綁定 =====
 btnClear?.addEventListener('click', clearCanvas);
 btnNext?.addEventListener('click', nextWord);
-penSize?.addEventListener('input', ()=> penSizeVal && (penSizeVal.textContent = penSize.value));
 lessonMaxSel?.addEventListener('change', nextWord);
 
 // ===== 初始化 =====
-if (penSizeVal && penSize) penSizeVal.textContent = penSize.value;
 nextWord();
