@@ -42,7 +42,7 @@
               注音題目：<span id="zhuyin" class="zhuyin">—</span>
               <span id="lessonInfo" class="hint"></span>
             </span>
-            <span class="hint">（右側畫布書寫，可開啟描紅）</span>
+            <span class="hint">（右側畫布書寫，已固定描紅）</span>
           </div>
 
           <div class="controls">
@@ -56,13 +56,6 @@
 
             <label>筆色：
               <input id="penColor" type="color" value="#000000" />
-            </label>
-
-            <label><input type="checkbox" id="cbTrace" checked /> 顯示描紅</label>
-
-            <label>描紅濃淡：
-              <input id="traceAlpha" type="range" min="5" max="40" step="1" value="12" />
-              <span id="traceAlphaVal">12</span> %
             </label>
 
             <label>測驗範圍：
@@ -85,7 +78,6 @@
     </div>
   </div>
 
-  <!-- 只需要 data.js 與 app.js（不再載入 tf.js） -->
   <script src="data.js"></script>
   <script src="app.js"></script>
 </body>
