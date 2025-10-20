@@ -1,5 +1,5 @@
-// app.js — 非深度學習手寫辨識（邊緣對邊緣 + 方向感知 Chamfer + Jaccard + 平移搜尋）
-// 需求：筆粗固定 20px、描紅固定 15%、依課次範圍抽題
+// app.js — 非深度學習手寫辨識（邊緣+方向Chamfer+Jaccard+平移搜尋）
+// 需求：筆粗固定 20px、描紅固定 15%、依課次範圍抽題；候選集=同注音(範圍內)，無則全字表
 
 // ===== UI =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
@@ -276,7 +276,6 @@ function ensureGlyph(char, f, v){
 
 // 方向感知對稱 Chamfer（支援平移搜尋）
 function chamferDirectionalShifted(userEdge, userDir, tmplDT, tmplEdge, tmplDir, userDT, w, h, dx, dy){
-  const n = w*h;
   let su=0,cu=0, st=0,ct=0;
 
   // user -> templateDT（模板位移 dx,dy）
@@ -287,7 +286,6 @@ function chamferDirectionalShifted(userEdge, userDir, tmplDT, tmplEdge, tmplDir,
       const xx = x+dx, yy = y+dy;
       if(xx<0||yy<0||xx>=w||yy>=h) continue;
       const j = yy*w+xx;
-      // 方向相近才計入
       let d = Math.abs(userDir[i] - tmplDir[j]); if (d>4) d = 8 - d;
       if(d<=1){ su += tmplDT[j]; cu++; }
     }
@@ -308,14 +306,26 @@ function chamferDirectionalShifted(userEdge, userDir, tmplDT, tmplEdge, tmplDir,
 
   if(!cu && !ct) return 0;
   const avg=((cu?su/cu:0) + (ct?st/ct:0))/2;
-  const MAX_D = 36;              // 常數：與 INPUT_SIZE/筆粗/擾動有關
-  const sim = 1 - (avg / MAX_D); // 距離越小分數越高
+  const MAX_D = 36;               // 與 INPUT_SIZE/筆粗/擾動相關的常數
+  const sim = 1 - (avg / MAX_D);  // 距離越小分數越高
   return Math.max(0, Math.min(1, Number.isFinite(sim)?sim:0));
 }
 
-// 候選字：使用目前範圍內所有字
+// 候選字：優先「同注音 + 範圍內」；若無才退回全部
 function candidateChars(){
-  const F=filteredDB(); const s=new Set(); for(const it of F) s.add(it.char); return Array.from(s);
+  const F = filteredDB();
+  const targetZy = (currentTarget?.zhuyin || "").trim();
+  if (targetZy) {
+    const s = new Set();
+    for (const it of F) {
+      if ((it.zhuyin || "").trim() === targetZy) s.add(it.char);
+    }
+    const byZhuyin = Array.from(s);
+    if (byZhuyin.length) return byZhuyin;
+  }
+  // fallback: 全部字
+  const s2 = new Set(); for (const it of F) s2.add(it.char);
+  return Array.from(s2);
 }
 
 // ===== 主辨識 =====
@@ -341,7 +351,8 @@ function recognizeNow(){
         let localBest = 0;
         for (const {dx,dy} of OFFSETS){
           const simC = chamferDirectionalShifted(uedge, udir, tdt, tedge, tdir, udt, INPUT_SIZE, INPUT_SIZE, dx, dy);
-          // 邊緣 Jaccard（同樣採位移；這裡用簡易位移對齊）
+
+          // 邊緣 Jaccard（同樣採位移；簡易位移對齊）
           let inter=0, uni=0;
           for(let y=0;y<INPUT_SIZE;y++){
             for(let x=0;x<INPUT_SIZE;x++){
@@ -354,6 +365,7 @@ function recognizeNow(){
             }
           }
           const simJ = uni? inter/uni : 0;
+
           const score = 0.92*simC + 0.08*simJ;
           if(score > localBest) localBest = score;
         }
