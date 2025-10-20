@@ -1,5 +1,5 @@
-// app.js — 非深度學習手寫辨識（邊緣對邊緣 + 方向感知 Chamfer + Jaccard）
-// 需求：筆粗固定 20px、描紅固定 15%、可依課次範圍抽題
+// app.js — 非深度學習手寫辨識（邊緣對邊緣 + 方向感知 Chamfer + Jaccard + 平移搜尋）
+// 需求：筆粗固定 20px、描紅固定 15%、依課次範圍抽題
 
 // ===== UI =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
@@ -22,7 +22,17 @@ let currentTarget = null; // {char, zhuyin, lesson}
 const TRACE_RATIO = 0.72;
 const TRACE_ALPHA = 0.15;  // 描紅固定 15%
 const INPUT_SIZE  = 160;   // 標準化尺寸
-const BIN_THR     = 160;   // 二值化門檻：確保 15% 灰描紅 (~217) 不會被當作筆畫
+const BIN_THR     = 160;   // 二值化門檻：排除 15% 灰描紅 (~217)
+
+// 平移搜尋（像素）
+const OFFSETS = [
+  {dx:0,dy:0},
+  {dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1},
+  {dx:2,dy:0},{dx:-2,dy:0},{dx:0,dy:2},{dx:0,dy:-2},
+  {dx:3,dy:0},{dx:-3,dy:0},{dx:0,dy:3},{dx:0,dy:-3},
+  {dx:2,dy:1},{dx:2,dy:-1},{dx:-2,dy:1},{dx:-2,dy:-1},
+  {dx:1,dy:2},{dx:1,dy:-2},{dx:-1,dy:2},{dx:-1,dy:-2}
+];
 
 // ===== 載入資料（支援 A 方案 data.js）=====
 function pickSourceArray() {
@@ -123,7 +133,7 @@ window.addEventListener('pointerup', ()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 
-// ===== 影像處理：只保留使用者「筆畫輪廓」，排除描紅 =====
+// ===== 影像處理：保留使用者「筆畫輪廓」，排除描紅 =====
 function binarize(imgData, thresh = BIN_THR){
   const {data,width,height}=imgData; const mask=new Uint8Array(width*height);
   for(let i=0;i<data.length;i+=4){
@@ -264,21 +274,42 @@ function ensureGlyph(char, f, v){
   return GLYPH_CACHE.get(key);
 }
 
-// 方向感知對稱 Chamfer（只比較邊緣且方向相近）
-function chamferDirectional(userEdge, userDir, tmplDT, tmplEdge, tmplDir, userDT){
-  const n=userEdge.length; let su=0,cu=0, st=0,ct=0;
-  for(let i=0;i<n;i++){
-    if(userEdge[i]){
-      if(Math.abs(userDir[i]-tmplDir[i])<=1 || Math.abs(userDir[i]-tmplDir[i])>=7){ su += tmplDT[i]; cu++; }
-    }
-    if(tmplEdge[i]){
-      if(Math.abs(tmplDir[i]-userDir[i])<=1 || Math.abs(tmplDir[i]-userDir[i])>=7){ st += userDT[i]; ct++; }
+// 方向感知對稱 Chamfer（支援平移搜尋）
+function chamferDirectionalShifted(userEdge, userDir, tmplDT, tmplEdge, tmplDir, userDT, w, h, dx, dy){
+  const n = w*h;
+  let su=0,cu=0, st=0,ct=0;
+
+  // user -> templateDT（模板位移 dx,dy）
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const i = y*w+x;
+      if(!userEdge[i]) continue;
+      const xx = x+dx, yy = y+dy;
+      if(xx<0||yy<0||xx>=w||yy>=h) continue;
+      const j = yy*w+xx;
+      // 方向相近才計入
+      let d = Math.abs(userDir[i] - tmplDir[j]); if (d>4) d = 8 - d;
+      if(d<=1){ su += tmplDT[j]; cu++; }
     }
   }
+
+  // template -> userDT（對稱；相對位移 -dx,-dy）
+  for(let y=0;y<h;y++){
+    for(let x=0;x<w;x++){
+      const j = y*w+x;
+      if(!tmplEdge[j]) continue;
+      const xx = x-dx, yy = y-dy;
+      if(xx<0||yy<0||xx>=w||yy>=h) continue;
+      const i = yy*w+xx;
+      let d = Math.abs(tmplDir[j] - userDir[i]); if (d>4) d = 8 - d;
+      if(d<=1){ st += userDT[i]; ct++; }
+    }
+  }
+
   if(!cu && !ct) return 0;
   const avg=((cu?su/cu:0) + (ct?st/ct:0))/2;
-  const MAX_D = 36; // 與 INPUT_SIZE 與擾動程度相關的常數
-  const sim = 1 - (avg / MAX_D);
+  const MAX_D = 36;              // 常數：與 INPUT_SIZE/筆粗/擾動有關
+  const sim = 1 - (avg / MAX_D); // 距離越小分數越高
   return Math.max(0, Math.min(1, Number.isFinite(sim)?sim:0));
 }
 
@@ -305,16 +336,34 @@ function recognizeNow(){
     for(let f=0; f<TEMPLATE_FONTS.length; f++){
       for(let v=0; v<VARIANTS.length; v++){
         const {edge:tedge, dir:tdir, dt:tdt} = ensureGlyph(ch, f, v);
-        const simC = chamferDirectional(uedge, udir, tdt, tedge, tdir, udt);
-        // 邊緣 Jaccard（輕權重）
-        let inter=0, uni=0; for(let i=0;i<uedge.length;i++){ inter+=(uedge[i]&tedge[i]); uni+=(uedge[i]|tedge[i]); }
-        const simJ = uni? inter/uni : 0;
-        const score = 0.92*simC + 0.08*simJ;
-        if (score > best) best = score;
+
+        // 平移搜尋：找此模板的最佳位移
+        let localBest = 0;
+        for (const {dx,dy} of OFFSETS){
+          const simC = chamferDirectionalShifted(uedge, udir, tdt, tedge, tdir, udt, INPUT_SIZE, INPUT_SIZE, dx, dy);
+          // 邊緣 Jaccard（同樣採位移；這裡用簡易位移對齊）
+          let inter=0, uni=0;
+          for(let y=0;y<INPUT_SIZE;y++){
+            for(let x=0;x<INPUT_SIZE;x++){
+              const i = y*INPUT_SIZE + x;
+              const xx = x+dx, yy = y+dy;
+              if(xx<0||yy<0||xx>=INPUT_SIZE||yy>=INPUT_SIZE) continue;
+              const j = yy*INPUT_SIZE + xx;
+              inter += (uedge[i] & tedge[j]);
+              uni   += (uedge[i] | tedge[j]);
+            }
+          }
+          const simJ = uni? inter/uni : 0;
+          const score = 0.92*simC + 0.08*simJ;
+          if(score > localBest) localBest = score;
+        }
+
+        if (localBest > best) best = localBest;
       }
     }
     results.push({ ch, score: best });
   }
+
   results.sort((a,b)=>b.score-a.score);
   renderRecog(results.slice(0,5));
 }
