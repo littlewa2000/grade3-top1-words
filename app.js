@@ -1,6 +1,7 @@
 // app.js — FAST + Reject：粗篩(投影)→精算(邊緣/方向Chamfer+Jaccard+小平移)＋拒絕門檻
-// 固定：筆粗=20px、描紅=15%、候選=同注音(不足則補干擾)、亂寫可「看不出來」
+// 固定：筆粗=20px、描紅=15%、候選=同注音(不足則補干擾)、亂畫會被拒絕
 
+// ===== 介面元素 =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
 const LESSON_EL  = document.getElementById('lessonInfo');
 const CANVAS     = document.getElementById('pad');
@@ -16,13 +17,21 @@ const recogList    = document.getElementById('recogList');
 
 // ===== 參數（速度＆拒絕設定）=====
 let drawing=false, last=null, currentTarget=null;
+let pathLen=0; // ← 累計使用者書寫距離（像素）
+
 const TRACE_RATIO=0.72, TRACE_ALPHA=0.15;
 
 const INPUT_SIZE = 128;         // 解析度（可改 112/96 更快）
 const BIN_THR    = 160;         // 排除 15% 灰描紅
 const TOP_PREFILTER = 16;       // 粗篩保留數
-const REJECT_THRESHOLD = 0.78;  // ← 低於此分數顯示「看不出來」
-const MIN_EDGE_PIXELS = 50;     // 筆畫太少也直接拒絕
+
+// —— 拒絕條件（越大越嚴）——
+const REJECT_THRESHOLD = 0.79;   // 分數低於此 → 拒絕
+const PRE_MIN_SIM      = 0.48;   // 投影粗篩最佳分數低於此 → 拒絕
+const MARGIN_MIN       = 0.07;   // Top1 與 Top2 差距不足 → 拒絕
+const MIN_EDGE_PIXELS  = 80;     // 筆畫太少 → 拒絕
+const MAX_EDGE_PIXELS  = 5200;   // 筆畫太多（塗抹）→ 拒絕
+const MIN_PATH_LEN     = 180;    // 書寫距離太短 → 拒絕
 
 const OFFSETS = [               // 小平移 9 點
   {dx:0,dy:0},{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1},
@@ -86,6 +95,7 @@ function clearCanvas(){
   CTX.setTransform(1,0,0,1,0,0); CTX.clearRect(0,0,CANVAS.width,CANVAS.height);
   CTX.fillStyle='#fff'; CTX.fillRect(0,0,CANVAS.width,CANVAS.height); drawWritingBoxOutline();
   if(currentTarget) drawTrace(currentTarget.char);
+  pathLen = 0; // 重置書寫距離
 }
 function drawWritingBoxOutline(){ const b=getTraceBox(); CTX.save(); CTX.strokeStyle='#cbd5e1'; CTX.lineWidth=2; CTX.setLineDash([8,6]); CTX.strokeRect(b.x,b.y,b.w,b.h); CTX.restore(); }
 function drawTrace(ch){
@@ -96,7 +106,13 @@ function drawTrace(ch){
 function setLineStyle(){ CTX.lineCap='round'; CTX.lineJoin='round'; CTX.strokeStyle=penColor?.value||'#000'; CTX.lineWidth=20; }
 function getPos(e){ const r=CANVAS.getBoundingClientRect(), sx=CANVAS.width/r.width, sy=CANVAS.height/r.height; const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x:x*sx,y:y*sy}; }
 CANVAS.addEventListener('pointerdown',e=>{drawing=true; last=getPos(e); setLineStyle();});
-CANVAS.addEventListener('pointermove',e=>{ if(!drawing) return; const p=getPos(e), b=getTraceBox(); CTX.save(); CTX.beginPath(); CTX.rect(b.x,b.y,b.w,b.h); CTX.clip(); CTX.beginPath(); CTX.moveTo(last.x,last.y); CTX.lineTo(p.x,p.y); CTX.stroke(); CTX.restore(); last=p;});
+CANVAS.addEventListener('pointermove',e=>{ if(!drawing) return; const p=getPos(e), b=getTraceBox();
+  // 累積書寫距離
+  const dx=p.x-last.x, dy=p.y-last.y; pathLen += Math.hypot(dx,dy);
+  CTX.save(); CTX.beginPath(); CTX.rect(b.x,b.y,b.w,b.h); CTX.clip();
+  CTX.beginPath(); CTX.moveTo(last.x,last.y); CTX.lineTo(p.x,p.y); CTX.stroke(); CTX.restore();
+  last=p;
+});
 window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
@@ -203,7 +219,7 @@ function chamferDirectionalShifted(userEdge,userDir,tmplDT,tmplEdge,tmplDir,user
   }
   if(!cu && !ct) return 0;
   const avg=((cu?su/cu:0)+(ct?st/ct:0))/2;
-  const MAX_D=40;                 // ↑ 更嚴格：距離大更容易被降分
+  const MAX_D=40;                 // 距離轉相似度的正規化因子
   const sim=1-(avg/MAX_D);
   return Math.max(0,Math.min(1,Number.isFinite(sim)?sim:0));
 }
@@ -218,14 +234,12 @@ function candidateChars(){
   // 若同注音太少，補上其它注音的隨機干擾字，避免只跟單一字比
   if(byZ.length < 3){
     const all = Array.from(new Set(F.map(it=>it.char)));
-    // 從 all 中挑出非 byZ 的 10 個（或不足就全部）
     const others = all.filter(c=>!seen.has(c));
     for(let i=0;i<10 && others.length;i++){
       const k = Math.floor(Math.random()*others.length);
       byZ.push(others[k]); others.splice(k,1);
     }
   }
-  // 若完全沒有字（理論上不會），就回傳全表
   if(!byZ.length){
     const s2=new Set(); for(const it of F) s2.add(it.char); return Array.from(s2);
   }
@@ -236,9 +250,16 @@ function candidateChars(){
 function recognizeNow(){
   const norm=extractAndNormalize(CTX, INPUT_SIZE); if(norm.empty){ renderUnknown('沒有筆畫'); return; }
 
+  // 路徑長度判定：寫得太少就不收
+  if (pathLen < MIN_PATH_LEN) { renderUnknown('筆畫太少，請重寫'); return; }
+
   // 使用者特徵
-  const {dir:udir, edge:uedge, edgeCount} = sobelDir(norm.mask, INPUT_SIZE, INPUT_SIZE);
-  if (edgeCount < MIN_EDGE_PIXELS) { renderUnknown('筆畫太少'); return; }
+  const sd = sobelDir(norm.mask, INPUT_SIZE, INPUT_SIZE);
+  const udir = sd.dir, uedge = sd.edge, edgeCount = sd.edgeCount;
+
+  if (edgeCount < MIN_EDGE_PIXELS) { renderUnknown('筆畫不足'); return; }
+  if (edgeCount > MAX_EDGE_PIXELS) { renderUnknown('塗抹過多'); return; }
+
   const udt  = distanceTransform(norm.mask, INPUT_SIZE, INPUT_SIZE);
   const {H:UH, V:UV} = projXY(uedge, INPUT_SIZE, INPUT_SIZE);
 
@@ -246,6 +267,7 @@ function recognizeNow(){
 
   // 1) 粗篩（投影相似度）
   const pre = [];
+  let preBest = -1;
   for(const ch of pool){
     let best=-1;
     for(let f=0; f<TEMPLATE_FONTS.length; f++){
@@ -255,13 +277,16 @@ function recognizeNow(){
         if(sim>best) best=sim;
       }
     }
+    if (best > preBest) preBest = best;
     pre.push({ch, preSim: best});
   }
+  if (preBest < PRE_MIN_SIM) { renderUnknown('形狀差異太大'); return; }
+
   pre.sort((a,b)=>b.preSim-a.preSim);
   const shortlist = pre.slice(0, Math.min(TOP_PREFILTER, pre.length)).map(x=>x.ch);
 
   // 2) 精算（Chamfer+Jaccard + 小平移）
-  let bestScore = 0;
+  let bestScore = 0, secondScore = 0;
   const results=[];
   for(const ch of shortlist){
     let best=0;
@@ -271,6 +296,7 @@ function recognizeNow(){
         let localBest=0;
         for(const {dx,dy} of OFFSETS){
           const simC = chamferDirectionalShifted(uedge, udir, tdt, tedge, tdir, udt, INPUT_SIZE, INPUT_SIZE, dx, dy);
+
           // 位移 Jaccard
           let inter=0, uni=0;
           for(let y=0;y<INPUT_SIZE;y++){
@@ -283,31 +309,31 @@ function recognizeNow(){
             }
           }
           const simJ = uni? inter/uni : 0;
-          const score = 0.85*simC + 0.15*simJ; // ↑ Jaccard 稍微放大，有助亂寫被拉低
+          const score = 0.85*simC + 0.15*simJ; // Jaccard 稍重，亂畫更易被降分
           if(score>localBest) localBest=score;
         }
         if(localBest>best) best=localBest;
       }
     }
-    if (best > bestScore) bestScore = best;
+    if (best > bestScore){ secondScore = bestScore; bestScore = best; }
+    else if (best > secondScore){ secondScore = best; }
     results.push({ch, score:best});
   }
-  results.sort((a,b)=>b.score-a.score);
 
   // 3) 拒絕判定
-  if (bestScore < REJECT_THRESHOLD) {
-    renderUnknown(`信心 ${Math.round(bestScore*100)}%`);
-    return;
-  }
+  if (bestScore < REJECT_THRESHOLD) { renderUnknown(`信心 ${Math.round(bestScore*100)}%`); return; }
+  if ((bestScore - secondScore) < MARGIN_MIN) { renderUnknown('不確定，請重寫'); return; }
 
+  results.sort((a,b)=>b.score-a.score);
   renderRecog(results.slice(0,5));
 }
 
+// ===== 呈現 =====
 function renderUnknown(msg){
   if(!recogList) return;
   recogList.innerHTML='';
   const li=document.createElement('li');
-  li.textContent = `看不出來（${msg}）`;
+  li.textContent = msg ? `看不出來（${msg}）` : '看不出來，請重寫';
   li.style.color='#64748b';
   li.style.fontStyle='italic';
   recogList.appendChild(li);
