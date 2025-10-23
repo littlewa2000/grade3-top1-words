@@ -21,7 +21,7 @@ const TRACE_RATIO=0.72, TRACE_ALPHA=0.15;
 const INPUT_SIZE = 128;         // 解析度（可改 112/96 更快）
 const BIN_THR    = 160;         // 排除 15% 灰描紅
 const TOP_PREFILTER = 16;       // 粗篩保留數
-const REJECT_THRESHOLD = 0.62;  // ← 低於此分數顯示「看不出來」
+const REJECT_THRESHOLD = 0.78;  // ← 低於此分數顯示「看不出來」
 const MIN_EDGE_PIXELS = 50;     // 筆畫太少也直接拒絕
 
 const OFFSETS = [               // 小平移 9 點
