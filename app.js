@@ -1,5 +1,6 @@
-// app.js — FAST + Reject：粗篩(投影)→精算(邊緣/方向Chamfer+Jaccard+小平移)＋拒絕門檻
-// 固定：筆粗=20px、描紅=15%、候選=同注音(不足則補干擾)、亂畫會被拒絕
+// app.js — FAST + Reject（加強版）：粗篩(投影)→精算(邊緣/方向Chamfer+Jaccard+小平移)＋拒絕門檻
+// 變更：加大平移搜尋(±3px)、加入純縮放變體、分數權重偏向距離、描紅時放寬距離正規化
+// 固定：筆粗=20px、描紅=15%、候選=同注音(不足補干擾)、亂畫會被拒絕
 
 // ===== 介面元素 =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
@@ -17,9 +18,9 @@ const recogList    = document.getElementById('recogList');
 
 // ===== 參數（速度＆拒絕設定）=====
 let drawing=false, last=null, currentTarget=null;
-let pathLen=0; // ← 累計使用者書寫距離（像素）
+let pathLen=0; // 累計使用者書寫距離（像素）
 
-const TRACE_RATIO=0.72, TRACE_ALPHA=0.15;
+const TRACE_RATIO=0.72, TRACE_ALPHA=0.15; // 描紅固定 15%
 
 const INPUT_SIZE = 128;         // 解析度（可改 112/96 更快）
 const BIN_THR    = 160;         // 排除 15% 灰描紅
@@ -33,19 +34,27 @@ const MIN_EDGE_PIXELS  = 80;     // 筆畫太少 → 拒絕
 const MAX_EDGE_PIXELS  = 5200;   // 筆畫太多（塗抹）→ 拒絕
 const MIN_PATH_LEN     = 180;    // 書寫距離太短 → 拒絕
 
-const OFFSETS = [               // 小平移 9 點
-  {dx:0,dy:0},{dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1},
+// 小平移搜尋：由 9 點擴大到 21 點（含 ±3px 與斜向）
+const OFFSETS = [
+  {dx:0,dy:0},
+  {dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1},
   {dx:2,dy:0},{dx:-2,dy:0},{dx:0,dy:2},{dx:0,dy:-2},
+  {dx:3,dy:0},{dx:-3,dy:0},{dx:0,dy:3},{dx:0,dy:-3},
+  {dx:2,dy:1},{dx:2,dy:-1},{dx:-2,dy:1},{dx:-2,dy:-1},
+  {dx:1,dy:2},{dx:1,dy:-2},{dx:-1,dy:2},{dx:-1,dy:-2},
 ];
 
-const TEMPLATE_FONTS = [        // 兩種字型
+const TEMPLATE_FONTS = [
   '"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif',
   '"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif'
 ];
-const VARIANTS = [              // 輕擾動
+// 模板擾動：加入純縮放變體 + 輕微旋轉
+const VARIANTS = [
+  { rot: 0,  scale: 0.96 },
   { rot: 0,  scale: 1.00 },
-  { rot: -4, scale: 0.99 },
-  { rot: +4, scale: 0.99 }
+  { rot: 0,  scale: 1.04 },
+  { rot: -3, scale: 0.98 },
+  { rot: +3, scale: 0.98 },
 ];
 
 // ===== 載入 data.js (A 方案) =====
@@ -197,7 +206,7 @@ function ensureGlyph(char,f,v){
   const key=`${char}|${f}|${v}|${INPUT_SIZE}`;
   if(!GLYPH_CACHE.has(key)){
     const edge = renderCharVariant(char, TEMPLATE_FONTS[f], INPUT_SIZE, VARIANTS[v].rot, VARIANTS[v].scale);
-    const tmpMask = new Uint8Array(edge); // 用作 dir/dt 的來源
+    const tmpMask = new Uint8Array(edge);
     const {dir} = sobelDir(tmpMask, INPUT_SIZE, INPUT_SIZE);
     const dt = distanceTransform(tmpMask, INPUT_SIZE, INPUT_SIZE);
     const {H,V} = projXY(edge, INPUT_SIZE, INPUT_SIZE);
@@ -206,7 +215,7 @@ function ensureGlyph(char,f,v){
   return GLYPH_CACHE.get(key);
 }
 
-// ===== 比對（含小平移）=====
+// ===== 比對（含小平移；描紅時放寬 MAX_D）=====
 function chamferDirectionalShifted(userEdge,userDir,tmplDT,tmplEdge,tmplDir,userDT,w,h,dx,dy){
   let su=0,cu=0, st=0,ct=0;
   for(let y=0;y<h;y++) for(let x=0;x<w;x++){
@@ -219,7 +228,7 @@ function chamferDirectionalShifted(userEdge,userDir,tmplDT,tmplEdge,tmplDir,user
   }
   if(!cu && !ct) return 0;
   const avg=((cu?su/cu:0)+(ct?st/ct:0))/2;
-  const MAX_D=40;                 // 距離轉相似度的正規化因子
+  const MAX_D = (TRACE_ALPHA > 0 ? 34 : 40); // 描紅開啟時略放寬，提升貼齊度評分
   const sim=1-(avg/MAX_D);
   return Math.max(0,Math.min(1,Number.isFinite(sim)?sim:0));
 }
@@ -309,7 +318,7 @@ function recognizeNow(){
             }
           }
           const simJ = uni? inter/uni : 0;
-          const score = 0.85*simC + 0.15*simJ; // Jaccard 稍重，亂畫更易被降分
+          const score = 0.93*simC + 0.07*simJ; // 更偏向距離，降低筆粗差異影響
           if(score>localBest) localBest=score;
         }
         if(localBest>best) best=localBest;
