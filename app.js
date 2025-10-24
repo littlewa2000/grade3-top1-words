@@ -1,4 +1,4 @@
-// app.js — 描紅合規檢查版（不做字形辨識）+ 即時覆蓋率
+// app.js — 描紅合規檢查版（不做字形辨識）+ 即時覆蓋率（50ms 節流）
 // 概念：把描紅輪廓變成「允許走的走廊」。檢查覆蓋率 & 外漏率，合格算 1 次，累計到 3 次。
 // 固定：筆粗=20px、描紅=15%（無調整 UI）、可選課次。
 
@@ -25,9 +25,9 @@ let drawing=false, last=null, currentTarget=null;
 let pathLen=0;                         // 書寫距離（防空寫）
 let attemptStart=0;                    // 單次書寫起始時間
 let passCount=0;                       // 已合格次數（目標 3）
-let liveTick=false;                    // rAF 節流
 
 let currentBand=null;                  // {band, bandCount}：走廊快取
+let lastLiveTs=0;                      // 即時覆蓋率計算節流
 
 const REQUIRED_PASSES   = 3;           // 需要完成的次數
 const TRACE_RATIO       = 0.72;        // 書寫框尺寸（相對畫布）
@@ -114,7 +114,14 @@ function drawTrace(ch){
 }
 function setLineStyle(){ CTX.lineCap='round'; CTX.lineJoin='round'; CTX.strokeStyle=penColor?.value||'#000'; CTX.lineWidth=PEN_WIDTH_PX; }
 function getPos(e){ const r=CANVAS.getBoundingClientRect(), sx=CANVAS.width/r.width, sy=CANVAS.height/r.height; const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x:x*sx,y:y*sy}; }
-CANVAS.addEventListener('pointerdown',e=>{drawing=true; last=getPos(e); setLineStyle(); if(!attemptStart) attemptStart=performance.now();});
+
+// pointerdown：保險重建一次走廊（避免某些情況沒生成）
+CANVAS.addEventListener('pointerdown',e=>{
+  drawing=true; last=getPos(e); setLineStyle(); if(!attemptStart) attemptStart=performance.now();
+  if (!currentBand && currentTarget) currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
+});
+
+// pointermove：畫線 + 每 50ms 更新一次即時覆蓋率
 CANVAS.addEventListener('pointermove',e=>{
   if(!drawing) return; const p=getPos(e), b=getTraceBox();
   const dx=p.x-last.x, dy=p.y-last.y; pathLen += Math.hypot(dx,dy);
@@ -122,10 +129,10 @@ CANVAS.addEventListener('pointermove',e=>{
   CTX.beginPath(); CTX.moveTo(last.x,last.y); CTX.lineTo(p.x,p.y); CTX.stroke(); CTX.restore();
   last=p;
 
-  // 即時覆蓋率（以 rAF 節流）
-  if (!liveTick) {
-    liveTick = true;
-    requestAnimationFrame(() => { computeLiveCoverage(); liveTick = false; });
+  const now = performance.now();
+  if (now - lastLiveTs >= 50) { // 50ms 節流
+    computeLiveCoverage();
+    lastLiveTs = now;
   }
 });
 window.addEventListener('pointerup',()=>{drawing=false; last=null;});
