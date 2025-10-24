@@ -1,6 +1,4 @@
-// app.js — 描紅合規檢查版（不做字形辨識）+ 即時覆蓋率（50ms 節流）
-// 概念：把描紅輪廓變成「允許走的走廊」。檢查覆蓋率 & 外漏率，合格算 1 次，累計到 3 次。
-// 固定：筆粗=20px、描紅=15%（無調整 UI）、可選課次。
+// app.js — 描紅合規檢查版（固定座標映射，覆蓋率單調上升）+ 即時覆蓋率（50ms 節流）
 
 // ====== UI 元素 ======
 const ZHUYIN_EL   = document.getElementById('zhuyin');
@@ -26,18 +24,18 @@ let pathLen=0;                         // 書寫距離（防空寫）
 let attemptStart=0;                    // 單次書寫起始時間
 let passCount=0;                       // 已合格次數（目標 3）
 
-let currentBand=null;                  // {band, bandCount}：走廊快取
-let lastLiveTs=0;                      // 即時覆蓋率計算節流
+let currentBand=null;                  // {band, bandCount}：走廊快取（固定 128×128）
+let lastLiveTs=0;                      // 即時覆蓋率計算節流（ms）
 
 const REQUIRED_PASSES   = 3;           // 需要完成的次數
 const TRACE_RATIO       = 0.72;        // 書寫框尺寸（相對畫布）
 const TRACE_ALPHA       = 0.15;        // 描紅透明度
 const TRACE_FONT        = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
 
-const INPUT_SIZE        = 128;         // 標準化尺寸（影像計算）
+const INPUT_SIZE        = 128;         // 固定參考座標尺寸
 const BIN_THR           = 160;         // 低於此視為筆跡（排除描紅）
 const PEN_WIDTH_PX      = 20;          // 筆粗（畫布座標）
-const BAND_PX           = 10;          // 走廊半寬（在標準化座標上）
+const BAND_PX           = 10;          // 走廊半寬（在 INPUT_SIZE 座標）
 const PASS_COVERAGE     = 0.78;        // 覆蓋率門檻（≥ 78% 視為合格）
 const MAX_LEAKAGE       = 0.18;        // 外漏率上限（≤ 18%）
 const MIN_PATH_LEN      = 180;         // 最短書寫距離（像素）
@@ -121,7 +119,7 @@ CANVAS.addEventListener('pointerdown',e=>{
   if (!currentBand && currentTarget) currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
 });
 
-// pointermove：畫線 + 每 50ms 更新一次即時覆蓋率
+// pointermove：畫線 + 每 50ms 更新一次即時覆蓋率（固定座標計算）
 CANVAS.addEventListener('pointermove',e=>{
   if(!drawing) return; const p=getPos(e), b=getTraceBox();
   const dx=p.x-last.x, dy=p.y-last.y; pathLen += Math.hypot(dx,dy);
@@ -145,10 +143,66 @@ function binarize(imgData, thr=BIN_THR){
   for(let i=0, p=0;i<data.length;i+=4, p++){ const v=(data[i]+data[i+1]+data[i+2])/3; mask[p]= (v<thr)?1:0; }
   return {mask,width,height};
 }
-function getBBox(mask,w,h){ let minx=w,miny=h,maxx=-1,maxy=-1,area=0;
-  for(let y=0;y<h;y++) for(let x=0;x<w;x++){ if(mask[y*w+x]){ area++; if(x<minx)minx=x; if(x>maxx)maxx=x; if(y<miny)miny=y; if(y>maxy)maxy=y; } }
-  if(!area) return null; return {x:minx,y:miny,w:maxx-minx+1,h:maxy-miny+1,area};
+
+// 「固定座標」抽取：把整個 trace box 直接映射到 128×128，不做 bbox 裁切
+function extractStableRegion(ctx, size=INPUT_SIZE){
+  const b=getTraceBox();
+  const img = ctx.getImageData(b.x, b.y, b.w, b.h); // 取整個描紅框
+  // 將描紅框縮放到 size×size
+  const tmp=document.createElement('canvas'); tmp.width=b.w; tmp.height=b.h;
+  const tg=tmp.getContext('2d'); tg.putImageData(img,0,0);
+
+  const out=document.createElement('canvas'); out.width=size; out.height=size;
+  const o=out.getContext('2d'); o.fillStyle='#fff'; o.fillRect(0,0,size,size);
+  o.imageSmoothingEnabled=false;
+  o.drawImage(tmp, 0,0,b.w,b.h, 0,0,size,size);
+
+  const oimg=o.getImageData(0,0,size,size);
+  const bin=binarize(oimg);
+  return {mask:bin.mask, empty:false};
 }
+
+// ====== 走廊（由描紅字生成；同樣固定座標）=====
+function makeTraceBand(char, size=INPUT_SIZE){
+  const c=document.createElement('canvas'); c.width=size; c.height=size;
+  const g=c.getContext('2d');
+  g.fillStyle='#fff'; g.fillRect(0,0,size,size);
+  g.fillStyle='#000'; g.textAlign='center'; g.textBaseline='middle';
+  g.font = `${Math.floor(size*0.9)}px ${TRACE_FONT}`;
+  g.fillText(char, size/2, size/2);
+
+  // 二值＆邊緣
+  const img=g.getImageData(0,0,size,size);
+  const bin=binarize(img);
+  const {edge} = edgeFromMask(bin.mask,size,size);
+
+  // 距離轉換（Chamfer 簡化）
+  const INF=1e9, dist=new Float32Array(size*size);
+  for(let i=0;i<dist.length;i++) dist[i]=edge[i]?0:INF;
+  for(let y=0;y<size;y++) for(let x=0;x<size;x++){
+    const i=y*size+x;
+    if(x>0) dist[i]=Math.min(dist[i], dist[i-1]+1);
+    if(y>0) dist[i]=Math.min(dist[i], dist[i-size]+1);
+    if(x>0&&y>0) dist[i]=Math.min(dist[i], dist[i-size-1]+2);
+    if(x<size-1&&y>0) dist[i]=Math.min(dist[i], dist[i-size+1]+2);
+  }
+  for(let y=size-1;y>=0;y--) for(let x=size-1;x>=0;x--){
+    const i=y*size+x;
+    if(x<size-1) dist[i]=Math.min(dist[i], dist[i+1]+1);
+    if(y<size-1) dist[i]=Math.min(dist[i], dist[i+size]+1);
+    if(x<size-1&&y<size-1) dist[i]=Math.min(dist[i], dist[i+size+1]+2);
+    if(x>0&&y<size-1) dist[i]=Math.min(dist[i], dist[i+size-1]+2);
+  }
+
+  const band=new Uint8Array(size*size);
+  let bandCount=0;
+  for(let i=0;i<dist.length;i++){
+    if(dist[i] <= BAND_PX){ band[i]=1; bandCount++; }
+  }
+  return { band, bandCount };
+}
+
+// ====== 邊緣偵測（給走廊用）======
 function edgeFromMask(mask,w,h){
   const edge=new Uint8Array(w*h), val=(x,y)=> (x>=0&&x<w&&y>=0&&y<h) ? mask[y*w+x] : 0;
   let cnt=0;
@@ -158,82 +212,8 @@ function edgeFromMask(mask,w,h){
   }
   return {edge, count:cnt};
 }
-function extractAndNormalize(ctx,size=INPUT_SIZE){
-  const b=getTraceBox();
-  const img=ctx.getImageData(b.x,b.y,b.w,b.h);
-  const bin=binarize(img);
-  const bb=getBBox(bin.mask,bin.width,bin.height);
 
-  const out=document.createElement('canvas'); out.width=size; out.height=size;
-  const o=out.getContext('2d'); o.fillStyle='#fff'; o.fillRect(0,0,size,size);
-
-  if(!bb) return {mask:new Uint8Array(size*size), empty:true};
-
-  const src=document.createElement('canvas'); src.width=bb.w; src.height=bb.h;
-  const s=src.getContext('2d'); const sImg=s.createImageData(bb.w,bb.h);
-  for(let y=0;y<bb.h;y++) for(let x=0;x<bb.w;x++){
-    const on=bin.mask[(bb.y+y)*bin.width + (bb.x+x)]?0:255;
-    const idx=(y*bb.w+x)*4; sImg.data[idx]=on; sImg.data[idx+1]=on; sImg.data[idx+2]=on; sImg.data[idx+3]=255;
-  }
-  s.putImageData(sImg,0,0);
-
-  const scale=0.90*Math.min(size/bb.w, size/bb.h);
-  const rw=Math.max(1,Math.round(bb.w*scale));
-  const rh=Math.max(1,Math.round(bb.h*scale));
-  const dx=Math.round((size-rw)/2), dy=Math.round((size-rh)/2);
-  o.imageSmoothingEnabled=false;
-  o.drawImage(src,0,0,bb.w,bb.h,dx,dy,rw,rh);
-
-  const oimg=o.getImageData(0,0,size,size);
-  const done=binarize(oimg);
-  return {mask:done.mask, empty:false};
-}
-
-// ====== 走廊（由描紅字生成）=====
-function makeTraceBand(char, size=INPUT_SIZE){
-  // 1) 畫出描紅字（與畫布描紅完全一致的字型與比例）
-  const c=document.createElement('canvas'); c.width=size; c.height=size;
-  const g=c.getContext('2d');
-  g.fillStyle='#fff'; g.fillRect(0,0,size,size);
-  g.fillStyle='#000'; g.textAlign='center'; g.textBaseline='middle';
-  g.font = `${Math.floor(size*0.9)}px ${TRACE_FONT}`;
-  g.fillText(char, size/2, size/2);
-
-  // 2) 取二值＆邊緣 → 距離轉換
-  const img=g.getImageData(0,0,size,size);
-  const bin=binarize(img);
-  const {edge} = edgeFromMask(bin.mask,size,size);
-
-  // 距離轉換（Chamfer 簡化）
-  const INF=1e9, dist=new Float32Array(size*size);
-  for(let i=0;i<dist.length;i++) dist[i]=edge[i]?0:INF;
-  // 前向掃描
-  for(let y=0;y<size;y++) for(let x=0;x<size;x++){
-    const i=y*size+x;
-    if(x>0) dist[i]=Math.min(dist[i], dist[i-1]+1);
-    if(y>0) dist[i]=Math.min(dist[i], dist[i-size]+1);
-    if(x>0&&y>0) dist[i]=Math.min(dist[i], dist[i-size-1]+2);
-    if(x<size-1&&y>0) dist[i]=Math.min(dist[i], dist[i-size+1]+2);
-  }
-  // 後向掃描
-  for(let y=size-1;y>=0;y--) for(let x=size-1;x>=0;x--){
-    const i=y*size+x;
-    if(x<size-1) dist[i]=Math.min(dist[i], dist[i+1]+1);
-    if(y<size-1) dist[i]=Math.min(dist[i], dist[i+size]+1);
-    if(x<size-1&&y<size-1) dist[i]=Math.min(dist[i], dist[i+size+1]+2);
-    if(x>0&&y<size-1) dist[i]=Math.min(dist[i], dist[i+size-1]+2);
-  }
-
-  // 3) 走廊＝距離 <= BAND_PX 的像素
-  const band=new Uint8Array(size*size);
-  let bandCount=0;
-  for(let i=0;i<dist.length;i++){
-    if(dist[i] <= BAND_PX){ band[i]=1; bandCount++; }
-  }
-  return { band, bandCount };
-}
-
-// ====== 描紅合規檢查 ======
+// ====== 描紅合規檢查（固定座標版）======
 function checkTracing(){
   if(!currentTarget){ showInfo('尚未出題'); return; }
 
@@ -242,19 +222,19 @@ function checkTracing(){
   if (pathLen < MIN_PATH_LEN){ showFail('筆畫太少，請沿著描紅寫'); return; }
   if (dt < MIN_DURATION_MS){ showFail('寫得太快，請慢慢沿著描紅'); return; }
 
-  const user = extractAndNormalize(CTX, INPUT_SIZE);
-  if (user.empty){ showFail('沒有筆畫'); return; }
-
+  const user = extractStableRegion(CTX, INPUT_SIZE);
   const userMask = user.mask;
+
   // 避免整片塗黑
   let userCount=0; for(let i=0;i<userMask.length;i++) userCount += userMask[i];
   if (userCount > MAX_EDGE_PIXELS){ showFail('塗抹太多，請沿描紅書寫'); return; }
+  if (userCount === 0){ showFail('沒有筆畫'); return; }
 
-  // 產生/使用走廊
+  // 走廊
   currentBand = currentBand || makeTraceBand(currentTarget.char, INPUT_SIZE);
   const {band, bandCount} = currentBand;
 
-  // 覆蓋/外漏統計
+  // 覆蓋/外漏統計（固定座標 → 單調不減）
   let cover=0, leak=0;
   for(let i=0;i<userMask.length;i++){
     if (userMask[i]){
@@ -262,14 +242,12 @@ function checkTracing(){
       else leak++;
     }
   }
-  const coverage = bandCount ? (cover / bandCount) : 0;      // 我填到走廊的比例
-  const leakage  = userCount ? (leak  / userCount)  : 1;      // 我畫在走廊外的比例
+  const coverage = bandCount ? (cover / bandCount) : 0;
+  const leakage  = userCount ? (leak  / userCount)  : 1;
 
-  // 判定
   if (coverage >= PASS_COVERAGE && leakage <= MAX_LEAKAGE){
     passCount++;
     showPass(coverage, leakage, passCount);
-    // 每次通過就清畫布，請孩子再寫下一次
     if (passCount >= REQUIRED_PASSES){
       showInfo(`🎉 完成 ${REQUIRED_PASSES}/${REQUIRED_PASSES} 次！按「下一題」換題。`);
     } else {
@@ -282,7 +260,7 @@ function checkTracing(){
   }
 }
 
-// ====== 即時覆蓋率 ======
+// ====== 即時覆蓋率（固定座標）======
 function updateLive(pct){
   if (!liveBar || !liveText) return;
   const clamped = Math.max(0, Math.min(1, pct));
@@ -292,8 +270,7 @@ function updateLive(pct){
 }
 function computeLiveCoverage(){
   if (!currentTarget || !currentBand){ updateLive(0); return; }
-  const user = extractAndNormalize(CTX, INPUT_SIZE);
-  if (user.empty) { updateLive(0); return; }
+  const user = extractStableRegion(CTX, INPUT_SIZE);
   const mask = user.mask;
   let cover = 0;
   const band = currentBand.band;
