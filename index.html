@@ -12,8 +12,9 @@
     .tabs{display:flex;border-bottom:1px solid var(--border);gap:8px;}
     .tab-btn{appearance:none;border:none;background:transparent;padding:10px 14px;border-bottom:2px solid transparent;cursor:pointer;font-size:15px;color:#334155;}
     .tab-btn.active{border-bottom-color:var(--accent);color:#0f172a;font-weight:600;}
-    .tab-panel{display:none;padding:14px 2px;}
-    .tab-panel.active{display:block;}
+    /* 關鍵：沒有 active 的分頁一律隱藏（加上 !important 防止其他樣式影響） */
+    .tab-panel{display:none !important;padding:14px 2px;}
+    .tab-panel.active{display:block !important;}
     .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;}
     select,button,input[type="color"]{height:38px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:14px}
     button{cursor:pointer;background:var(--accent);color:#fff;border:none}
@@ -36,11 +37,12 @@
   <div class="container">
     <!-- Tabs -->
     <div class="tabs">
-      <button id="tabSettingsBtn" class="tab-btn">設定</button>
-      <button id="tabPracticeBtn" class="tab-btn active">練習</button>
+      <!-- 加上 type="button" -->
+      <button id="tabSettingsBtn" type="button" class="tab-btn">設定</button>
+      <button id="tabPracticeBtn" type="button" class="tab-btn active">練習</button>
     </div>
 
-    <!-- 設定分頁 -->
+    <!-- 設定分頁（預設不 active） -->
     <div id="tabSettings" class="tab-panel">
       <div class="card section">
         <div class="row">
@@ -75,7 +77,7 @@
       </div>
     </div>
 
-    <!-- 練習分頁 -->
+    <!-- 練習分頁（預設 active） -->
     <div id="tabPractice" class="tab-panel active">
       <div class="card">
         <div class="row" style="justify-content:space-between">
@@ -84,9 +86,9 @@
             <span class="lesson" id="lessonInfo"></span>
           </div>
           <div class="row">
-            <button id="btnClear" class="secondary" title="清除畫面">清除</button>
-            <button id="btnRecognize" title="檢查描紅">檢查描紅</button>
-            <button id="btnNext" class="secondary" title="下一題">下一題</button>
+            <button id="btnClear" type="button" class="secondary" title="清除畫面">清除</button>
+            <button id="btnRecognize" type="button" title="檢查描紅">檢查描紅</button>
+            <button id="btnNext" type="button" class="secondary" title="下一題">下一題</button>
           </div>
         </div>
       </div>
@@ -118,7 +120,7 @@
     </div>
   </div>
 
-  <!-- 先載入 data.js（A 方案：全域 data 陣列） -->
+  <!-- 先載入 data.js -->
   <script src="data.js"></script>
   <!-- 再載入 app.js -->
   <script src="app.js"></script>
