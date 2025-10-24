@@ -1,5 +1,5 @@
-// app.js — 描紅合規檢查版（不做字形辨識）
-// 概念：把描紅輪廓變成「允許走的走廊」。檢查覆蓋率 & 外漏率，通過算 1 次，累計到 3 次。
+// app.js — 描紅合規檢查版（不做字形辨識）+ 即時覆蓋率
+// 概念：把描紅輪廓變成「允許走的走廊」。檢查覆蓋率 & 外漏率，合格算 1 次，累計到 3 次。
 // 固定：筆粗=20px、描紅=15%（無調整 UI）、可選課次。
 
 // ====== UI 元素 ======
@@ -13,14 +13,21 @@ const btnClear    = document.getElementById('btnClear');
 const penColor    = document.getElementById('penColor');
 const lessonMaxSel= document.getElementById('lessonMax');
 
-const btnRecognize= document.getElementById('btnRecognize'); // 改為「檢查描紅」
-const recogList   = document.getElementById('recogList');    // 用來顯示進度與分數
+const btnRecognize= document.getElementById('btnRecognize'); // 「檢查描紅」
+const recogList   = document.getElementById('recogList');
+
+// 即時覆蓋率 UI
+const liveBar  = document.getElementById('liveCoverageBar');
+const liveText = document.getElementById('liveCoverageText');
 
 // ====== 參數 ======
 let drawing=false, last=null, currentTarget=null;
 let pathLen=0;                         // 書寫距離（防空寫）
 let attemptStart=0;                    // 單次書寫起始時間
 let passCount=0;                       // 已合格次數（目標 3）
+let liveTick=false;                    // rAF 節流
+
+let currentBand=null;                  // {band, bandCount}：走廊快取
 
 const REQUIRED_PASSES   = 3;           // 需要完成的次數
 const TRACE_RATIO       = 0.72;        // 書寫框尺寸（相對畫布）
@@ -77,6 +84,9 @@ function nextWord(){
   LESSON_EL.textContent=item.lesson?`（第${item.lesson}課）`:'';
   passCount = 0;
   clearCanvas();
+  // 建立走廊快取與即時覆蓋率歸零
+  currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
+  updateLive(0);
   showProgress();
 }
 
@@ -90,6 +100,7 @@ function clearCanvas(){
   if(currentTarget) drawTrace(currentTarget.char);
   pathLen = 0;
   attemptStart = performance.now();
+  updateLive(0);
 }
 function drawWritingBoxOutline(){ const b=getTraceBox(); CTX.save(); CTX.strokeStyle='#cbd5e1'; CTX.lineWidth=2; CTX.setLineDash([8,6]); CTX.strokeRect(b.x,b.y,b.w,b.h); CTX.restore(); }
 function drawTrace(ch){
@@ -110,6 +121,12 @@ CANVAS.addEventListener('pointermove',e=>{
   CTX.save(); CTX.beginPath(); CTX.rect(b.x,b.y,b.w,b.h); CTX.clip();
   CTX.beginPath(); CTX.moveTo(last.x,last.y); CTX.lineTo(p.x,p.y); CTX.stroke(); CTX.restore();
   last=p;
+
+  // 即時覆蓋率（以 rAF 節流）
+  if (!liveTick) {
+    liveTick = true;
+    requestAnimationFrame(() => { computeLiveCoverage(); liveTick = false; });
+  }
 });
 window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
@@ -180,7 +197,7 @@ function makeTraceBand(char, size=INPUT_SIZE){
   const bin=binarize(img);
   const {edge} = edgeFromMask(bin.mask,size,size);
 
-  // 簡化距離轉換（Chamfer）→ 以「邊緣」為 0，背景為 INF
+  // 距離轉換（Chamfer 簡化）
   const INF=1e9, dist=new Float32Array(size*size);
   for(let i=0;i<dist.length;i++) dist[i]=edge[i]?0:INF;
   // 前向掃描
@@ -226,8 +243,9 @@ function checkTracing(){
   let userCount=0; for(let i=0;i<userMask.length;i++) userCount += userMask[i];
   if (userCount > MAX_EDGE_PIXELS){ showFail('塗抹太多，請沿描紅書寫'); return; }
 
-  // 產生當前字的走廊
-  const {band, bandCount} = makeTraceBand(currentTarget.char, INPUT_SIZE);
+  // 產生/使用走廊
+  currentBand = currentBand || makeTraceBand(currentTarget.char, INPUT_SIZE);
+  const {band, bandCount} = currentBand;
 
   // 覆蓋/外漏統計
   let cover=0, leak=0;
@@ -255,6 +273,26 @@ function checkTracing(){
     const msg = `覆蓋率 ${Math.round(coverage*100)}%，外漏 ${Math.round(leakage*100)}%`;
     showFail(`尚未合格：${msg}（需要覆蓋≥${Math.round(PASS_COVERAGE*100)}%，外漏≤${Math.round(MAX_LEAKAGE*100)}%）`);
   }
+}
+
+// ====== 即時覆蓋率 ======
+function updateLive(pct){
+  if (!liveBar || !liveText) return;
+  const clamped = Math.max(0, Math.min(1, pct));
+  liveBar.style.width = (clamped*100).toFixed(0) + '%';
+  liveBar.style.background = clamped >= PASS_COVERAGE ? '#10b981' : '#f59e0b';
+  liveText.textContent = (clamped*100).toFixed(0) + '%';
+}
+function computeLiveCoverage(){
+  if (!currentTarget || !currentBand){ updateLive(0); return; }
+  const user = extractAndNormalize(CTX, INPUT_SIZE);
+  if (user.empty) { updateLive(0); return; }
+  const mask = user.mask;
+  let cover = 0;
+  const band = currentBand.band;
+  for (let i=0;i<mask.length;i++) if (mask[i] && band[i]) cover++;
+  const pct = currentBand.bandCount ? (cover / currentBand.bandCount) : 0;
+  updateLive(pct);
 }
 
 // ====== 呈現 ======
@@ -288,8 +326,8 @@ function showFail(text){
 }
 
 // ====== 綁定/初始化 ======
-btnClear?.addEventListener('click', clearCanvas);
+btnClear?.addEventListener('click', ()=>{ clearCanvas(); updateLive(0); });
 btnNext?.addEventListener('click', nextWord);
 lessonMaxSel?.addEventListener('change', nextWord);
-btnRecognize?.addEventListener('click', checkTracing); // ← 由「辨識」改為「檢查描紅」
+btnRecognize?.addEventListener('click', checkTracing); // ← 「檢查描紅」
 nextWord();
