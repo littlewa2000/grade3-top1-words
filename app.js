@@ -1,16 +1,23 @@
-// ---- Tabs: hash-based 高亮（沒有它也能切換）----
+// ---- Tabs：預設顯示「設定」；用 hash 控制 + .active 切換 ----
 (function setupTabs(){
   const settingsBtn = document.getElementById('tabSettingsBtn');
   const practiceBtn = document.getElementById('tabPracticeBtn');
-  function updateActive(){
-    const h = (location.hash || '#practice').toLowerCase();
-    const isSettings = h === '#settings';
+  const settingsPan = document.getElementById('settings');
+  const practicePan = document.getElementById('practice');
+
+  function applyActive(isSettings){
     settingsBtn?.classList.toggle('active', isSettings);
     practiceBtn?.classList.toggle('active', !isSettings);
+    settingsPan?.classList.toggle('active', isSettings);
+    practicePan?.classList.toggle('active', !isSettings);
   }
-  window.addEventListener('hashchange', updateActive);
-  if (!location.hash) location.replace('#practice');
-  updateActive();
+  function updateByHash(){
+    const h = (location.hash || '#settings').toLowerCase();
+    applyActive(h === '#settings');
+  }
+  window.addEventListener('hashchange', updateByHash);
+  if (!location.hash) location.replace('#settings'); // 預設 settings
+  updateByHash();
 })();
 
 // ====== UI ======
@@ -28,13 +35,23 @@ const reqPassesSel= document.getElementById('reqPasses');
 const btnRecognize= document.getElementById('btnRecognize');
 const recogList   = document.getElementById('recogList');
 
-// 覆蓋率 UI（已隱藏，但保留節點以避免報錯）
-const liveBar  = document.getElementById('liveCoverageBar');
-const liveText = document.getElementById('liveCoverageText');
-// 顯示即時覆蓋率的開關（本需求：關閉）
+// 覆蓋率（已關閉 UI 顯示）
 const SHOW_LIVE = false;
 
-// ====== 參數 ======
+// ====== 統計：累計完成題數（localStorage）======
+const STATS_KEY = 'g3_total_tests';
+const statsTotalEl = document.getElementById('statsTotal');
+const btnResetStats = document.getElementById('btnResetStats');
+
+function loadStats(){ const n = parseInt(localStorage.getItem(STATS_KEY)||'0',10); return Number.isFinite(n)?n:0; }
+function saveStats(n){ localStorage.setItem(STATS_KEY, String(Math.max(0, n|0))); }
+function incStats(){ const n = loadStats()+1; saveStats(n); updateStatsUI(); }
+function resetStats(){ saveStats(0); updateStatsUI(); }
+function updateStatsUI(){ if(statsTotalEl) statsTotalEl.textContent = String(loadStats()); }
+btnResetStats?.addEventListener('click', resetStats);
+updateStatsUI();
+
+// ====== 狀態/參數 ======
 let drawing=false, last=null, currentTarget=null;
 let pathLen=0, attemptStart=0;
 let passCount=0;
@@ -105,7 +122,6 @@ function nextWord(){
   disableNext(true);
   clearCanvas();
   currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
-  if (SHOW_LIVE) updateLive(0);
   showProgress();
 }
 
@@ -119,7 +135,6 @@ function clearCanvas(){
   if(currentTarget) drawTrace(currentTarget.char);
   pathLen = 0;
   attemptStart = performance.now();
-  if (SHOW_LIVE) updateLive(0);
 }
 function drawWritingBoxOutline(){ const b=getTraceBox(); CTX.save(); CTX.strokeStyle='#cbd5e1'; CTX.lineWidth=2; CTX.setLineDash([8,6]); CTX.strokeRect(b.x,b.y,b.w,b.h); CTX.restore(); }
 function drawTrace(ch){
@@ -144,11 +159,6 @@ CANVAS.addEventListener('pointermove',e=>{
   CTX.save(); CTX.beginPath(); CTX.rect(b.x,b.y,b.w,b.h); CTX.clip();
   CTX.beginPath(); CTX.moveTo(last.x,last.y); CTX.lineTo(p.x,p.y); CTX.stroke(); CTX.restore();
   last=p;
-
-  if (SHOW_LIVE) {
-    const now = performance.now();
-    if (now - lastLiveTs >= 50) { computeLiveCoverage(); lastLiveTs = now; }
-  }
 });
 window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
@@ -206,14 +216,11 @@ function makeTraceBand(char, size=INPUT_SIZE){
     if(x>0&&y<size-1) dist[i]=Math.min(dist[i], dist[i+size-1]+2);
   }
   const band=new Uint8Array(size*size);
-  let bandCount=0;
-  for(let i=0;i<dist.length;i++){
-    if(dist[i] <= BAND_PX){ band[i]=1; bandCount++; }
-  }
-  return { band, bandCount, fill, fillCount };
+  for(let i=0;i<dist.length;i++) if(dist[i] <= BAND_PX) band[i]=1;
+  return { band, bandCount:0, fill, fillCount };
 }
 
-// ====== 檢查（不足 60% 自動清除再試；≥60% 顯示剩餘次數）======
+// ====== 檢查（<60% 清除重寫；≥60% 顯示剩餘次數；達標→下一題並統計+1）======
 function checkTracing(){
   if(!currentTarget){ showInfo('尚未出題'); return; }
 
@@ -246,6 +253,9 @@ function checkTracing(){
     const need = getRequiredPasses();
 
     if (passCount >= need){
+      // 統計 +1（完成一題）
+      incStats();
+
       locked = false;
       disableNext(false);
       showInfo(`🎉 達成 ${need}/${need} 次，已完成！自動換下一題…`);
@@ -256,31 +266,9 @@ function checkTracing(){
       clearCanvas(); // 下一次嘗試
     }
   }else{
-    clearCanvas(); // 自動清除再試
-    showFail(`覆蓋不足 60% 或外漏過高，請再試一次`);
+    clearCanvas();
+    showFail('覆蓋不足 60% 或外漏過高，請再試一次');
   }
-}
-
-// ====== 即時覆蓋率（本需求關閉）======
-function updateLive(pct){
-  if (!SHOW_LIVE) return;
-  if (!liveBar || !liveText) return;
-  const clamped = Math.max(0, Math.min(1, pct));
-  liveBar.style.width = (clamped*100).toFixed(0) + '%';
-  liveBar.style.background = clamped >= PASS_COVERAGE ? '#10b981' : '#f59e0b';
-  liveText.textContent = (clamped*100).toFixed(0) + '%';
-}
-function computeLiveCoverage(){
-  if (!SHOW_LIVE) return;
-  if (!currentTarget || !currentBand){ updateLive(0); return; }
-  const user = extractStableRegion(CTX, INPUT_SIZE);
-  const mask = user.mask;
-  const {fill, fillCount} = currentBand;
-
-  let coverFill=0;
-  for (let i=0;i<mask.length;i++) if (mask[i] && fill[i]) coverFill++;
-  const pct = fillCount ? (coverFill / fillCount) : 0;
-  updateLive(pct);
 }
 
 // ====== UI 呈現/控制 ======
@@ -314,7 +302,7 @@ function disableNext(disabled){
 }
 
 // ====== 綁定/初始化 ======
-btnClear?.addEventListener('click', ()=>{ clearCanvas(); if (SHOW_LIVE) updateLive(0); });
+btnClear?.addEventListener('click', ()=>{ clearCanvas(); });
 btnNext?.addEventListener('click', ()=>{
   if (!locked) { nextWord(); return; }
   const need = getRequiredPasses();
