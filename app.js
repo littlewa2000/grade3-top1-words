@@ -1,4 +1,4 @@
-// app.js — 描紅合規檢查（覆蓋率=覆蓋字體本體；外漏率=band 外）+ 固定座標 + 即時覆蓋率
+// app.js — 描紅合規檢查（覆蓋率=覆蓋字體本體；外漏率=band 外）+ 固定座標 + 即時覆蓋率 + 次數可選(1~10)
 
 // ====== UI 元素 ======
 const ZHUYIN_EL   = document.getElementById('zhuyin');
@@ -10,6 +10,7 @@ const btnNext     = document.getElementById('btnNext');
 const btnClear    = document.getElementById('btnClear');
 const penColor    = document.getElementById('penColor');
 const lessonMaxSel= document.getElementById('lessonMax');
+const reqPassesSel= document.getElementById('reqPasses');
 
 const btnRecognize= document.getElementById('btnRecognize'); // 「檢查描紅」
 const recogList   = document.getElementById('recogList');
@@ -22,12 +23,11 @@ const liveText = document.getElementById('liveCoverageText');
 let drawing=false, last=null, currentTarget=null;
 let pathLen=0;                         // 書寫距離（防空寫）
 let attemptStart=0;                    // 單次書寫起始時間
-let passCount=0;                       // 已合格次數（目標 3）
+let passCount=0;                       // 已合格次數（每字會重置）
 let lastLiveTs=0;                      // 即時覆蓋率計算節流（ms）
 
 let currentBand=null;                  // 走廊快取：{ band, bandCount, fill, fillCount }
 
-const REQUIRED_PASSES   = 3;
 const TRACE_RATIO       = 0.72;
 const TRACE_ALPHA       = 0.15;
 const TRACE_FONT        = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
@@ -36,11 +36,16 @@ const INPUT_SIZE        = 128;         // 固定參考座標尺寸
 const BIN_THR           = 160;         // 低於此視為筆跡（排除 15% 灰描紅）
 const PEN_WIDTH_PX      = 20;
 const BAND_PX           = 8;           // band 外擴半徑（固定座標），留一點抖動空間
-const PASS_COVERAGE     = 0.60;        // ✅ 通過門檻改為 60%
+const PASS_COVERAGE     = 0.60;        // ✅ 通過門檻：60%
 const MAX_LEAKAGE       = 0.18;        // 外漏≤18%
 const MIN_PATH_LEN      = 180;         // 最短書寫距離
 const MIN_DURATION_MS   = 700;         // 最短書寫時間
 const MAX_EDGE_PIXELS   = 5200;        // 避免整片塗黑
+
+function getRequiredPasses(){
+  const v = parseInt(reqPassesSel?.value || '3', 10);
+  return Math.min(10, Math.max(1, isNaN(v)?3:v));
+}
 
 // ====== 載入 data.js（A 方案容錯）======
 function pickSourceArray() {
@@ -165,16 +170,15 @@ function makeTraceBand(char, size=INPUT_SIZE){
   g.font = `${Math.floor(size*0.9)}px ${TRACE_FONT}`;
   g.fillText(char, size/2, size/2);
 
-  // 字體本體（fillMask）：黑=1，白=0
+  // 字體本體（fillMask）
   const img=g.getImageData(0,0,size,size);
   const bin=binarize(img);
-  const fill = bin.mask; // 本體
+  const fill = bin.mask;
   let fillCount=0; for(let i=0;i<fill.length;i++) fillCount += fill[i];
 
-  // 做「外擴 band」：對 fill 做距離轉換，dist<=BAND_PX 視為 band
+  // 外擴 band：對 fill 做距離轉換
   const INF=1e9, dist=new Float32Array(size*size);
-  for(let i=0;i<dist.length;i++) dist[i]=fill[i]?0:INF; // 以「本體像素」為源點
-  // 前向掃描
+  for(let i=0;i<dist.length;i++) dist[i]=fill[i]?0:INF;
   for(let y=0;y<size;y++) for(let x=0;x<size;x++){
     const i=y*size+x;
     if(x>0) dist[i]=Math.min(dist[i], dist[i-1]+1);
@@ -182,7 +186,6 @@ function makeTraceBand(char, size=INPUT_SIZE){
     if(x>0&&y>0) dist[i]=Math.min(dist[i], dist[i-size-1]+2);
     if(x<size-1&&y>0) dist[i]=Math.min(dist[i], dist[i-size+1]+2);
   }
-  // 後向掃描
   for(let y=size-1;y>=0;y--) for(let x=size-1;x>=0;x--){
     const i=y*size+x;
     if(x<size-1) dist[i]=Math.min(dist[i], dist[i+1]+1);
@@ -190,7 +193,6 @@ function makeTraceBand(char, size=INPUT_SIZE){
     if(x<size-1&&y<size-1) dist[i]=Math.min(dist[i], dist[i+size+1]+2);
     if(x>0&&y<size-1) dist[i]=Math.min(dist[i], dist[i+size-1]+2);
   }
-
   const band=new Uint8Array(size*size);
   let bandCount=0;
   for(let i=0;i<dist.length;i++){
@@ -218,7 +220,7 @@ function checkTracing(){
 
   // 走廊+本體
   currentBand = currentBand || makeTraceBand(currentTarget.char, INPUT_SIZE);
-  const {band, bandCount, fill, fillCount} = currentBand;
+  const {band, fill, fillCount} = currentBand;
 
   // 覆蓋率：覆蓋字體本體的比例；外漏率：band 外的比例
   let coverFill=0, leak=0;
@@ -234,11 +236,13 @@ function checkTracing(){
   if (coverage >= PASS_COVERAGE && leakage <= MAX_LEAKAGE){
     passCount++;
     showPass(coverage, leakage, passCount);
-    if (passCount >= REQUIRED_PASSES){
-      showInfo(`🎉 完成 ${REQUIRED_PASSES}/${REQUIRED_PASSES} 次！按「下一題」換題。`);
+    const need = getRequiredPasses();
+    if (passCount >= need){
+      showInfo(`🎉 完成 ${need}/${need} 次！自動換下一題…`);
+      setTimeout(nextWord, 800); // 自動跳下一題
     } else {
       clearCanvas();
-      showInfo(`已完成 ${passCount}/${REQUIRED_PASSES}，請再沿描紅寫一次`);
+      showInfo(`已完成 ${passCount}/${need}，請再沿描紅寫一次`);
     }
   }else{
     const msg = `覆蓋率 ${Math.round(coverage*100)}%，外漏 ${Math.round(leakage*100)}%`;
@@ -270,8 +274,9 @@ function computeLiveCoverage(){
 function showProgress(){
   if(!recogList) return;
   recogList.innerHTML='';
+  const need = getRequiredPasses();
   const li=document.createElement('li');
-  li.textContent = `描紅完成次數：${passCount}/${REQUIRED_PASSES}`;
+  li.textContent = `描紅完成次數：${passCount}/${need}`;
   li.style.fontWeight='600';
   li.style.color='#0f172a';
   recogList.appendChild(li);
@@ -284,7 +289,7 @@ function showInfo(text){
 function showPass(coverage, leakage, count){
   showProgress();
   const li=document.createElement('li');
-  li.textContent = `✅ 合格！覆蓋 ${Math.round(coverage*100)}%，外漏 ${Math.round(leakage*100)}%（第 ${count}/${REQUIRED_PASSES} 次）`;
+  li.textContent = `✅ 合格！覆蓋 ${Math.round(coverage*100)}%，外漏 ${Math.round(leakage*100)}%（第 ${count}/${getRequiredPasses()} 次）`;
   li.style.color='#065f46'; li.style.background='#ecfdf5'; li.style.border='1px solid #10b981'; li.style.borderRadius='8px'; li.style.padding='6px 8px';
   recogList.appendChild(li);
 }
@@ -300,5 +305,12 @@ function showFail(text){
 btnClear?.addEventListener('click', ()=>{ clearCanvas(); updateLive(0); });
 btnNext?.addEventListener('click', nextWord);
 lessonMaxSel?.addEventListener('change', nextWord);
+reqPassesSel?.addEventListener('change', ()=>{
+  showProgress();
+  // 若已達成新門檻則自動換題
+  if (currentTarget && passCount >= getRequiredPasses()) {
+    setTimeout(nextWord, 300);
+  }
+});
 btnRecognize?.addEventListener('click', checkTracing);
 nextWord();
