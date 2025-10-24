@@ -16,9 +16,9 @@
 
     /* 分頁內容：預設只顯示 #practice；當 hash= #settings 時顯示設定、隱藏練習 */
     .tab-panel{display:none;padding:14px 2px;}
-    #practice{display:block;}               /* 預設顯示練習 */
-    :target.tab-panel{display:block;}       /* 指向的分頁顯示 */
-    :target ~ #practice {display:none;}     /* 有 target 時，把預設練習關掉 */
+    #practice{display:block;}
+    :target.tab-panel{display:block;}
+    :target ~ #practice {display:none;}
 
     .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;}
     select,button,input[type="color"]{height:38px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:14px}
@@ -46,7 +46,7 @@
       <a id="tabPracticeBtn" class="tab-link" href="#practice">練習</a>
     </div>
 
-    <!-- 設定分頁（預設隱藏；#settings 時顯示） -->
+    <!-- 設定分頁 -->
     <div id="settings" class="tab-panel">
       <div class="card section">
         <div class="row">
@@ -81,7 +81,7 @@
       </div>
     </div>
 
-    <!-- 練習分頁（預設顯示；有 #settings 時被隱藏） -->
+    <!-- 練習分頁 -->
     <div id="practice" class="tab-panel">
       <div class="card">
         <div class="row" style="justify-content:space-between">
@@ -91,7 +91,8 @@
           </div>
           <div class="row">
             <button id="btnClear" type="button" class="secondary" title="清除畫面">清除</button>
-            <button id="btnRecognize" type="button" title="檢查描紅">檢查描紅</button>
+            <!-- 這裡改成「檢查」 -->
+            <button id="btnRecognize" type="button" title="檢查">檢查</button>
             <button id="btnNext" type="button" class="secondary" title="下一題">下一題</button>
           </div>
         </div>
@@ -107,8 +108,8 @@
         <div class="card">
           <h3 style="margin: 4px 0 8px;">進度 / 訊息</h3>
 
-          <!-- 即時覆蓋率 -->
-          <div style="margin:4px 0 10px;">
+          <!-- 覆蓋率區塊：改為隱藏 -->
+          <div id="liveCoverageSection" style="display:none;">
             <div style="font-weight:600;margin-bottom:6px;">即時覆蓋率</div>
             <div style="height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;">
               <div id="liveCoverageBar" style="height:100%;width:0%;background:#10b981;"></div>
