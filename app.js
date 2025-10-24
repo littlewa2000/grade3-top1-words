@@ -1,6 +1,6 @@
-// app.js — FAST + Reject（加強版）：粗篩(投影)→精算(邊緣/方向Chamfer+Jaccard+小平移)＋拒絕門檻
-// 變更：加大平移搜尋(±3px)、加入純縮放變體、分數權重偏向距離、描紅時放寬距離正規化
-// 固定：筆粗=20px、描紅=15%、候選=同注音(不足補干擾)、亂畫會被拒絕
+// app.js — FAST + Reject（描紅快路徑強化版）
+// 重點：描紅模板快路徑；粗篩門檻微降；分數權重偏距離
+// 既有：筆粗=20px、描紅=15%、同注音候選(不足補干擾)、亂畫會被拒絕
 
 // ===== 介面元素 =====
 const ZHUYIN_EL  = document.getElementById('zhuyin');
@@ -18,23 +18,25 @@ const recogList    = document.getElementById('recogList');
 
 // ===== 參數（速度＆拒絕設定）=====
 let drawing=false, last=null, currentTarget=null;
-let pathLen=0; // 累計使用者書寫距離（像素）
+let pathLen=0; // 累計書寫距離
 
-const TRACE_RATIO=0.72, TRACE_ALPHA=0.15; // 描紅固定 15%
+const TRACE_RATIO=0.72, TRACE_ALPHA=0.15;
+const TRACE_FONT = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`; // 和描紅一致
+const TRACE_PASS = 0.86; // 描紅快路徑的通過線
 
-const INPUT_SIZE = 128;         // 解析度（可改 112/96 更快）
-const BIN_THR    = 160;         // 排除 15% 灰描紅
-const TOP_PREFILTER = 16;       // 粗篩保留數
+const INPUT_SIZE = 128;
+const BIN_THR    = 160;
+const TOP_PREFILTER = 16;
 
-// —— 拒絕條件（越大越嚴）——
-const REJECT_THRESHOLD = 0.79;   // 分數低於此 → 拒絕
-const PRE_MIN_SIM      = 0.48;   // 投影粗篩最佳分數低於此 → 拒絕
-const MARGIN_MIN       = 0.07;   // Top1 與 Top2 差距不足 → 拒絕
-const MIN_EDGE_PIXELS  = 80;     // 筆畫太少 → 拒絕
-const MAX_EDGE_PIXELS  = 5200;   // 筆畫太多（塗抹）→ 拒絕
-const MIN_PATH_LEN     = 180;    // 書寫距離太短 → 拒絕
+// —— 拒絕條件 ——（維持嚴格）
+const REJECT_THRESHOLD = 0.79;
+const PRE_MIN_SIM      = 0.43;   // ← 微降，避免描紅被粗篩誤殺
+const MARGIN_MIN       = 0.07;
+const MIN_EDGE_PIXELS  = 80;
+const MAX_EDGE_PIXELS  = 5200;
+const MIN_PATH_LEN     = 180;
 
-// 小平移搜尋：由 9 點擴大到 21 點（含 ±3px 與斜向）
+// 平移搜尋（擴大到 ±3px）
 const OFFSETS = [
   {dx:0,dy:0},
   {dx:1,dy:0},{dx:-1,dy:0},{dx:0,dy:1},{dx:0,dy:-1},
@@ -45,10 +47,10 @@ const OFFSETS = [
 ];
 
 const TEMPLATE_FONTS = [
-  '"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif',
-  '"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif'
+  TRACE_FONT, // 把描紅字型放在首位，也能當一般模板使用
+  `"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif`
 ];
-// 模板擾動：加入純縮放變體 + 輕微旋轉
+// 模板擾動（含純縮放）
 const VARIANTS = [
   { rot: 0,  scale: 0.96 },
   { rot: 0,  scale: 1.00 },
@@ -104,19 +106,18 @@ function clearCanvas(){
   CTX.setTransform(1,0,0,1,0,0); CTX.clearRect(0,0,CANVAS.width,CANVAS.height);
   CTX.fillStyle='#fff'; CTX.fillRect(0,0,CANVAS.width,CANVAS.height); drawWritingBoxOutline();
   if(currentTarget) drawTrace(currentTarget.char);
-  pathLen = 0; // 重置書寫距離
+  pathLen = 0;
 }
 function drawWritingBoxOutline(){ const b=getTraceBox(); CTX.save(); CTX.strokeStyle='#cbd5e1'; CTX.lineWidth=2; CTX.setLineDash([8,6]); CTX.strokeRect(b.x,b.y,b.w,b.h); CTX.restore(); }
 function drawTrace(ch){
   const b=getTraceBox(); CTX.save(); CTX.globalAlpha=TRACE_ALPHA; CTX.fillStyle='#000'; CTX.textAlign='center'; CTX.textBaseline='middle';
-  CTX.font=`${Math.floor(b.w*0.9)}px "TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
+  CTX.font=`${Math.floor(b.w*0.9)}px ${TRACE_FONT}`;
   CTX.fillText(ch,b.x+b.w/2,b.y+b.h/2); CTX.restore();
 }
 function setLineStyle(){ CTX.lineCap='round'; CTX.lineJoin='round'; CTX.strokeStyle=penColor?.value||'#000'; CTX.lineWidth=20; }
 function getPos(e){ const r=CANVAS.getBoundingClientRect(), sx=CANVAS.width/r.width, sy=CANVAS.height/r.height; const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x:x*sx,y:y*sy}; }
 CANVAS.addEventListener('pointerdown',e=>{drawing=true; last=getPos(e); setLineStyle();});
 CANVAS.addEventListener('pointermove',e=>{ if(!drawing) return; const p=getPos(e), b=getTraceBox();
-  // 累積書寫距離
   const dx=p.x-last.x, dy=p.y-last.y; pathLen += Math.hypot(dx,dy);
   CTX.save(); CTX.beginPath(); CTX.rect(b.x,b.y,b.w,b.h); CTX.clip();
   CTX.beginPath(); CTX.moveTo(last.x,last.y); CTX.lineTo(p.x,p.y); CTX.stroke(); CTX.restore();
@@ -184,7 +185,7 @@ function projXY(edge,w,h){
   for(let x=0;x<w;x++){ let s=0; for(let y=0;y<h;y++) s+=edge[y*w+x]; H[x]=s; }
   return {H,V};
 }
-function projDist(H1,V1,H2,V2){ // L1 距離 → 相似度
+function projDist(H1,V1,H2,V2){
   let d=0, n=H1.length+V1.length;
   for(let i=0;i<H1.length;i++) d+=Math.abs(H1[i]-H2[i]);
   for(let i=0;i<V1.length;i++) d+=Math.abs(V1[i]-V2[i]);
@@ -215,7 +216,7 @@ function ensureGlyph(char,f,v){
   return GLYPH_CACHE.get(key);
 }
 
-// ===== 比對（含小平移；描紅時放寬 MAX_D）=====
+// ===== 計分（含小平移；描紅時放寬 MAX_D）=====
 function chamferDirectionalShifted(userEdge,userDir,tmplDT,tmplEdge,tmplDir,userDT,w,h,dx,dy){
   let su=0,cu=0, st=0,ct=0;
   for(let y=0;y<h;y++) for(let x=0;x<w;x++){
@@ -228,7 +229,7 @@ function chamferDirectionalShifted(userEdge,userDir,tmplDT,tmplEdge,tmplDir,user
   }
   if(!cu && !ct) return 0;
   const avg=((cu?su/cu:0)+(ct?st/ct:0))/2;
-  const MAX_D = (TRACE_ALPHA > 0 ? 34 : 40); // 描紅開啟時略放寬，提升貼齊度評分
+  const MAX_D = (TRACE_ALPHA > 0 ? 34 : 40); // 描紅時更寬鬆
   const sim=1-(avg/MAX_D);
   return Math.max(0,Math.min(1,Number.isFinite(sim)?sim:0));
 }
@@ -240,7 +241,6 @@ function candidateChars(){
   if(zy){
     for(const it of F){ if((it.zhuyin||"").trim()===zy && !seen.has(it.char)){ seen.add(it.char); byZ.push(it.char); } }
   }
-  // 若同注音太少，補上其它注音的隨機干擾字，避免只跟單一字比
   if(byZ.length < 3){
     const all = Array.from(new Set(F.map(it=>it.char)));
     const others = all.filter(c=>!seen.has(c));
@@ -255,26 +255,59 @@ function candidateChars(){
   return byZ;
 }
 
-// ===== 主辨識：先粗篩再精算，並套用「拒絕」判定 =====
+// ===== 「描紅模板快路徑」：用與描紅一致的模板先評分 =====
+function traceTemplateScore(char, uedge, udir, udt){
+  // 用 TRACE_FONT + 無旋轉 的模板做多平移比對
+  const edge = renderCharVariant(char, TRACE_FONT, INPUT_SIZE, 0, 1.0);
+  const tmpMask = new Uint8Array(edge);
+  const {dir} = sobelDir(tmpMask, INPUT_SIZE, INPUT_SIZE);
+  const tdt = distanceTransform(tmpMask, INPUT_SIZE, INPUT_SIZE);
+
+  let best=0;
+  for (const {dx,dy} of OFFSETS){
+    const sC = chamferDirectionalShifted(uedge, udir, tdt, edge, dir, udt, INPUT_SIZE, INPUT_SIZE, dx, dy);
+    // Jaccard
+    let inter=0, uni=0;
+    for(let y=0;y<INPUT_SIZE;y++){
+      const row=y*INPUT_SIZE, yy=y+dy; if(yy<0||yy>=INPUT_SIZE) continue;
+      const row2=yy*INPUT_SIZE;
+      for(let x=0;x<INPUT_SIZE;x++){
+        const xx=x+dx; if(xx<0||xx>=INPUT_SIZE) continue;
+        const i=row+x, j=row2+xx;
+        inter += (uedge[i] & edge[j]); uni += (uedge[i] | edge[j]);
+      }
+    }
+    const sJ = uni? inter/uni : 0;
+    const score = 0.93*sC + 0.07*sJ;
+    if (score > best) best = score;
+  }
+  return best;
+}
+
+// ===== 主辨識 =====
 function recognizeNow(){
   const norm=extractAndNormalize(CTX, INPUT_SIZE); if(norm.empty){ renderUnknown('沒有筆畫'); return; }
-
-  // 路徑長度判定：寫得太少就不收
   if (pathLen < MIN_PATH_LEN) { renderUnknown('筆畫太少，請重寫'); return; }
 
-  // 使用者特徵
   const sd = sobelDir(norm.mask, INPUT_SIZE, INPUT_SIZE);
   const udir = sd.dir, uedge = sd.edge, edgeCount = sd.edgeCount;
-
   if (edgeCount < MIN_EDGE_PIXELS) { renderUnknown('筆畫不足'); return; }
   if (edgeCount > MAX_EDGE_PIXELS) { renderUnknown('塗抹過多'); return; }
 
   const udt  = distanceTransform(norm.mask, INPUT_SIZE, INPUT_SIZE);
   const {H:UH, V:UV} = projXY(uedge, INPUT_SIZE, INPUT_SIZE);
-
   const pool=candidateChars(); if(!pool.length){ renderUnknown('沒有候選字'); return; }
 
-  // 1) 粗篩（投影相似度）
+  // ---- 0) 描紅快路徑：若與當前出題字非常接近，直接通過 ----
+  if (currentTarget?.char){
+    const fast = traceTemplateScore(currentTarget.char, uedge, udir, udt);
+    if (fast >= TRACE_PASS){
+      renderRecog([{ch: currentTarget.char, score: fast}]); // 直接顯示通過
+      return;
+    }
+  }
+
+  // ---- 1) 粗篩（投影相似度）----
   const pre = [];
   let preBest = -1;
   for(const ch of pool){
@@ -290,11 +323,10 @@ function recognizeNow(){
     pre.push({ch, preSim: best});
   }
   if (preBest < PRE_MIN_SIM) { renderUnknown('形狀差異太大'); return; }
-
   pre.sort((a,b)=>b.preSim-a.preSim);
   const shortlist = pre.slice(0, Math.min(TOP_PREFILTER, pre.length)).map(x=>x.ch);
 
-  // 2) 精算（Chamfer+Jaccard + 小平移）
+  // ---- 2) 精算（Chamfer+Jaccard + 小平移）----
   let bestScore = 0, secondScore = 0;
   const results=[];
   for(const ch of shortlist){
@@ -305,8 +337,6 @@ function recognizeNow(){
         let localBest=0;
         for(const {dx,dy} of OFFSETS){
           const simC = chamferDirectionalShifted(uedge, udir, tdt, tedge, tdir, udt, INPUT_SIZE, INPUT_SIZE, dx, dy);
-
-          // 位移 Jaccard
           let inter=0, uni=0;
           for(let y=0;y<INPUT_SIZE;y++){
             const row=y*INPUT_SIZE, yy=y+dy; if(yy<0||yy>=INPUT_SIZE) continue;
@@ -318,7 +348,7 @@ function recognizeNow(){
             }
           }
           const simJ = uni? inter/uni : 0;
-          const score = 0.93*simC + 0.07*simJ; // 更偏向距離，降低筆粗差異影響
+          const score = 0.93*simC + 0.07*simJ; // 更偏距離
           if(score>localBest) localBest=score;
         }
         if(localBest>best) best=localBest;
@@ -329,7 +359,7 @@ function recognizeNow(){
     results.push({ch, score:best});
   }
 
-  // 3) 拒絕判定
+  // ---- 3) 拒絕判定 ----
   if (bestScore < REJECT_THRESHOLD) { renderUnknown(`信心 ${Math.round(bestScore*100)}%`); return; }
   if ((bestScore - secondScore) < MARGIN_MIN) { renderUnknown('不確定，請重寫'); return; }
 
@@ -347,13 +377,12 @@ function renderUnknown(msg){
   li.style.fontStyle='italic';
   recogList.appendChild(li);
 }
-
 function renderRecog(items){
   if(!recogList) return; recogList.innerHTML='';
   if(!items.length){ renderUnknown(''); return; }
   for(const it of items){
     const li=document.createElement('li'); const left=document.createElement('span'); left.textContent=it.ch; left.style.fontSize='20px';
-    left.style.fontFamily='"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif';
+    left.style.fontFamily=TRACE_FONT;
     const right=document.createElement('span'); right.className='score'; right.textContent=`${Math.round(Math.max(0,Math.min(1,it.score||0))*100)}%`;
     if(currentTarget && it.ch===currentTarget.char){ li.style.borderColor='#10b981'; li.style.background='#ecfdf5'; }
     li.appendChild(left); li.appendChild(right); recogList.appendChild(li);
