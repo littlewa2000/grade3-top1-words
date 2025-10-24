@@ -2,89 +2,178 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>國字手寫練習</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>三上國字描紅練習</title>
   <style>
-    :root { --bg:#f7f7fb; --card:#fff; --text:#0f172a; --muted:#64748b; --brand:#2563eb; --border:#e5e7eb; }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;color:var(--text);background:var(--bg)}
-    .wrap{max-width:960px;margin:24px auto;padding:16px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.05);padding:16px}
-    h1{font-size:20px;margin:0 0 8px}
-    .row{display:grid;grid-template-columns:1fr;gap:12px}
-    @media (min-width:840px){.row{grid-template-columns:1.1fr 1.3fr}}
-    .pill{display:inline-flex;align-items:center;gap:8px;background:#eef2ff;color:#1e3a8a;border:1px solid #c7d2fe;padding:8px 12px;border-radius:999px;font-weight:600}
-    .zhuyin{font-size:48px;line-height:1;letter-spacing:.05em}
-    .hint{color:var(--muted);font-size:13px}
-    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
-    .controls label{display:inline-flex;align-items:center;gap:6px}
-    button,input[type="color"],select{
-      appearance:none;border:1px solid var(--border);background:#fff;color:var(--text);
-      border-radius:10px;padding:10px 14px;font-size:14px
+    :root {
+      --card: #ffffff;
+      --border: #e2e8f0;
+      --muted: #64748b;
+      --accent: #0ea5e9;
     }
-    button.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
-    canvas{
-      width:100%;height:60vh;max-height:560px;background:#fff;border:1px solid var(--border);border-radius:16px;
-      touch-action:none;background-image:radial-gradient(#e5e7eb 1px,transparent 1px);background-size:16px 16px;
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
+                   "PingFang TC", "Microsoft JhengHei", Roboto, Arial, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
     }
-    .recog{margin-top:10px;border-top:1px dashed var(--border);padding-top:10px}
-    .recog ul{margin:6px 0 0 0;padding:0;list-style:none}
-    .recog li{padding:6px 8px;border:1px solid var(--border);border-radius:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-    .recog .score{font-variant-numeric:tabular-nums}
+    .container {
+      max-width: 980px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .zhuyin {
+      font-size: 32px;
+      letter-spacing: 4px;
+    }
+    .lesson {
+      font-size: 16px;
+      color: var(--muted);
+    }
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    select, button, input[type="color"] {
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 14px;
+    }
+    button {
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+    }
+    button.secondary {
+      background: #0f172a;
+      color: #fff;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .canvasWrap {
+      position: relative;
+      border: 1px dashed #cbd5e1;
+      border-radius: 12px;
+      background: #fff;
+      min-height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    canvas {
+      width: 100%;
+      height: auto;
+      max-height: 70vh;
+      touch-action: none; /* 防止手機滑動螢幕 */
+      background: #fff;
+    }
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0 0;
+      display: grid;
+      gap: 8px;
+    }
+    .list li {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>國字手寫練習</h1>
+  <div class="container">
+    <!-- 顯示注音與課次 -->
+    <div class="topbar">
+      <div class="title">
+        <span class="zhuyin" id="zhuyin">—</span>
+        <span class="lesson" id="lessonInfo"></span>
+      </div>
+      <div class="controls">
+        <label>範圍：
+          <select id="lessonMax" title="選擇測驗到第幾課">
+            <option value="1">第 1 課</option>
+            <option value="2">第 2 課</option>
+            <option value="3">第 3 課</option>
+            <option value="4">第 4 課</option>
+            <option value="5">第 5 課</option>
+            <option value="6">第 6 課</option>
+            <option value="7">第 7 課</option>
+            <option value="8">第 8 課</option>
+            <option value="9">第 9 課</option>
+            <option value="10">第 10 課</option>
+            <option value="11">第 11 課</option>
+            <option value="12" selected>第 12 課</option>
+          </select>
+        </label>
+        <input id="penColor" type="color" value="#000000" title="筆色" />
+        <button id="btnClear" class="secondary" title="清除畫面">清除</button>
+        <button id="btnRecognize" title="檢查描紅">檢查描紅</button>
+        <button id="btnNext" class="secondary" title="下一題">下一題</button>
+      </div>
+    </div>
 
-      <div class="row">
-        <!-- 左側：題目、控制、辨識 -->
-        <div>
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
-            <span class="pill">
-              注音題目：<span id="zhuyin" class="zhuyin">—</span>
-              <span id="lessonInfo" class="hint"></span>
-            </span>
-            <span class="hint">（右側畫布書寫，描紅固定 15%）</span>
-          </div>
-
-          <div class="controls">
-            <button id="btnNext" class="primary">換一題</button>
-            <button id="btnClear">清除畫布</button>
-
-            <label>筆色：
-              <input id="penColor" type="color" value="#000000" />
-            </label>
-
-            <label>測驗範圍：
-              第 1 課 ～
-              <select id="lessonMax" aria-label="測驗範圍（最後一課）">
-                <option>1</option><option>2</option><option>3</option><option>4</option>
-                <option>5</option><option>6</option><option>7</option><option>8</option>
-                <option>9</option><option>10</option><option>11</option>
-                <option selected>12</option>
-              </select> 課
-            </label>
-
-            <button id="btnRecognize">辨識</button>
-          </div>
-
-          <div class="recog">
-            <div class="hint">辨識結果（Top 5）：</div>
-            <ul id="recogList"></ul>
-          </div>
+    <div class="grid">
+      <!-- 畫布 -->
+      <div class="card">
+        <div class="canvasWrap">
+          <!-- 建議寬高為 600x600；會以 CSS 等比縮放 -->
+          <canvas id="pad" width="600" height="600"></canvas>
         </div>
+      </div>
 
-        <!-- 右側：畫布 -->
-        <div>
-          <canvas id="pad" width="900" height="900" aria-label="手寫練習畫布"></canvas>
-        </div>
+      <!-- 右側資訊/進度 -->
+      <div class="card">
+        <h3 style="margin: 4px 0 8px;">進度 / 訊息</h3>
+        <ul id="recogList" class="list">
+          <!-- 程式會動態填入（完成次數、通過/未通過訊息） -->
+        </ul>
       </div>
     </div>
   </div>
 
+  <!-- 先載入 data.js（A 方案：全域 data 陣列） -->
   <script src="data.js"></script>
+  <!-- 再載入 app.js（描紅合規檢查版） -->
   <script src="app.js"></script>
 </body>
 </html>
