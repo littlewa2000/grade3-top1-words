@@ -1,4 +1,4 @@
-// app.js — 描紅合規檢查（覆蓋率=覆蓋字體本體的比例；外漏率=band 外的比例）+ 固定座標 + 即時覆蓋率
+// app.js — 描紅合規檢查（覆蓋率=覆蓋字體本體；外漏率=band 外）+ 固定座標 + 即時覆蓋率
 
 // ====== UI 元素 ======
 const ZHUYIN_EL   = document.getElementById('zhuyin');
@@ -36,7 +36,7 @@ const INPUT_SIZE        = 128;         // 固定參考座標尺寸
 const BIN_THR           = 160;         // 低於此視為筆跡（排除 15% 灰描紅）
 const PEN_WIDTH_PX      = 20;
 const BAND_PX           = 8;           // band 外擴半徑（固定座標），留一點抖動空間
-const PASS_COVERAGE     = 0.78;        // 仍需寫到 78% 以上才算通過
+const PASS_COVERAGE     = 0.60;        // ✅ 通過門檻改為 60%
 const MAX_LEAKAGE       = 0.18;        // 外漏≤18%
 const MIN_PATH_LEN      = 180;         // 最短書寫距離
 const MIN_DURATION_MS   = 700;         // 最短書寫時間
@@ -220,7 +220,7 @@ function checkTracing(){
   currentBand = currentBand || makeTraceBand(currentTarget.char, INPUT_SIZE);
   const {band, bandCount, fill, fillCount} = currentBand;
 
-  // 覆蓋率：覆蓋字體本體的比例
+  // 覆蓋率：覆蓋字體本體的比例；外漏率：band 外的比例
   let coverFill=0, leak=0;
   for(let i=0;i<userMask.length;i++){
     if (userMask[i]) {
