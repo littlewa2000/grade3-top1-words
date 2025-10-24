@@ -14,11 +14,9 @@
     .tab-link{display:inline-block;text-decoration:none;padding:10px 14px;border-bottom:2px solid transparent;font-size:15px;color:#334155;}
     .tab-link.active{border-bottom-color:var(--accent);color:#0f172a;font-weight:600;}
 
-    /* 分頁內容：預設只顯示 #practice；當 hash= #settings 時顯示設定、隱藏練習 */
+    /* 分頁：靠 .active 控制顯示；預設讓 #settings active（若 JS 沒跑也看得到設定） */
     .tab-panel{display:none;padding:14px 2px;}
-    #practice{display:block;}
-    :target.tab-panel{display:block;}
-    :target ~ #practice {display:none;}
+    .tab-panel.active{display:block;}
 
     .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;}
     select,button,input[type="color"]{height:38px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:14px}
@@ -40,14 +38,14 @@
 </head>
 <body>
   <div class="container">
-    <!-- Tabs（hash-based） -->
+    <!-- Tabs -->
     <div class="tabs">
-      <a id="tabSettingsBtn" class="tab-link" href="#settings">設定</a>
+      <a id="tabSettingsBtn" class="tab-link active" href="#settings">設定</a>
       <a id="tabPracticeBtn" class="tab-link" href="#practice">練習</a>
     </div>
 
-    <!-- 設定分頁 -->
-    <div id="settings" class="tab-panel">
+    <!-- 設定分頁（預設 active） -->
+    <div id="settings" class="tab-panel active">
       <div class="card section">
         <div class="row">
           <label>範圍：
@@ -78,6 +76,13 @@
             <input id="penColor" type="color" value="#000000" title="筆色" />
           </label>
         </div>
+
+        <!-- 新增：統計資料 -->
+        <div class="row" style="margin-top:8px;">
+          <div style="font-weight:600;">統計資料：</div>
+          <div>累計完成題數：<span id="statsTotal">0</span></div>
+          <button id="btnResetStats" type="button" class="secondary" title="清除統計">清除統計</button>
+        </div>
       </div>
     </div>
 
@@ -91,7 +96,6 @@
           </div>
           <div class="row">
             <button id="btnClear" type="button" class="secondary" title="清除畫面">清除</button>
-            <!-- 這裡改成「檢查」 -->
             <button id="btnRecognize" type="button" title="檢查">檢查</button>
             <button id="btnNext" type="button" class="secondary" title="下一題">下一題</button>
           </div>
@@ -107,27 +111,14 @@
 
         <div class="card">
           <h3 style="margin: 4px 0 8px;">進度 / 訊息</h3>
-
-          <!-- 覆蓋率區塊：改為隱藏 -->
-          <div id="liveCoverageSection" style="display:none;">
-            <div style="font-weight:600;margin-bottom:6px;">即時覆蓋率</div>
-            <div style="height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;">
-              <div id="liveCoverageBar" style="height:100%;width:0%;background:#10b981;"></div>
-            </div>
-            <div style="font-size:12px;color:#475569;margin-top:6px;">
-              <span id="liveCoverageText">0%</span>
-            </div>
-          </div>
-
+          <!-- 覆蓋率區塊已隱藏於 app.js（不顯示） -->
           <ul id="recogList" class="list"></ul>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 先載入 data.js -->
   <script src="data.js"></script>
-  <!-- 再載入 app.js -->
   <script src="app.js"></script>
 </body>
 </html>
