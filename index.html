@@ -9,12 +9,17 @@
     *{box-sizing:border-box}
     body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",Roboto,Arial,sans-serif;background:#f8fafc;color:#0f172a;}
     .container{max-width:980px;margin:24px auto;padding:0 16px;}
+
     .tabs{display:flex;border-bottom:1px solid var(--border);gap:8px;}
-    .tab-btn{appearance:none;border:none;background:transparent;padding:10px 14px;border-bottom:2px solid transparent;cursor:pointer;font-size:15px;color:#334155;}
-    .tab-btn.active{border-bottom-color:var(--accent);color:#0f172a;font-weight:600;}
-    /* 關鍵：沒有 active 的分頁一律隱藏（加上 !important 防止其他樣式影響） */
-    .tab-panel{display:none !important;padding:14px 2px;}
-    .tab-panel.active{display:block !important;}
+    .tab-link{display:inline-block;text-decoration:none;padding:10px 14px;border-bottom:2px solid transparent;font-size:15px;color:#334155;}
+    .tab-link.active{border-bottom-color:var(--accent);color:#0f172a;font-weight:600;}
+
+    /* 分頁內容：預設只顯示 #practice；當 hash= #settings 時顯示設定、隱藏練習 */
+    .tab-panel{display:none;padding:14px 2px;}
+    #practice{display:block;}               /* 預設顯示練習 */
+    :target.tab-panel{display:block;}       /* 指向的分頁顯示 */
+    :target ~ #practice {display:none;}     /* 有 target 時，把預設練習關掉 */
+
     .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;}
     select,button,input[type="color"]{height:38px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:14px}
     button{cursor:pointer;background:var(--accent);color:#fff;border:none}
@@ -35,15 +40,14 @@
 </head>
 <body>
   <div class="container">
-    <!-- Tabs -->
+    <!-- Tabs（hash-based） -->
     <div class="tabs">
-      <!-- 加上 type="button" -->
-      <button id="tabSettingsBtn" type="button" class="tab-btn">設定</button>
-      <button id="tabPracticeBtn" type="button" class="tab-btn active">練習</button>
+      <a id="tabSettingsBtn" class="tab-link" href="#settings">設定</a>
+      <a id="tabPracticeBtn" class="tab-link" href="#practice">練習</a>
     </div>
 
-    <!-- 設定分頁（預設不 active） -->
-    <div id="tabSettings" class="tab-panel">
+    <!-- 設定分頁（預設隱藏；#settings 時顯示） -->
+    <div id="settings" class="tab-panel">
       <div class="card section">
         <div class="row">
           <label>範圍：
@@ -77,8 +81,8 @@
       </div>
     </div>
 
-    <!-- 練習分頁（預設 active） -->
-    <div id="tabPractice" class="tab-panel active">
+    <!-- 練習分頁（預設顯示；有 #settings 時被隱藏） -->
+    <div id="practice" class="tab-panel">
       <div class="card">
         <div class="row" style="justify-content:space-between">
           <div class="title">
