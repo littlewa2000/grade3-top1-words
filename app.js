@@ -1,4 +1,4 @@
-// app.js — 描紅合規檢查版（固定座標映射，覆蓋率單調上升）+ 即時覆蓋率（50ms 節流）
+// app.js — 描紅合規檢查（覆蓋率=覆蓋字體本體的比例；外漏率=band 外的比例）+ 固定座標 + 即時覆蓋率
 
 // ====== UI 元素 ======
 const ZHUYIN_EL   = document.getElementById('zhuyin');
@@ -23,23 +23,23 @@ let drawing=false, last=null, currentTarget=null;
 let pathLen=0;                         // 書寫距離（防空寫）
 let attemptStart=0;                    // 單次書寫起始時間
 let passCount=0;                       // 已合格次數（目標 3）
-
-let currentBand=null;                  // {band, bandCount}：走廊快取（固定 128×128）
 let lastLiveTs=0;                      // 即時覆蓋率計算節流（ms）
 
-const REQUIRED_PASSES   = 3;           // 需要完成的次數
-const TRACE_RATIO       = 0.72;        // 書寫框尺寸（相對畫布）
-const TRACE_ALPHA       = 0.15;        // 描紅透明度
+let currentBand=null;                  // 走廊快取：{ band, bandCount, fill, fillCount }
+
+const REQUIRED_PASSES   = 3;
+const TRACE_RATIO       = 0.72;
+const TRACE_ALPHA       = 0.15;
 const TRACE_FONT        = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
 
 const INPUT_SIZE        = 128;         // 固定參考座標尺寸
-const BIN_THR           = 160;         // 低於此視為筆跡（排除描紅）
-const PEN_WIDTH_PX      = 20;          // 筆粗（畫布座標）
-const BAND_PX           = 10;          // 走廊半寬（在 INPUT_SIZE 座標）
-const PASS_COVERAGE     = 0.78;        // 覆蓋率門檻（≥ 78% 視為合格）
-const MAX_LEAKAGE       = 0.18;        // 外漏率上限（≤ 18%）
-const MIN_PATH_LEN      = 180;         // 最短書寫距離（像素）
-const MIN_DURATION_MS   = 700;         // 最短書寫時間（毫秒）
+const BIN_THR           = 160;         // 低於此視為筆跡（排除 15% 灰描紅）
+const PEN_WIDTH_PX      = 20;
+const BAND_PX           = 8;           // band 外擴半徑（固定座標），留一點抖動空間
+const PASS_COVERAGE     = 0.78;        // 仍需寫到 78% 以上才算通過
+const MAX_LEAKAGE       = 0.18;        // 外漏≤18%
+const MIN_PATH_LEN      = 180;         // 最短書寫距離
+const MIN_DURATION_MS   = 700;         // 最短書寫時間
 const MAX_EDGE_PIXELS   = 5200;        // 避免整片塗黑
 
 // ====== 載入 data.js（A 方案容錯）======
@@ -82,8 +82,7 @@ function nextWord(){
   LESSON_EL.textContent=item.lesson?`（第${item.lesson}課）`:'';
   passCount = 0;
   clearCanvas();
-  // 建立走廊快取與即時覆蓋率歸零
-  currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
+  currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE); // 重建 band+fill
   updateLive(0);
   showProgress();
 }
@@ -113,13 +112,11 @@ function drawTrace(ch){
 function setLineStyle(){ CTX.lineCap='round'; CTX.lineJoin='round'; CTX.strokeStyle=penColor?.value||'#000'; CTX.lineWidth=PEN_WIDTH_PX; }
 function getPos(e){ const r=CANVAS.getBoundingClientRect(), sx=CANVAS.width/r.width, sy=CANVAS.height/r.height; const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x:x*sx,y:y*sy}; }
 
-// pointerdown：保險重建一次走廊（避免某些情況沒生成）
 CANVAS.addEventListener('pointerdown',e=>{
   drawing=true; last=getPos(e); setLineStyle(); if(!attemptStart) attemptStart=performance.now();
   if (!currentBand && currentTarget) currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
 });
 
-// pointermove：畫線 + 每 50ms 更新一次即時覆蓋率（固定座標計算）
 CANVAS.addEventListener('pointermove',e=>{
   if(!drawing) return; const p=getPos(e), b=getTraceBox();
   const dx=p.x-last.x, dy=p.y-last.y; pathLen += Math.hypot(dx,dy);
@@ -137,18 +134,15 @@ window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 
-// ====== 影像工具 ======
+// ====== 影像工具：固定座標抽取 ======
 function binarize(imgData, thr=BIN_THR){
   const {data,width,height}=imgData; const n=width*height; const mask=new Uint8Array(n);
   for(let i=0, p=0;i<data.length;i+=4, p++){ const v=(data[i]+data[i+1]+data[i+2])/3; mask[p]= (v<thr)?1:0; }
   return {mask,width,height};
 }
-
-// 「固定座標」抽取：把整個 trace box 直接映射到 128×128，不做 bbox 裁切
 function extractStableRegion(ctx, size=INPUT_SIZE){
   const b=getTraceBox();
-  const img = ctx.getImageData(b.x, b.y, b.w, b.h); // 取整個描紅框
-  // 將描紅框縮放到 size×size
+  const img = ctx.getImageData(b.x, b.y, b.w, b.h); // 整個描紅框
   const tmp=document.createElement('canvas'); tmp.width=b.w; tmp.height=b.h;
   const tg=tmp.getContext('2d'); tg.putImageData(img,0,0);
 
@@ -162,7 +156,7 @@ function extractStableRegion(ctx, size=INPUT_SIZE){
   return {mask:bin.mask, empty:false};
 }
 
-// ====== 走廊（由描紅字生成；同樣固定座標）=====
+// ====== 走廊/本體：由描紅字生成（固定座標）=====
 function makeTraceBand(char, size=INPUT_SIZE){
   const c=document.createElement('canvas'); c.width=size; c.height=size;
   const g=c.getContext('2d');
@@ -171,14 +165,16 @@ function makeTraceBand(char, size=INPUT_SIZE){
   g.font = `${Math.floor(size*0.9)}px ${TRACE_FONT}`;
   g.fillText(char, size/2, size/2);
 
-  // 二值＆邊緣
+  // 字體本體（fillMask）：黑=1，白=0
   const img=g.getImageData(0,0,size,size);
   const bin=binarize(img);
-  const {edge} = edgeFromMask(bin.mask,size,size);
+  const fill = bin.mask; // 本體
+  let fillCount=0; for(let i=0;i<fill.length;i++) fillCount += fill[i];
 
-  // 距離轉換（Chamfer 簡化）
+  // 做「外擴 band」：對 fill 做距離轉換，dist<=BAND_PX 視為 band
   const INF=1e9, dist=new Float32Array(size*size);
-  for(let i=0;i<dist.length;i++) dist[i]=edge[i]?0:INF;
+  for(let i=0;i<dist.length;i++) dist[i]=fill[i]?0:INF; // 以「本體像素」為源點
+  // 前向掃描
   for(let y=0;y<size;y++) for(let x=0;x<size;x++){
     const i=y*size+x;
     if(x>0) dist[i]=Math.min(dist[i], dist[i-1]+1);
@@ -186,6 +182,7 @@ function makeTraceBand(char, size=INPUT_SIZE){
     if(x>0&&y>0) dist[i]=Math.min(dist[i], dist[i-size-1]+2);
     if(x<size-1&&y>0) dist[i]=Math.min(dist[i], dist[i-size+1]+2);
   }
+  // 後向掃描
   for(let y=size-1;y>=0;y--) for(let x=size-1;x>=0;x--){
     const i=y*size+x;
     if(x<size-1) dist[i]=Math.min(dist[i], dist[i+1]+1);
@@ -199,21 +196,10 @@ function makeTraceBand(char, size=INPUT_SIZE){
   for(let i=0;i<dist.length;i++){
     if(dist[i] <= BAND_PX){ band[i]=1; bandCount++; }
   }
-  return { band, bandCount };
+  return { band, bandCount, fill, fillCount };
 }
 
-// ====== 邊緣偵測（給走廊用）======
-function edgeFromMask(mask,w,h){
-  const edge=new Uint8Array(w*h), val=(x,y)=> (x>=0&&x<w&&y>=0&&y<h) ? mask[y*w+x] : 0;
-  let cnt=0;
-  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
-    if(!val(x,y)) continue;
-    if(x===0||y===0||x===w-1||y===h-1||!val(x-1,y)||!val(x+1,y)||!val(x,y-1)||!val(x,y+1)){ edge[y*w+x]=1; cnt++; }
-  }
-  return {edge, count:cnt};
-}
-
-// ====== 描紅合規檢查（固定座標版）======
+// ====== 描紅合規檢查（覆蓋率=覆蓋本體；外漏率=band 外）======
 function checkTracing(){
   if(!currentTarget){ showInfo('尚未出題'); return; }
 
@@ -230,20 +216,20 @@ function checkTracing(){
   if (userCount > MAX_EDGE_PIXELS){ showFail('塗抹太多，請沿描紅書寫'); return; }
   if (userCount === 0){ showFail('沒有筆畫'); return; }
 
-  // 走廊
+  // 走廊+本體
   currentBand = currentBand || makeTraceBand(currentTarget.char, INPUT_SIZE);
-  const {band, bandCount} = currentBand;
+  const {band, bandCount, fill, fillCount} = currentBand;
 
-  // 覆蓋/外漏統計（固定座標 → 單調不減）
-  let cover=0, leak=0;
+  // 覆蓋率：覆蓋字體本體的比例
+  let coverFill=0, leak=0;
   for(let i=0;i<userMask.length;i++){
-    if (userMask[i]){
-      if (band[i]) cover++;
-      else leak++;
+    if (userMask[i]) {
+      if (fill[i]) coverFill++;
+      if (!band[i]) leak++;
     }
   }
-  const coverage = bandCount ? (cover / bandCount) : 0;
-  const leakage  = userCount ? (leak  / userCount)  : 1;
+  const coverage = fillCount ? (coverFill / fillCount) : 0;   // ← 分母=本體
+  const leakage  = userCount ? (leak / userCount) : 1;        // ← band 外
 
   if (coverage >= PASS_COVERAGE && leakage <= MAX_LEAKAGE){
     passCount++;
@@ -260,7 +246,7 @@ function checkTracing(){
   }
 }
 
-// ====== 即時覆蓋率（固定座標）======
+// ====== 即時覆蓋率（覆蓋=覆蓋本體）======
 function updateLive(pct){
   if (!liveBar || !liveText) return;
   const clamped = Math.max(0, Math.min(1, pct));
@@ -272,10 +258,11 @@ function computeLiveCoverage(){
   if (!currentTarget || !currentBand){ updateLive(0); return; }
   const user = extractStableRegion(CTX, INPUT_SIZE);
   const mask = user.mask;
-  let cover = 0;
-  const band = currentBand.band;
-  for (let i=0;i<mask.length;i++) if (mask[i] && band[i]) cover++;
-  const pct = currentBand.bandCount ? (cover / currentBand.bandCount) : 0;
+  const {fill, fillCount} = currentBand;
+
+  let coverFill=0;
+  for (let i=0;i<mask.length;i++) if (mask[i] && fill[i]) coverFill++;
+  const pct = fillCount ? (coverFill / fillCount) : 0;
   updateLive(pct);
 }
 
@@ -313,5 +300,5 @@ function showFail(text){
 btnClear?.addEventListener('click', ()=>{ clearCanvas(); updateLive(0); });
 btnNext?.addEventListener('click', nextWord);
 lessonMaxSel?.addEventListener('change', nextWord);
-btnRecognize?.addEventListener('click', checkTracing); // ← 「檢查描紅」
+btnRecognize?.addEventListener('click', checkTracing);
 nextWord();
