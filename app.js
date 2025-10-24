@@ -1,6 +1,7 @@
 // app.js — 描紅合規檢查（覆蓋率=覆蓋字體本體；外漏率=band 外）+ 固定座標 + 即時覆蓋率 + 次數可選(1~10)
+// 規則：同一題需達成指定次數，才能換下一題；未達成前〈下一題〉按鈕會停用或提示。
 
-// ====== UI 元素 ======
+// ====== UI ======
 const ZHUYIN_EL   = document.getElementById('zhuyin');
 const LESSON_EL   = document.getElementById('lessonInfo');
 const CANVAS      = document.getElementById('pad');
@@ -15,32 +16,32 @@ const reqPassesSel= document.getElementById('reqPasses');
 const btnRecognize= document.getElementById('btnRecognize'); // 「檢查描紅」
 const recogList   = document.getElementById('recogList');
 
-// 即時覆蓋率 UI
+// 即時覆蓋率
 const liveBar  = document.getElementById('liveCoverageBar');
 const liveText = document.getElementById('liveCoverageText');
 
 // ====== 參數 ======
 let drawing=false, last=null, currentTarget=null;
-let pathLen=0;                         // 書寫距離（防空寫）
-let attemptStart=0;                    // 單次書寫起始時間
-let passCount=0;                       // 已合格次數（每字會重置）
-let lastLiveTs=0;                      // 即時覆蓋率計算節流（ms）
+let pathLen=0, attemptStart=0;
+let passCount=0;           // 已合格次數
+let lastLiveTs=0;
 
-let currentBand=null;                  // 走廊快取：{ band, bandCount, fill, fillCount }
+let currentBand=null;      // { band, bandCount, fill, fillCount }
+let locked=true;           // ← 是否鎖定題目（達成次數前維持同一字）
 
 const TRACE_RATIO       = 0.72;
 const TRACE_ALPHA       = 0.15;
 const TRACE_FONT        = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
 
-const INPUT_SIZE        = 128;         // 固定參考座標尺寸
-const BIN_THR           = 160;         // 低於此視為筆跡（排除 15% 灰描紅）
+const INPUT_SIZE        = 128;
+const BIN_THR           = 160;
 const PEN_WIDTH_PX      = 20;
-const BAND_PX           = 8;           // band 外擴半徑（固定座標），留一點抖動空間
-const PASS_COVERAGE     = 0.60;        // ✅ 通過門檻：60%
-const MAX_LEAKAGE       = 0.18;        // 外漏≤18%
-const MIN_PATH_LEN      = 180;         // 最短書寫距離
-const MIN_DURATION_MS   = 700;         // 最短書寫時間
-const MAX_EDGE_PIXELS   = 5200;        // 避免整片塗黑
+const BAND_PX           = 8;
+const PASS_COVERAGE     = 0.60;   // 門檻 60%
+const MAX_LEAKAGE       = 0.18;
+const MIN_PATH_LEN      = 180;
+const MIN_DURATION_MS   = 700;
+const MAX_EDGE_PIXELS   = 5200;
 
 function getRequiredPasses(){
   const v = parseInt(reqPassesSel?.value || '3', 10);
@@ -86,8 +87,10 @@ function nextWord(){
   ZHUYIN_EL.textContent=item.zhuyin||'—';
   LESSON_EL.textContent=item.lesson?`（第${item.lesson}課）`:'';
   passCount = 0;
+  locked = true;                 // 新題目開始 → 鎖定
+  disableNext(true);             // 達成前禁用「下一題」
   clearCanvas();
-  currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE); // 重建 band+fill
+  currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
   updateLive(0);
   showProgress();
 }
@@ -121,7 +124,6 @@ CANVAS.addEventListener('pointerdown',e=>{
   drawing=true; last=getPos(e); setLineStyle(); if(!attemptStart) attemptStart=performance.now();
   if (!currentBand && currentTarget) currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
 });
-
 CANVAS.addEventListener('pointermove',e=>{
   if(!drawing) return; const p=getPos(e), b=getTraceBox();
   const dx=p.x-last.x, dy=p.y-last.y; pathLen += Math.hypot(dx,dy);
@@ -130,16 +132,13 @@ CANVAS.addEventListener('pointermove',e=>{
   last=p;
 
   const now = performance.now();
-  if (now - lastLiveTs >= 50) { // 50ms 節流
-    computeLiveCoverage();
-    lastLiveTs = now;
-  }
+  if (now - lastLiveTs >= 50) { computeLiveCoverage(); lastLiveTs = now; }
 });
 window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 
-// ====== 影像工具：固定座標抽取 ======
+// ====== 影像工具（固定座標）======
 function binarize(imgData, thr=BIN_THR){
   const {data,width,height}=imgData; const n=width*height; const mask=new Uint8Array(n);
   for(let i=0, p=0;i<data.length;i+=4, p++){ const v=(data[i]+data[i+1]+data[i+2])/3; mask[p]= (v<thr)?1:0; }
@@ -147,21 +146,19 @@ function binarize(imgData, thr=BIN_THR){
 }
 function extractStableRegion(ctx, size=INPUT_SIZE){
   const b=getTraceBox();
-  const img = ctx.getImageData(b.x, b.y, b.w, b.h); // 整個描紅框
+  const img = ctx.getImageData(b.x, b.y, b.w, b.h);
   const tmp=document.createElement('canvas'); tmp.width=b.w; tmp.height=b.h;
   const tg=tmp.getContext('2d'); tg.putImageData(img,0,0);
-
   const out=document.createElement('canvas'); out.width=size; out.height=size;
   const o=out.getContext('2d'); o.fillStyle='#fff'; o.fillRect(0,0,size,size);
   o.imageSmoothingEnabled=false;
   o.drawImage(tmp, 0,0,b.w,b.h, 0,0,size,size);
-
   const oimg=o.getImageData(0,0,size,size);
   const bin=binarize(oimg);
   return {mask:bin.mask, empty:false};
 }
 
-// ====== 走廊/本體：由描紅字生成（固定座標）=====
+// ====== 走廊/本體 ======
 function makeTraceBand(char, size=INPUT_SIZE){
   const c=document.createElement('canvas'); c.width=size; c.height=size;
   const g=c.getContext('2d');
@@ -170,13 +167,12 @@ function makeTraceBand(char, size=INPUT_SIZE){
   g.font = `${Math.floor(size*0.9)}px ${TRACE_FONT}`;
   g.fillText(char, size/2, size/2);
 
-  // 字體本體（fillMask）
   const img=g.getImageData(0,0,size,size);
   const bin=binarize(img);
   const fill = bin.mask;
   let fillCount=0; for(let i=0;i<fill.length;i++) fillCount += fill[i];
 
-  // 外擴 band：對 fill 做距離轉換
+  // 外擴 band
   const INF=1e9, dist=new Float32Array(size*size);
   for(let i=0;i<dist.length;i++) dist[i]=fill[i]?0:INF;
   for(let y=0;y<size;y++) for(let x=0;x<size;x++){
@@ -201,11 +197,11 @@ function makeTraceBand(char, size=INPUT_SIZE){
   return { band, bandCount, fill, fillCount };
 }
 
-// ====== 描紅合規檢查（覆蓋率=覆蓋本體；外漏率=band 外）======
+// ====== 檢查描紅（保持同一題直到達標）======
 function checkTracing(){
   if(!currentTarget){ showInfo('尚未出題'); return; }
 
-  // 基本防呆：書寫距離/時間
+  // 基本防呆
   const dt = performance.now() - (attemptStart || performance.now());
   if (pathLen < MIN_PATH_LEN){ showFail('筆畫太少，請沿著描紅寫'); return; }
   if (dt < MIN_DURATION_MS){ showFail('寫得太快，請慢慢沿著描紅'); return; }
@@ -213,16 +209,13 @@ function checkTracing(){
   const user = extractStableRegion(CTX, INPUT_SIZE);
   const userMask = user.mask;
 
-  // 避免整片塗黑
   let userCount=0; for(let i=0;i<userMask.length;i++) userCount += userMask[i];
   if (userCount > MAX_EDGE_PIXELS){ showFail('塗抹太多，請沿描紅書寫'); return; }
   if (userCount === 0){ showFail('沒有筆畫'); return; }
 
-  // 走廊+本體
   currentBand = currentBand || makeTraceBand(currentTarget.char, INPUT_SIZE);
   const {band, fill, fillCount} = currentBand;
 
-  // 覆蓋率：覆蓋字體本體的比例；外漏率：band 外的比例
   let coverFill=0, leak=0;
   for(let i=0;i<userMask.length;i++){
     if (userMask[i]) {
@@ -230,17 +223,22 @@ function checkTracing(){
       if (!band[i]) leak++;
     }
   }
-  const coverage = fillCount ? (coverFill / fillCount) : 0;   // ← 分母=本體
-  const leakage  = userCount ? (leak / userCount) : 1;        // ← band 外
+  const coverage = fillCount ? (coverFill / fillCount) : 0;
+  const leakage  = userCount ? (leak / userCount) : 1;
 
   if (coverage >= PASS_COVERAGE && leakage <= MAX_LEAKAGE){
     passCount++;
     showPass(coverage, leakage, passCount);
+
     const need = getRequiredPasses();
     if (passCount >= need){
+      // 達標 → 解鎖並自動下一題
+      locked = false;
+      disableNext(false);
       showInfo(`🎉 完成 ${need}/${need} 次！自動換下一題…`);
-      setTimeout(nextWord, 800); // 自動跳下一題
+      setTimeout(nextWord, 800);
     } else {
+      // 未達滿次數 → 保持同一題，清畫布再寫
       clearCanvas();
       showInfo(`已完成 ${passCount}/${need}，請再沿描紅寫一次`);
     }
@@ -250,7 +248,7 @@ function checkTracing(){
   }
 }
 
-// ====== 即時覆蓋率（覆蓋=覆蓋本體）======
+// ====== 即時覆蓋率 ======
 function updateLive(pct){
   if (!liveBar || !liveText) return;
   const clamped = Math.max(0, Math.min(1, pct));
@@ -270,7 +268,7 @@ function computeLiveCoverage(){
   updateLive(pct);
 }
 
-// ====== 呈現 ======
+// ====== UI 呈現/控制 ======
 function showProgress(){
   if(!recogList) return;
   recogList.innerHTML='';
@@ -300,17 +298,29 @@ function showFail(text){
   li.style.color='#b91c1c'; li.style.background='#fef2f2'; li.style.border='1px solid #ef4444'; li.style.borderRadius='8px'; li.style.padding='6px 8px';
   recogList.appendChild(li);
 }
+function disableNext(disabled){
+  if (!btnNext) return;
+  btnNext.disabled = disabled;
+  btnNext.style.opacity = disabled ? '0.5' : '1';
+  btnNext.style.cursor  = disabled ? 'not-allowed' : 'pointer';
+}
 
 // ====== 綁定/初始化 ======
 btnClear?.addEventListener('click', ()=>{ clearCanvas(); updateLive(0); });
-btnNext?.addEventListener('click', nextWord);
-lessonMaxSel?.addEventListener('change', nextWord);
+btnNext?.addEventListener('click', ()=>{
+  // 只有達標或未鎖定時才允許換題
+  if (!locked) { nextWord(); return; }
+  const need = getRequiredPasses();
+  showInfo(`還差 ${Math.max(0, need - passCount)} 次描紅才可換題`);
+});
+lessonMaxSel?.addEventListener('change', ()=>{ nextWord(); });
 reqPassesSel?.addEventListener('change', ()=>{
   showProgress();
-  // 若已達成新門檻則自動換題
-  if (currentTarget && passCount >= getRequiredPasses()) {
-    setTimeout(nextWord, 300);
-  }
+  // 已經超過新門檻就解鎖並可換題
+  if (passCount >= getRequiredPasses()) { locked = false; disableNext(false); }
 });
 btnRecognize?.addEventListener('click', checkTracing);
+
+// 初始化
+disableNext(true);
 nextWord();
