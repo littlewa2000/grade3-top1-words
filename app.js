@@ -35,7 +35,7 @@ const reqPassesSel= document.getElementById('reqPasses');
 const btnRecognize= document.getElementById('btnRecognize');
 const recogList   = document.getElementById('recogList');
 
-// 覆蓋率（已關閉 UI 顯示）
+// 覆蓋率（UI 不顯示）
 const SHOW_LIVE = false;
 
 // ====== 統計：累計完成題數（localStorage）======
@@ -60,7 +60,8 @@ let lastLiveTs=0;
 let currentBand=null;      // { band, bandCount, fill, fillCount }
 let locked=true;           // 未達成次數前，鎖定同一題
 
-const TRACE_RATIO       = 0.72;
+// *** 重點：讓描紅區=整個畫布（無外圍空白） ***
+const TRACE_RATIO       = 1.0; // 不再縮小
 const TRACE_ALPHA       = 0.15;
 const TRACE_FONT        = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
 
@@ -126,26 +127,41 @@ function nextWord(){
 }
 
 // ====== 畫布與描紅 ======
-function getTraceBox(){ const w=CANVAS.width,h=CANVAS.height; const s=Math.floor(Math.min(w,h)*TRACE_RATIO); return {x:Math.floor((w-s)/2),y:Math.floor((h-s)/2),w:s,h:s};}
+// *** 這裡改成：描紅區=整個畫布，無空白邊界 ***
+function getTraceBox(){
+  return { x: 0, y: 0, w: CANVAS.width, h: CANVAS.height };
+}
+
 function clearCanvas(){
   CTX.setTransform(1,0,0,1,0,0);
   CTX.clearRect(0,0,CANVAS.width,CANVAS.height);
   CTX.fillStyle='#fff'; CTX.fillRect(0,0,CANVAS.width,CANVAS.height);
-  drawWritingBoxOutline();
+
+  // 外框（會貼邊）
+  const b=getTraceBox();
+  CTX.save();
+  CTX.strokeStyle='#cbd5e1';
+  CTX.lineWidth=2;
+  CTX.setLineDash([8,6]);
+  CTX.strokeRect(b.x,b.y,b.w,b.h);
+  CTX.restore();
+
   if(currentTarget) drawTrace(currentTarget.char);
   pathLen = 0;
   attemptStart = performance.now();
 }
-function drawWritingBoxOutline(){ const b=getTraceBox(); CTX.save(); CTX.strokeStyle='#cbd5e1'; CTX.lineWidth=2; CTX.setLineDash([8,6]); CTX.strokeRect(b.x,b.y,b.w,b.h); CTX.restore(); }
+
 function drawTrace(ch){
   const b=getTraceBox();
   CTX.save();
   CTX.globalAlpha=TRACE_ALPHA;
   CTX.fillStyle='#000'; CTX.textAlign='center'; CTX.textBaseline='middle';
-  CTX.font=`${Math.floor(b.w*0.9)}px ${TRACE_FONT}`;
+  // 字體大小略縮 92% 以避免被外框切到
+  CTX.font=`${Math.floor(b.w*0.92)}px ${TRACE_FONT}`;
   CTX.fillText(ch, b.x+b.w/2, b.y+b.h/2);
   CTX.restore();
 }
+
 function setLineStyle(){ CTX.lineCap='round'; CTX.lineJoin='round'; CTX.strokeStyle=penColor?.value||'#000'; CTX.lineWidth=PEN_WIDTH_PX; }
 function getPos(e){ const r=CANVAS.getBoundingClientRect(), sx=CANVAS.width/r.width, sy=CANVAS.height/r.height; const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x:x*sx,y:y*sy}; }
 
@@ -159,6 +175,11 @@ CANVAS.addEventListener('pointermove',e=>{
   CTX.save(); CTX.beginPath(); CTX.rect(b.x,b.y,b.w,b.h); CTX.clip();
   CTX.beginPath(); CTX.moveTo(last.x,last.y); CTX.lineTo(p.x,p.y); CTX.stroke(); CTX.restore();
   last=p;
+
+  if (SHOW_LIVE) {
+    const now = performance.now();
+    if (now - lastLiveTs >= 50) { computeLiveCoverage(); lastLiveTs = now; }
+  }
 });
 window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
@@ -270,6 +291,10 @@ function checkTracing(){
     showFail('覆蓋不足 60% 或外漏過高，請再試一次');
   }
 }
+
+// ====== 即時覆蓋率（本需求關閉；函式保留避免報錯）======
+function updateLive(_) { /* no-op */ }
+function computeLiveCoverage(){ /* no-op */ }
 
 // ====== UI 呈現/控制 ======
 function showProgress(){
