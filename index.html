@@ -5,194 +5,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>三上國字描紅練習</title>
   <style>
-    :root {
-      --card: #ffffff;
-      --border: #e2e8f0;
-      --muted: #64748b;
-      --accent: #0ea5e9;
-    }
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC",
-                   "PingFang TC", "Microsoft JhengHei", Roboto, Arial, sans-serif;
-      background: #f8fafc;
-      color: #0f172a;
-    }
-    .container {
-      max-width: 980px;
-      margin: 24px auto;
-      padding: 0 16px;
-    }
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    .title {
-      font-size: 28px;
-      font-weight: 700;
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-    }
-    .zhuyin {
-      font-size: 32px;
-      letter-spacing: 4px;
-    }
-    .lesson {
-      font-size: 16px;
-      color: var(--muted);
-    }
-    .controls {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    select, button, input[type="color"] {
-      height: 38px;
-      padding: 0 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: #fff;
-      font-size: 14px;
-    }
-    button {
-      cursor: pointer;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-    }
-    button.secondary {
-      background: #0f172a;
-      color: #fff;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 16px;
-    }
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: 1fr; }
-    }
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 12px;
-    }
-    .canvasWrap {
-      position: relative;
-      border: 1px dashed #cbd5e1;
-      border-radius: 12px;
-      background: #fff;
-      min-height: 320px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-    canvas {
-      width: 100%;
-      height: auto;
-      max-height: 70vh;
-      touch-action: none; /* 防止手機滑動螢幕 */
-      background: #fff;
-    }
-    .list {
-      list-style: none;
-      padding: 0;
-      margin: 8px 0 0;
-      display: grid;
-      gap: 8px;
-    }
-    .list li {
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 8px 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #fff;
-    }
+    :root { --card:#fff; --border:#e2e8f0; --muted:#64748b; --accent:#0ea5e9; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC","Microsoft JhengHei",Roboto,Arial,sans-serif;background:#f8fafc;color:#0f172a;}
+    .container{max-width:980px;margin:24px auto;padding:0 16px;}
+    .tabs{display:flex;border-bottom:1px solid var(--border);gap:8px;}
+    .tab-btn{appearance:none;border:none;background:transparent;padding:10px 14px;border-bottom:2px solid transparent;cursor:pointer;font-size:15px;color:#334155;}
+    .tab-btn.active{border-bottom-color:var(--accent);color:#0f172a;font-weight:600;}
+    .tab-panel{display:none;padding:14px 2px;}
+    .tab-panel.active{display:block;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;}
+    select,button,input[type="color"]{height:38px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:14px}
+    button{cursor:pointer;background:var(--accent);color:#fff;border:none}
+    button.secondary{background:#0f172a}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .title{font-size:28px;font-weight:700;display:flex;gap:8px;align-items:baseline}
+    .zhuyin{font-size:32px;letter-spacing:4px}
+    .lesson{font-size:16px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr 300px;gap:16px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .canvasWrap{position:relative;border:1px dashed #cbd5e1;border-radius:12px;background:#fff;min-height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+    canvas{width:100%;height:auto;max-height:70vh;touch-action:none;background:#fff}
+    .list{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:8px}
+    .list li{border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:#fff;display:flex;justify-content:space-between;align-items:center}
+    .section{display:flex;flex-direction:column;gap:12px}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- 顯示注音與課次 -->
-    <div class="topbar">
-      <div class="title">
-        <span class="zhuyin" id="zhuyin">—</span>
-        <span class="lesson" id="lessonInfo"></span>
-      </div>
-      <div class="controls">
-        <label>範圍：
-          <select id="lessonMax" title="選擇測驗到第幾課">
-            <option value="1">第 1 課</option>
-            <option value="2">第 2 課</option>
-            <option value="3">第 3 課</option>
-            <option value="4">第 4 課</option>
-            <option value="5">第 5 課</option>
-            <option value="6">第 6 課</option>
-            <option value="7">第 7 課</option>
-            <option value="8">第 8 課</option>
-            <option value="9">第 9 課</option>
-            <option value="10">第 10 課</option>
-            <option value="11">第 11 課</option>
-            <option value="12" selected>第 12 課</option>
-          </select>
-        </label>
-        <label>每字次數：
-          <select id="reqPasses" title="每個字需要描紅幾次">
-            <!-- 1~10 -->
-            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-          </select>
-        </label>
-        <input id="penColor" type="color" value="#000000" title="筆色" />
-        <button id="btnClear" class="secondary" title="清除畫面">清除</button>
-        <button id="btnRecognize" title="檢查描紅">檢查描紅</button>
-        <button id="btnNext" class="secondary" title="下一題">下一題</button>
+    <!-- Tabs -->
+    <div class="tabs">
+      <button id="tabSettingsBtn" class="tab-btn">設定</button>
+      <button id="tabPracticeBtn" class="tab-btn active">練習</button>
+    </div>
+
+    <!-- 設定分頁 -->
+    <div id="tabSettings" class="tab-panel">
+      <div class="card section">
+        <div class="row">
+          <label>範圍：
+            <select id="lessonMax" title="選擇測驗到第幾課">
+              <option value="1">第 1 課</option>
+              <option value="2">第 2 課</option>
+              <option value="3">第 3 課</option>
+              <option value="4">第 4 課</option>
+              <option value="5">第 5 課</option>
+              <option value="6">第 6 課</option>
+              <option value="7">第 7 課</option>
+              <option value="8">第 8 課</option>
+              <option value="9">第 9 課</option>
+              <option value="10">第 10 課</option>
+              <option value="11">第 11 課</option>
+              <option value="12" selected>第 12 課</option>
+            </select>
+          </label>
+
+          <label>每字次數：
+            <select id="reqPasses" title="每個字需要描紅幾次">
+              <option>1</option><option>2</option><option selected>3</option>
+              <option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+            </select>
+          </label>
+
+          <label>筆色：
+            <input id="penColor" type="color" value="#000000" title="筆色" />
+          </label>
+        </div>
       </div>
     </div>
 
-    <div class="grid">
-      <!-- 畫布 -->
+    <!-- 練習分頁 -->
+    <div id="tabPractice" class="tab-panel active">
       <div class="card">
-        <div class="canvasWrap">
-          <!-- 建議寬高為 600x600；會以 CSS 等比縮放 -->
-          <canvas id="pad" width="600" height="600"></canvas>
+        <div class="row" style="justify-content:space-between">
+          <div class="title">
+            <span class="zhuyin" id="zhuyin">—</span>
+            <span class="lesson" id="lessonInfo"></span>
+          </div>
+          <div class="row">
+            <button id="btnClear" class="secondary" title="清除畫面">清除</button>
+            <button id="btnRecognize" title="檢查描紅">檢查描紅</button>
+            <button id="btnNext" class="secondary" title="下一題">下一題</button>
+          </div>
         </div>
       </div>
 
-      <!-- 右側資訊/進度 -->
-      <div class="card">
-        <h3 style="margin: 4px 0 8px;">進度 / 訊息</h3>
-
-        <!-- 即時覆蓋率 -->
-        <div style="margin:4px 0 10px;">
-          <div style="font-weight:600;margin-bottom:6px;">即時覆蓋率</div>
-          <div style="height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;">
-            <div id="liveCoverageBar" style="height:100%;width:0%;background:#10b981;"></div>
-          </div>
-          <div style="font-size:12px;color:#475569;margin-top:6px;">
-            <span id="liveCoverageText">0%</span>
+      <div class="grid" style="margin-top:12px;">
+        <div class="card">
+          <div class="canvasWrap">
+            <canvas id="pad" width="600" height="600"></canvas>
           </div>
         </div>
 
-        <ul id="recogList" class="list">
-          <!-- 程式會動態填入（完成次數、通過/未通過訊息） -->
-        </ul>
+        <div class="card">
+          <h3 style="margin: 4px 0 8px;">進度 / 訊息</h3>
+
+          <!-- 即時覆蓋率 -->
+          <div style="margin:4px 0 10px;">
+            <div style="font-weight:600;margin-bottom:6px;">即時覆蓋率</div>
+            <div style="height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;">
+              <div id="liveCoverageBar" style="height:100%;width:0%;background:#10b981;"></div>
+            </div>
+            <div style="font-size:12px;color:#475569;margin-top:6px;">
+              <span id="liveCoverageText">0%</span>
+            </div>
+          </div>
+
+          <ul id="recogList" class="list"></ul>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- 先載入 data.js（A 方案：全域 data 陣列） -->
   <script src="data.js"></script>
-  <!-- 再載入 app.js（描紅合規檢查版） -->
+  <!-- 再載入 app.js -->
   <script src="app.js"></script>
 </body>
 </html>
