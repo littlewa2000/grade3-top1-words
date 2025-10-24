@@ -1,5 +1,17 @@
-// app.js — 描紅合規檢查（覆蓋率=覆蓋字體本體；外漏率=band 外）+ 固定座標 + 即時覆蓋率 + 次數可選(1~10)
-// 規則：同一題需達成指定次數，才能換下一題；未達成前〈下一題〉按鈕會停用或提示。
+// ---- Tabs: hash-based 高亮（沒有它也能切換）----
+(function setupTabs(){
+  const settingsBtn = document.getElementById('tabSettingsBtn');
+  const practiceBtn = document.getElementById('tabPracticeBtn');
+  function updateActive(){
+    const h = (location.hash || '#practice').toLowerCase();
+    const isSettings = h === '#settings';
+    settingsBtn?.classList.toggle('active', isSettings);
+    practiceBtn?.classList.toggle('active', !isSettings);
+  }
+  window.addEventListener('hashchange', updateActive);
+  if (!location.hash) location.replace('#practice');
+  updateActive();
+})();
 
 // ====== UI ======
 const ZHUYIN_EL   = document.getElementById('zhuyin');
@@ -13,21 +25,23 @@ const penColor    = document.getElementById('penColor');
 const lessonMaxSel= document.getElementById('lessonMax');
 const reqPassesSel= document.getElementById('reqPasses');
 
-const btnRecognize= document.getElementById('btnRecognize'); // 「檢查描紅」
+const btnRecognize= document.getElementById('btnRecognize');
 const recogList   = document.getElementById('recogList');
 
-// 即時覆蓋率
+// 覆蓋率 UI（已隱藏，但保留節點以避免報錯）
 const liveBar  = document.getElementById('liveCoverageBar');
 const liveText = document.getElementById('liveCoverageText');
+// 顯示即時覆蓋率的開關（本需求：關閉）
+const SHOW_LIVE = false;
 
 // ====== 參數 ======
 let drawing=false, last=null, currentTarget=null;
 let pathLen=0, attemptStart=0;
-let passCount=0;           // 已合格次數
+let passCount=0;
 let lastLiveTs=0;
 
 let currentBand=null;      // { band, bandCount, fill, fillCount }
-let locked=true;           // ← 是否鎖定題目（達成次數前維持同一字）
+let locked=true;           // 未達成次數前，鎖定同一題
 
 const TRACE_RATIO       = 0.72;
 const TRACE_ALPHA       = 0.15;
@@ -87,11 +101,11 @@ function nextWord(){
   ZHUYIN_EL.textContent=item.zhuyin||'—';
   LESSON_EL.textContent=item.lesson?`（第${item.lesson}課）`:'';
   passCount = 0;
-  locked = true;                 // 新題目開始 → 鎖定
-  disableNext(true);             // 達成前禁用「下一題」
+  locked = true;
+  disableNext(true);
   clearCanvas();
   currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
-  updateLive(0);
+  if (SHOW_LIVE) updateLive(0);
   showProgress();
 }
 
@@ -105,7 +119,7 @@ function clearCanvas(){
   if(currentTarget) drawTrace(currentTarget.char);
   pathLen = 0;
   attemptStart = performance.now();
-  updateLive(0);
+  if (SHOW_LIVE) updateLive(0);
 }
 function drawWritingBoxOutline(){ const b=getTraceBox(); CTX.save(); CTX.strokeStyle='#cbd5e1'; CTX.lineWidth=2; CTX.setLineDash([8,6]); CTX.strokeRect(b.x,b.y,b.w,b.h); CTX.restore(); }
 function drawTrace(ch){
@@ -131,8 +145,10 @@ CANVAS.addEventListener('pointermove',e=>{
   CTX.beginPath(); CTX.moveTo(last.x,last.y); CTX.lineTo(p.x,p.y); CTX.stroke(); CTX.restore();
   last=p;
 
-  const now = performance.now();
-  if (now - lastLiveTs >= 50) { computeLiveCoverage(); lastLiveTs = now; }
+  if (SHOW_LIVE) {
+    const now = performance.now();
+    if (now - lastLiveTs >= 50) { computeLiveCoverage(); lastLiveTs = now; }
+  }
 });
 window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
@@ -172,7 +188,7 @@ function makeTraceBand(char, size=INPUT_SIZE){
   const fill = bin.mask;
   let fillCount=0; for(let i=0;i<fill.length;i++) fillCount += fill[i];
 
-  // 外擴 band
+  // 外擴 band（距離轉換）
   const INF=1e9, dist=new Float32Array(size*size);
   for(let i=0;i<dist.length;i++) dist[i]=fill[i]?0:INF;
   for(let y=0;y<size;y++) for(let x=0;x<size;x++){
@@ -197,11 +213,10 @@ function makeTraceBand(char, size=INPUT_SIZE){
   return { band, bandCount, fill, fillCount };
 }
 
-// ====== 檢查描紅（保持同一題直到達標）======
+// ====== 檢查（不足 60% 自動清除再試；≥60% 顯示剩餘次數）======
 function checkTracing(){
   if(!currentTarget){ showInfo('尚未出題'); return; }
 
-  // 基本防呆
   const dt = performance.now() - (attemptStart || performance.now());
   if (pathLen < MIN_PATH_LEN){ showFail('筆畫太少，請沿著描紅寫'); return; }
   if (dt < MIN_DURATION_MS){ showFail('寫得太快，請慢慢沿著描紅'); return; }
@@ -228,28 +243,27 @@ function checkTracing(){
 
   if (coverage >= PASS_COVERAGE && leakage <= MAX_LEAKAGE){
     passCount++;
-    showPass(coverage, leakage, passCount);
-
     const need = getRequiredPasses();
+
     if (passCount >= need){
-      // 達標 → 解鎖並自動下一題
       locked = false;
       disableNext(false);
-      showInfo(`🎉 完成 ${need}/${need} 次！自動換下一題…`);
+      showInfo(`🎉 達成 ${need}/${need} 次，已完成！自動換下一題…`);
       setTimeout(nextWord, 800);
     } else {
-      // 未達滿次數 → 保持同一題，清畫布再寫
-      clearCanvas();
-      showInfo(`已完成 ${passCount}/${need}，請再沿描紅寫一次`);
+      const remain = Math.max(0, need - passCount);
+      showInfo(`✅ 通過一次！還剩下 ${remain} 次就完成`);
+      clearCanvas(); // 下一次嘗試
     }
   }else{
-    const msg = `覆蓋率 ${Math.round(coverage*100)}%，外漏 ${Math.round(leakage*100)}%`;
-    showFail(`尚未合格：${msg}（需要覆蓋≥${Math.round(PASS_COVERAGE*100)}%，外漏≤${Math.round(MAX_LEAKAGE*100)}%）`);
+    clearCanvas(); // 自動清除再試
+    showFail(`覆蓋不足 60% 或外漏過高，請再試一次`);
   }
 }
 
-// ====== 即時覆蓋率 ======
+// ====== 即時覆蓋率（本需求關閉）======
 function updateLive(pct){
+  if (!SHOW_LIVE) return;
   if (!liveBar || !liveText) return;
   const clamped = Math.max(0, Math.min(1, pct));
   liveBar.style.width = (clamped*100).toFixed(0) + '%';
@@ -257,6 +271,7 @@ function updateLive(pct){
   liveText.textContent = (clamped*100).toFixed(0) + '%';
 }
 function computeLiveCoverage(){
+  if (!SHOW_LIVE) return;
   if (!currentTarget || !currentBand){ updateLive(0); return; }
   const user = extractStableRegion(CTX, INPUT_SIZE);
   const mask = user.mask;
@@ -284,13 +299,6 @@ function showInfo(text){
   const li=document.createElement('li'); li.textContent=text; li.style.color='#334155';
   recogList.appendChild(li);
 }
-function showPass(coverage, leakage, count){
-  showProgress();
-  const li=document.createElement('li');
-  li.textContent = `✅ 合格！覆蓋 ${Math.round(coverage*100)}%，外漏 ${Math.round(leakage*100)}%（第 ${count}/${getRequiredPasses()} 次）`;
-  li.style.color='#065f46'; li.style.background='#ecfdf5'; li.style.border='1px solid #10b981'; li.style.borderRadius='8px'; li.style.padding='6px 8px';
-  recogList.appendChild(li);
-}
 function showFail(text){
   showProgress();
   const li=document.createElement('li');
@@ -306,9 +314,8 @@ function disableNext(disabled){
 }
 
 // ====== 綁定/初始化 ======
-btnClear?.addEventListener('click', ()=>{ clearCanvas(); updateLive(0); });
+btnClear?.addEventListener('click', ()=>{ clearCanvas(); if (SHOW_LIVE) updateLive(0); });
 btnNext?.addEventListener('click', ()=>{
-  // 只有達標或未鎖定時才允許換題
   if (!locked) { nextWord(); return; }
   const need = getRequiredPasses();
   showInfo(`還差 ${Math.max(0, need - passCount)} 次描紅才可換題`);
@@ -316,11 +323,10 @@ btnNext?.addEventListener('click', ()=>{
 lessonMaxSel?.addEventListener('change', ()=>{ nextWord(); });
 reqPassesSel?.addEventListener('change', ()=>{
   showProgress();
-  // 已經超過新門檻就解鎖並可換題
   if (passCount >= getRequiredPasses()) { locked = false; disableNext(false); }
 });
 btnRecognize?.addEventListener('click', checkTracing);
 
-// 初始化
+// 初始
 disableNext(true);
 nextWord();
