@@ -48,7 +48,7 @@ function resetStats(){ statsTotal = 0; updateStatsUI(); }
 btnResetStats?.addEventListener('click', resetStats);
 resetStats();
 
-// ====== 狀態/參數（部分改為動態計算）======
+// ====== 狀態/參數 ======
 let drawing=false, last=null, currentTarget=null;
 let pathLen=0, attemptStart=0;
 let passCount=0;
@@ -57,43 +57,27 @@ let lastLiveTs=0;
 let currentBand=null;      // { band, bandCount, fill, fillCount }
 let locked=true;           // 未達成次數前，鎖定同一題
 
-// 描紅區=整個畫布
+// *** 描紅區=整個畫布（無外圍空白） ***
+const TRACE_RATIO       = 1.0;
 const TRACE_ALPHA       = 0.15;
 const TRACE_FONT        = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
 
-// 影像解析固定 128x128（演算法用），不影響畫布視覺大小
 const INPUT_SIZE        = 128;
 const BIN_THR           = 160;
+const PEN_WIDTH_PX      = 40; // 更粗
+const BAND_PX           = 10; // 走廊更寬
+const PASS_COVERAGE     = 0.60;   // 門檻 60%
+const MAX_LEAKAGE       = 0.18;   // 外漏上限
+const MIN_PATH_LEN      = 180;
+const MIN_DURATION_MS   = 700;
+// const MAX_EDGE_PIXELS = 5200; // 取消固定上限，改用動態判斷
 
-// ★ 這三個值改為動態計算：筆粗、走廊寬度、最小筆畫長度
-let PEN_WIDTH_PX        = 30;   // 會在 computeDynamicParams() 依畫布尺寸覆寫
-let BAND_PX             = 9;    // 依筆粗自動推算
-let MIN_PATH_LEN        = 180;  // 依畫布尺寸自動推算
-
-// 其他判定
-const PASS_COVERAGE     = 0.60;   // 覆蓋率門檻 60%
-const MAX_LEAKAGE       = 0.18;   // 外漏容許 18%
-const MIN_DURATION_MS   = 700;    // 至少書寫時間
-// ★ 「塗抹太多」改為依「描紅區總像素」的比例（避免不同裝置/筆粗誤判）
-const MAX_FILL_FRACTION = 0.50;   // 使用者塗滿 > 50% 畫布視為亂塗
-
-// 依畫布大小動態計算參數（iPhone 會自動變瘦一點，避免「塗抹太多」）
-function computeDynamicParams(){
-  const dim = Math.min(CANVAS.width, CANVAS.height);
-  // 筆粗 ≈ 6% 的最小邊，限制在 18~40 之間
-  PEN_WIDTH_PX = Math.round(Math.max(18, Math.min(40, dim * 0.06)));
-  // 走廊寬度 ≈ 筆粗的 0.25，限制在 8~14 之間
-  BAND_PX = Math.max(8, Math.min(14, Math.round(PEN_WIDTH_PX * 0.25)));
-  // 最小筆畫長度 ≈ 0.3 倍的最小邊（以前 600px → 180）
-  MIN_PATH_LEN = Math.round(dim * 0.3);
-}
-computeDynamicParams();
-
-// ====== 載入 data.js（A 方案容錯）======
 function getRequiredPasses(){
   const v = parseInt(reqPassesSel?.value || '3', 10);
   return Math.min(10, Math.max(1, isNaN(v)?3:v));
 }
+
+// ====== 載入 data.js（A 方案容錯）======
 function pickSourceArray() {
   let raw = window.WORDS || window.DATA || window.G3_TOP1_WORDS || window.words || window.db;
   try { if (!raw && typeof data !== 'undefined') raw = data; } catch(e){}
@@ -135,12 +119,14 @@ function nextWord(){
   locked = true;
   disableNext(true);
   clearCanvas();
-  currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE); // 使用最新 BAND_PX 生成
+  currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
   showProgress();
 }
 
 // ====== 畫布與描紅 ======
-function getTraceBox(){ return { x: 0, y: 0, w: CANVAS.width, h: CANVAS.height }; }
+function getTraceBox(){
+  return { x: 0, y: 0, w: CANVAS.width, h: CANVAS.height };
+}
 function clearCanvas(){
   CTX.setTransform(1,0,0,1,0,0);
   CTX.clearRect(0,0,CANVAS.width,CANVAS.height);
@@ -185,16 +171,6 @@ window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 
-// 視窗尺寸/旋轉改變時，重新計算動態參數（若你未改 canvas 固定大小，這步通常不會變）
-window.addEventListener('resize', ()=>{
-  const oldPen = PEN_WIDTH_PX, oldBand = BAND_PX;
-  computeDynamicParams();
-  if (PEN_WIDTH_PX !== oldPen || BAND_PX !== oldBand) {
-    currentBand = currentTarget ? makeTraceBand(currentTarget.char, INPUT_SIZE) : null;
-    clearCanvas();
-  }
-});
-
 // ====== 影像工具（固定座標）======
 function binarize(imgData, thr=BIN_THR){
   const {data,width,height}=imgData; const n=width*height; const mask=new Uint8Array(n);
@@ -215,7 +191,7 @@ function extractStableRegion(ctx, size=INPUT_SIZE){
   return {mask:bin.mask, empty:false};
 }
 
-// ====== 走廊/本體（用動態 BAND_PX）======
+// ====== 走廊/本體 ======
 function makeTraceBand(char, size=INPUT_SIZE){
   const c=document.createElement('canvas'); c.width=size; c.height=size;
   const g=c.getContext('2d');
@@ -227,9 +203,11 @@ function makeTraceBand(char, size=INPUT_SIZE){
   const img=g.getImageData(0,0,size,size);
   const bin=binarize(img);
   const fill = bin.mask;
+
+  // 計算本體像素數
   let fillCount=0; for(let i=0;i<fill.length;i++) fillCount += fill[i];
 
-  // 外擴 band（距離轉換）
+  // 距離轉換 → 走廊 band
   const INF=1e9, dist=new Float32Array(size*size);
   for(let i=0;i<dist.length;i++) dist[i]=fill[i]?0:INF;
   for(let y=0;y<size;y++) for(let x=0;x<size;x++){
@@ -247,11 +225,14 @@ function makeTraceBand(char, size=INPUT_SIZE){
     if(x>0&&y<size-1) dist[i]=Math.min(dist[i], dist[i+size-1]+2);
   }
   const band=new Uint8Array(size*size);
-  for(let i=0;i<dist.length;i++) if(dist[i] <= BAND_PX) band[i]=1;
-  return { band, bandCount:0, fill, fillCount };
+  let bandCount=0;
+  for(let i=0;i<dist.length;i++){
+    if(dist[i] <= BAND_PX){ band[i]=1; bandCount++; }
+  }
+  return { band, bandCount, fill, fillCount };
 }
 
-// ====== 檢查（<60% 清除重寫；≥60% 顯示剩餘次數；達標→下一題並統計+1）======
+// ====== 檢查（動態調整「塗抹太多」）======
 function checkTracing(){
   if(!currentTarget){ showInfo('尚未出題'); return; }
 
@@ -262,15 +243,14 @@ function checkTracing(){
   const user = extractStableRegion(CTX, INPUT_SIZE);
   const userMask = user.mask;
 
-  // 「塗抹太多」以比例判斷，避免不同裝置筆粗造成誤判
-  const totalPixels = INPUT_SIZE * INPUT_SIZE;
+  // 使用者實際塗抹像素
   let userCount=0; for(let i=0;i<userMask.length;i++) userCount += userMask[i];
-  if (userCount > totalPixels * MAX_FILL_FRACTION){ showFail('塗抹太多，請沿描紅書寫'); return; }
   if (userCount === 0){ showFail('沒有筆畫'); return; }
 
   currentBand = currentBand || makeTraceBand(currentTarget.char, INPUT_SIZE);
-  const {band, fill, fillCount} = currentBand;
+  const {band, bandCount, fill, fillCount} = currentBand;
 
+  // 統計覆蓋與外漏
   let coverFill=0, leak=0;
   for(let i=0;i<userMask.length;i++){
     if (userMask[i]) {
@@ -281,12 +261,28 @@ function checkTracing(){
   const coverage = fillCount ? (coverFill / fillCount) : 0;
   const leakage  = userCount ? (leak / userCount) : 1;
 
+  // ---- 新：動態「塗抹太多」判定 ----
+  // 依字的複雜度（本體密度）自動提高容許上限，避免髮、鬱等高密度字被誤判
+  const PIXELS = INPUT_SIZE * INPUT_SIZE;
+  const density = fillCount / PIXELS;           // 0~1，本體像素密度
+  // 基準門檻 0.82，複雜度越高越寬鬆，最多 ~0.94
+  const smudgeThreshold = 0.82 + Math.min(0.12, density * 0.40);
+  const bandFillRatio   = bandCount ? (userCount / bandCount) : 1;
+
+  const isSmudge = (bandFillRatio > smudgeThreshold) && (leakage > 0.30) && (coverage < 0.70);
+  if (isSmudge){
+    clearCanvas();
+    showFail('塗抹太多，請沿著描紅書寫');
+    return;
+  }
+  // ----------------------------------
+
   if (coverage >= PASS_COVERAGE && leakage <= MAX_LEAKAGE){
     passCount++;
     const need = getRequiredPasses();
 
     if (passCount >= need){
-      // 統計 +1（完成一題：本次開頁面內的累計）
+      // 完成一題：本次開啟期間累計 +1
       incStats();
 
       locked = false;
@@ -300,11 +296,15 @@ function checkTracing(){
     }
   }else{
     clearCanvas();
-    showFail('覆蓋不足 60% 或外漏過高，請再試一次');
+    if (coverage < PASS_COVERAGE) {
+      showFail(`覆蓋不足 60%，請再試一次`);
+    } else {
+      showFail(`外漏過高，請沿著描紅邊緣書寫`);
+    }
   }
 }
 
-// ====== 即時覆蓋率（本需求關閉；函式保留避免報錯）======
+// ====== 即時覆蓋率（關閉；保留函式避免報錯）======
 function updateLive(_) { /* no-op */ }
 function computeLiveCoverage(){ /* no-op */ }
 
