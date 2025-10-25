@@ -67,7 +67,7 @@ const TRACE_FONT        = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","N
 
 const INPUT_SIZE        = 128;
 const BIN_THR           = 160;
-const PEN_WIDTH_PX      = 30;
+const PEN_WIDTH_PX      = 40;
 const BAND_PX           = 10;
 const PASS_COVERAGE     = 0.60;   // 門檻 60%
 const MAX_LEAKAGE       = 0.18;
