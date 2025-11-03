@@ -77,11 +77,11 @@ function getRequiredPasses(){
   return Math.min(10, Math.max(1, isNaN(v)?3:v));
 }
 
-// ====== 載入 data.js（A 方案容錯）======
+// ====== 載入 data_g1_tog31.js（A 方案容錯）======
 function pickSourceArray() {
   let raw = window.WORDS || window.DATA || window.G3_TOP1_WORDS || window.words || window.db;
   try { if (!raw && typeof data !== 'undefined') raw = data; } catch(e){}
-  if (!raw) { alert('找不到 data.js 的資料陣列'); return []; }
+  if (!raw) { alert('找不到 data_g1_tog31.js 的資料陣列'); return []; }
   const out=[], pushMaybe=(o,lsn)=>{
     if(!o) return;
     const c=o.char||o.word||o.hanzi||o.han||o.c||o['字'];
@@ -96,7 +96,7 @@ function pickSourceArray() {
   } else if (Array.isArray(raw.words)) {
     const l=raw.lesson??raw.lsn??raw.lessonNo??null; for (const w of raw.words) pushMaybe(w,l);
   }
-  if(!out.length) alert('data.js 載入但解析不到 {char, zhuyin}');
+  if(!out.length) alert('data_g1_tog31.js 載入但解析不到 {char, zhuyin}');
   return out;
 }
 const DB = pickSourceArray();
