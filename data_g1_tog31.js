@@ -568,9 +568,6 @@ const cnkeys_all = {
       grade: "小學二年級下學期",
       gradeCode: "小二下",
       lessons: [
-grade: "小學二年級下學期",
-  gradeCode: "小二下",
-  lessons:
   {
     id: "L01",
     lessonNo: 1,
