@@ -1160,4 +1160,6 @@ cnkeys_all.index = (function(){
   return out;
 })();
 
-export default cnkeys_all;
+
+// --- Non-module global exports (app.js friendly) ---
+try { if (typeof window !== 'undefined') { window.cnkeys_all = cnkeys_all; window.DATA = cnkeys_all.index || []; } } catch(e) {}
