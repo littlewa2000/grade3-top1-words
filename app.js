@@ -21,19 +21,24 @@
 })();
 
 // ====== UI ======
-const ZHUYIN_EL   = document.getElementById('zhuyin');
-const LESSON_EL   = document.getElementById('lessonInfo');
-const CANVAS      = document.getElementById('pad');
-const CTX         = CANVAS.getContext('2d', { willReadFrequently: true });
+const ZHUYIN_EL    = document.getElementById('zhuyin');
+const LESSON_EL    = document.getElementById('lessonInfo');
+const CANVAS       = document.getElementById('pad');
+const CTX          = CANVAS.getContext('2d', { willReadFrequently: true });
 
-const btnNext     = document.getElementById('btnNext');
-const btnClear    = document.getElementById('btnClear');
-const penColor    = document.getElementById('penColor');
-const lessonMaxSel= document.getElementById('lessonMax');
-const reqPassesSel= document.getElementById('reqPasses');
+const btnNext      = document.getElementById('btnNext');
+const btnClear     = document.getElementById('btnClear');
+const penColor     = document.getElementById('penColor');
+const lessonMaxSel = document.getElementById('lessonMax');
+const reqPassesSel = document.getElementById('reqPasses');
 
-const btnRecognize= document.getElementById('btnRecognize');
-const recogList   = document.getElementById('recogList');
+const termSel      = document.getElementById('termSelect');
+const weightRow    = document.getElementById('weightRow');
+const weightSel    = document.getElementById('currWeight');
+const mixPreviewEl = document.getElementById('mixPreview');
+
+const btnRecognize = document.getElementById('btnRecognize');
+const recogList    = document.getElementById('recogList');
 
 // 覆蓋率（UI 不顯示）
 const SHOW_LIVE = false;
@@ -48,11 +53,10 @@ function resetStats(){ statsTotal = 0; updateStatsUI(); }
 btnResetStats?.addEventListener('click', resetStats);
 resetStats();
 
-// ====== 狀態/參數 ======
+// ====== 描紅狀態/參數 ======
 let drawing=false, last=null, currentTarget=null;
 let pathLen=0, attemptStart=0;
 let passCount=0;
-let lastLiveTs=0;
 
 let currentBand=null;      // { band, bandCount, fill, fillCount }
 let locked=true;           // 未達成次數前，鎖定同一題
@@ -70,51 +74,116 @@ const PASS_COVERAGE     = 0.60;   // 門檻 60%
 const MAX_LEAKAGE       = 0.18;   // 外漏上限
 const MIN_PATH_LEN      = 180;
 const MIN_DURATION_MS   = 700;
-// const MAX_EDGE_PIXELS = 5200; // 取消固定上限，改用動態判斷
 
-function getRequiredPasses(){
-  const v = parseInt(reqPassesSel?.value || '3', 10);
-  return Math.min(10, Math.max(1, isNaN(v)?3:v));
-}
+// ====== 資料載入（支援新版 cnkeys_all 與舊版 DATA）======
+const TERM_ORDER = ["小一下", "小二上", "小二下", "小三上"];
 
-// ====== 載入 data_g1_tog31.js（A 方案容錯）======
-function pickSourceArray() {
-  let raw = window.WORDS || window.DATA || window.G3_TOP1_WORDS || window.words || window.db;
-  try { if (!raw && typeof data !== 'undefined') raw = data; } catch(e){}
-  if (!raw) { alert('找不到 data_g1_tog31.js 的資料陣列'); return []; }
-  const out=[], pushMaybe=(o,lsn)=>{
-    if(!o) return;
-    const c=o.char||o.word||o.hanzi||o.han||o.c||o['字'];
-    const z=o.zhuyin||o.bopomofo||o.phonetic||o.z||o['注音'];
-    if (c&&z) out.push({char:String(c), zhuyin:String(z).trim(), lesson: lsn??(o.lesson??o.lsn??o.lessonNo??null)});
-  };
-  if (Array.isArray(raw)) {
-    for (const it of raw) {
-      if (Array.isArray(it?.words)) { const l=it.lesson??it.lsn??it.lessonNo??null; for (const w of it.words) pushMaybe(w,l); }
-      else pushMaybe(it,it.lesson??it.lsn??it.lessonNo??null);
+function flattenLessons(ds, upto){
+  const arr=[];
+  if (!ds) return arr;
+  for (const les of ds.lessons||[]){
+    if (typeof upto === 'number' && les.lessonNo > upto) continue;
+    for (const w of les.words||[]){
+      const char = w['字'] ?? w.hanzi ?? w.char ?? w.word ?? w.c;
+      const zhuyin = w['注音'] ?? w.zhuyin ?? w.bopomofo ?? w.phonetic ?? w.z;
+      if (char && zhuyin){
+        arr.push({ char: String(char), zhuyin: String(zhuyin).trim(), lesson: les.lessonNo });
+      }
     }
-  } else if (Array.isArray(raw.words)) {
-    const l=raw.lesson??raw.lsn??raw.lessonNo??null; for (const w of raw.words) pushMaybe(w,l);
   }
-  if(!out.length) alert('data_g1_tog31.js 載入但解析不到 {char, zhuyin}');
-  return out;
+  return arr;
 }
-const DB = pickSourceArray();
 
-// ====== 範圍/出題 ======
-function getMaxLesson(){ const v=parseInt(lessonMaxSel?.value||'12',10); return Number.isFinite(v)?v:12; }
-function filteredDB(){ const m=getMaxLesson(); return DB.filter(it=>it.lesson==null||it.lesson<=m); }
-function filteredGroupByZhuyin(){
-  const map={}; for (const it of filteredDB()){ const k=(it.zhuyin||'').trim(); (map[k] ||= []).push(it); } return map;
+function getDatasetByCode(code){
+  if (window.cnkeys_all?.datasets){
+    return window.cnkeys_all.datasets.find(d => d.gradeCode === code);
+  }
+  return null;
 }
+
+function buildPools(term, uptoLesson){
+  // 當期池：此 term 的 1..N 課
+  const curDS = getDatasetByCode(term);
+  const currentPool = flattenLessons(curDS, uptoLesson);
+
+  // 前期池：在 TERM_ORDER 之前的全部 term（完整所有課）
+  const prevTerms = TERM_ORDER.filter(t => TERM_ORDER.indexOf(t) < TERM_ORDER.indexOf(term));
+  const prevPool = [];
+  for (const t of prevTerms){
+    const ds = getDatasetByCode(t);
+    prevPool.push(...flattenLessons(ds, undefined)); // 全部
+  }
+  return { currentPool, prevPool, prevTerms };
+}
+
+// ====== 權重/預覽 UI ======
+function getTerm(){ return termSel?.value || "小三上"; }
+function getMaxLesson(){ const v=parseInt(lessonMaxSel?.value||'12',10); return Number.isFinite(v)?v:12; }
+function getWeight(){ const v=parseInt(weightSel?.value||'75',10); return (v===50||v===75||v===100)?v:75; }
+
+function updateWeightUI(){
+  const term = getTerm();
+  const isCross = TERM_ORDER.indexOf(term) > 0; // 不是最早期就會跨學期
+  weightRow.style.display = isCross ? 'flex' : 'none';
+
+  const N = getMaxLesson();
+  const W = getWeight();
+  const remain = 100 - W;
+
+  const { prevTerms } = buildPools(term, N);
+  const prevLabel = prevTerms.length ? `（${prevTerms.join('、')}）` : '';
+  const curRangeLabel = `${term}(1～${N})`;
+
+  mixPreviewEl.textContent = isCross
+    ? `${curRangeLabel} ${W}%｜其餘 ${remain}% ${prevLabel}`
+    : `${term}(1～${N}) 100%`;
+}
+
+// ====== 出題 ======
+let CURRENT_POOL=[], PREV_POOL=[];
+
+function refreshPools(){
+  const term = getTerm();
+  const N = getMaxLesson();
+  const { currentPool, prevPool } = buildPools(term, N);
+  CURRENT_POOL = currentPool;
+  PREV_POOL = prevPool;
+  updateWeightUI();
+}
+
+function pickOne(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
 function nextWord(){
-  const F=filteredDB(); if(!F.length){ ZHUYIN_EL.textContent='—'; LESSON_EL.textContent=''; clearCanvas(); showInfo('沒有字可出題'); return; }
-  const G=filteredGroupByZhuyin(), keys=Object.keys(G);
-  let item; if(keys.length){ const k=keys[Math.floor(Math.random()*keys.length)]; const arr=G[k]; item=arr[Math.floor(Math.random()*arr.length)]; }
-  else item=F[Math.floor(Math.random()*F.length)];
-  currentTarget=item;
-  ZHUYIN_EL.textContent=item.zhuyin||'—';
-  LESSON_EL.textContent=item.lesson?`（第${item.lesson}課）`:'';
+  refreshPools();
+
+  // 沒資料就提示
+  const allCount = CURRENT_POOL.length + PREV_POOL.length;
+  if (allCount === 0){
+    ZHUYIN_EL.textContent='—';
+    LESSON_EL.textContent='';
+    clearCanvas();
+    showInfo('沒有字可出題（請調整年級或範圍）');
+    return;
+  }
+
+  // 決定抽題來源（權重）
+  let fromCurrent = true;
+  const isCross = PREV_POOL.length > 0;
+  if (isCross){
+    const W = getWeight(); // 當期 %
+    fromCurrent = (Math.random()*100) < W;
+    if (fromCurrent && CURRENT_POOL.length===0 && PREV_POOL.length>0) fromCurrent=false;
+    if (!fromCurrent && PREV_POOL.length===0 && CURRENT_POOL.length>0) fromCurrent=true;
+  }
+
+  const pool = fromCurrent ? CURRENT_POOL : PREV_POOL;
+  const item = pickOne(pool);
+  currentTarget = item;
+
+  ZHUYIN_EL.textContent = item.zhuyin || '—';
+  LESSON_EL.textContent = item.lesson ? `（第${item.lesson}課）` : '';
   passCount = 0;
   locked = true;
   disableNext(true);
@@ -123,10 +192,8 @@ function nextWord(){
   showProgress();
 }
 
-// ====== 畫布與描紅 ======
-function getTraceBox(){
-  return { x: 0, y: 0, w: CANVAS.width, h: CANVAS.height };
-}
+// ====== 畫布與描紅（沿用你現有的） ======
+function getTraceBox(){ return { x: 0, y: 0, w: CANVAS.width, h: CANVAS.height }; }
 function clearCanvas(){
   CTX.setTransform(1,0,0,1,0,0);
   CTX.clearRect(0,0,CANVAS.width,CANVAS.height);
@@ -149,11 +216,11 @@ function drawTrace(ch){
   CTX.save();
   CTX.globalAlpha=TRACE_ALPHA;
   CTX.fillStyle='#000'; CTX.textAlign='center'; CTX.textBaseline='middle';
-  CTX.font=`${Math.floor(b.w*0.92)}px ${TRACE_FONT}`; // 稍微縮 8% 避免切邊
+  CTX.font=`${Math.floor(b.w*0.92)}px ${TRACE_FONT}`;
   CTX.fillText(ch, b.x+b.w/2, b.y+b.h/2);
   CTX.restore();
 }
-function setLineStyle(){ CTX.lineCap='round'; CTX.lineJoin='round'; CTX.strokeStyle=penColor?.value||'#000'; CTX.lineWidth=PEN_WIDTH_PX; }
+function setLineStyle(){ CTX.lineCap='round'; CTX.lineJoin='round'; CTX.strokeStyle=penColor?.value||'#000'; CTX.lineWidth=40; }
 function getPos(e){ const r=CANVAS.getBoundingClientRect(), sx=CANVAS.width/r.width, sy=CANVAS.height/r.height; const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x:x*sx,y:y*sy}; }
 
 CANVAS.addEventListener('pointerdown',e=>{
@@ -171,28 +238,25 @@ window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 
-// ====== 影像工具（固定座標）======
-function binarize(imgData, thr=BIN_THR){
+// ====== 影像工具、走廊/本體、檢查（沿用你現有的動態誤判抑制） ======
+function binarize(imgData, thr=160){
   const {data,width,height}=imgData; const n=width*height; const mask=new Uint8Array(n);
   for(let i=0, p=0;i<data.length;i+=4, p++){ const v=(data[i]+data[i+1]+data[i+2])/3; mask[p]= (v<thr)?1:0; }
   return {mask,width,height};
 }
-function extractStableRegion(ctx, size=INPUT_SIZE){
+function extractStableRegion(ctx, size=128){
   const b=getTraceBox();
   const img = ctx.getImageData(b.x, b.y, b.w, b.h);
   const tmp=document.createElement('canvas'); tmp.width=b.w; tmp.height=b.h;
   const tg=tmp.getContext('2d'); tg.putImageData(img,0,0);
   const out=document.createElement('canvas'); out.width=size; out.height=size;
   const o=out.getContext('2d'); o.fillStyle='#fff'; o.fillRect(0,0,size,size);
-  o.imageSmoothingEnabled=false;
-  o.drawImage(tmp, 0,0,b.w,b.h, 0,0,size,size);
+  o.imageSmoothingEnabled=false; o.drawImage(tmp, 0,0,b.w,b.h, 0,0,size,size);
   const oimg=o.getImageData(0,0,size,size);
   const bin=binarize(oimg);
   return {mask:bin.mask, empty:false};
 }
-
-// ====== 走廊/本體 ======
-function makeTraceBand(char, size=INPUT_SIZE){
+function makeTraceBand(char, size=128){
   const c=document.createElement('canvas'); c.width=size; c.height=size;
   const g=c.getContext('2d');
   g.fillStyle='#fff'; g.fillRect(0,0,size,size);
@@ -204,10 +268,8 @@ function makeTraceBand(char, size=INPUT_SIZE){
   const bin=binarize(img);
   const fill = bin.mask;
 
-  // 計算本體像素數
   let fillCount=0; for(let i=0;i<fill.length;i++) fillCount += fill[i];
 
-  // 距離轉換 → 走廊 band
   const INF=1e9, dist=new Float32Array(size*size);
   for(let i=0;i<dist.length;i++) dist[i]=fill[i]?0:INF;
   for(let y=0;y<size;y++) for(let x=0;x<size;x++){
@@ -232,7 +294,6 @@ function makeTraceBand(char, size=INPUT_SIZE){
   return { band, bandCount, fill, fillCount };
 }
 
-// ====== 檢查（動態調整「塗抹太多」）======
 function checkTracing(){
   if(!currentTarget){ showInfo('尚未出題'); return; }
 
@@ -243,14 +304,12 @@ function checkTracing(){
   const user = extractStableRegion(CTX, INPUT_SIZE);
   const userMask = user.mask;
 
-  // 使用者實際塗抹像素
   let userCount=0; for(let i=0;i<userMask.length;i++) userCount += userMask[i];
   if (userCount === 0){ showFail('沒有筆畫'); return; }
 
   currentBand = currentBand || makeTraceBand(currentTarget.char, INPUT_SIZE);
   const {band, bandCount, fill, fillCount} = currentBand;
 
-  // 統計覆蓋與外漏
   let coverFill=0, leak=0;
   for(let i=0;i<userMask.length;i++){
     if (userMask[i]) {
@@ -261,11 +320,8 @@ function checkTracing(){
   const coverage = fillCount ? (coverFill / fillCount) : 0;
   const leakage  = userCount ? (leak / userCount) : 1;
 
-  // ---- 新：動態「塗抹太多」判定 ----
-  // 依字的複雜度（本體密度）自動提高容許上限，避免髮、鬱等高密度字被誤判
   const PIXELS = INPUT_SIZE * INPUT_SIZE;
-  const density = fillCount / PIXELS;           // 0~1，本體像素密度
-  // 基準門檻 0.82，複雜度越高越寬鬆，最多 ~0.94
+  const density = fillCount / PIXELS;
   const smudgeThreshold = 0.82 + Math.min(0.12, density * 0.40);
   const bandFillRatio   = bandCount ? (userCount / bandCount) : 1;
 
@@ -275,16 +331,13 @@ function checkTracing(){
     showFail('塗抹太多，請沿著描紅書寫');
     return;
   }
-  // ----------------------------------
 
   if (coverage >= PASS_COVERAGE && leakage <= MAX_LEAKAGE){
     passCount++;
     const need = getRequiredPasses();
 
     if (passCount >= need){
-      // 完成一題：本次開啟期間累計 +1
       incStats();
-
       locked = false;
       disableNext(false);
       showInfo(`🎉 達成 ${need}/${need} 次，已完成！自動換下一題…`);
@@ -292,16 +345,18 @@ function checkTracing(){
     } else {
       const remain = Math.max(0, need - passCount);
       showInfo(`✅ 通過一次！還剩下 ${remain} 次就完成`);
-      clearCanvas(); // 下一次嘗試
+      clearCanvas();
     }
   }else{
     clearCanvas();
-    if (coverage < PASS_COVERAGE) {
-      showFail(`覆蓋不足 60%，請再試一次`);
-    } else {
-      showFail(`外漏過高，請沿著描紅邊緣書寫`);
-    }
+    if (coverage < PASS_COVERAGE) showFail(`覆蓋不足 60%，請再試一次`);
+    else showFail(`外漏過高，請沿著描紅邊縁書寫`);
   }
+}
+
+function getRequiredPasses(){
+  const v = parseInt(reqPassesSel?.value || '3', 10);
+  return Math.min(10, Math.max(1, isNaN(v)?3:v));
 }
 
 // ====== 即時覆蓋率（關閉；保留函式避免報錯）======
@@ -345,7 +400,11 @@ btnNext?.addEventListener('click', ()=>{
   const need = getRequiredPasses();
   showInfo(`還差 ${Math.max(0, need - passCount)} 次描紅才可換題`);
 });
+
+termSel?.addEventListener('change', ()=>{ nextWord(); });
 lessonMaxSel?.addEventListener('change', ()=>{ nextWord(); });
+weightSel?.addEventListener('change', ()=>{ updateWeightUI(); });
+
 reqPassesSel?.addEventListener('change', ()=>{
   showProgress();
   if (passCount >= getRequiredPasses()) { locked = false; disableNext(false); }
@@ -353,5 +412,6 @@ reqPassesSel?.addEventListener('change', ()=>{
 btnRecognize?.addEventListener('click', checkTracing);
 
 // 初始
+updateWeightUI();
 disableNext(true);
 nextWord();
