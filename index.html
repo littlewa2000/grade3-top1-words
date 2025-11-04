@@ -44,6 +44,7 @@
     .list li{border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:#fff;display:flex;justify-content:space-between;align-items:center}
     .section{display:flex;flex-direction:column;gap:12px}
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .muted{color:var(--muted);font-size:13px}
   </style>
 </head>
 <body>
@@ -58,6 +59,15 @@
     <div id="settings" class="tab-panel active">
       <div class="card section">
         <div class="row">
+          <label>年級學期：
+            <select id="termSelect" title="選擇年級學期">
+              <option value="小一下">小一下</option>
+              <option value="小二上">小二上</option>
+              <option value="小二下">小二下</option>
+              <option value="小三上" selected>小三上</option>
+            </select>
+          </label>
+
           <label>範圍：
             <select id="lessonMax" title="選擇測驗到第幾課">
               <option value="1">第 1 課</option>
@@ -85,6 +95,18 @@
           <label>筆色：
             <input id="penColor" type="color" value="#000000" title="筆色" />
           </label>
+        </div>
+
+        <!-- 當期權重（僅跨學期時顯示） -->
+        <div id="weightRow" class="row" style="margin-top:8px; display:none;">
+          <label>當期權重：
+            <select id="currWeight" title="當期課程出題比例">
+              <option value="50">50%</option>
+              <option value="75" selected>75%</option>
+              <option value="100">100%</option>
+            </select>
+          </label>
+          <div id="mixPreview" class="muted">—</div>
         </div>
 
         <!-- 統計資料 -->
