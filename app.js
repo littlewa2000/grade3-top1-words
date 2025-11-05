@@ -1,3 +1,11 @@
+// === app.js (full, updated) ===
+// - Supports term selection: 小一下 / 小二上 / 小二下 / 小三上
+// - Range (第1~N課), cross-term mixing with weights (50/75/100)
+// - Live preview of mixing, practice canvas, recognition
+// - Shows "（學期第N課）" next to zhuyin on the Practice tab
+//
+// Requires: data_g1_tog31.js loaded before this file and exposing window.cnkeys_all
+
 // ---- Tabs：預設顯示「設定」；用 hash 控制 + .active 切換 ----
 (function setupTabs(){
   const settingsBtn = document.getElementById('tabSettingsBtn');
@@ -78,16 +86,22 @@ const MIN_DURATION_MS   = 700;
 // ====== 資料載入（支援新版 cnkeys_all 與舊版 DATA）======
 const TERM_ORDER = ["小一下", "小二上", "小二下", "小三上"];
 
-function flattenLessons(ds, upto){
+function flattenLessons(ds, upto, code){
   const arr=[];
   if (!ds) return arr;
   for (const les of ds.lessons||[]){
     if (typeof upto === 'number' && les.lessonNo > upto) continue;
-    for (const w of les.words||[]){
-      const char = w['字'] ?? w.hanzi ?? w.char ?? w.word ?? w.c;
+    for (const w of (les.words||[])){
+      const char   = w['字'] ?? w.hanzi ?? w.char ?? w.word ?? w.c;
       const zhuyin = w['注音'] ?? w.zhuyin ?? w.bopomofo ?? w.phonetic ?? w.z;
       if (char && zhuyin){
-        arr.push({ char: String(char), zhuyin: String(zhuyin).trim(), lesson: les.lessonNo });
+        arr.push({
+          char: String(char),
+          zhuyin: String(zhuyin).trim(),
+          lesson: les.lessonNo,
+          term: code || ds.gradeCode,  // 來源學期（小一下/小二上/小二下/小三上）
+          grade: ds.grade
+        });
       }
     }
   }
@@ -104,14 +118,14 @@ function getDatasetByCode(code){
 function buildPools(term, uptoLesson){
   // 當期池：此 term 的 1..N 課
   const curDS = getDatasetByCode(term);
-  const currentPool = flattenLessons(curDS, uptoLesson);
+  const currentPool = flattenLessons(curDS, uptoLesson, term);
 
   // 前期池：在 TERM_ORDER 之前的全部 term（完整所有課）
   const prevTerms = TERM_ORDER.filter(t => TERM_ORDER.indexOf(t) < TERM_ORDER.indexOf(term));
   const prevPool = [];
   for (const t of prevTerms){
     const ds = getDatasetByCode(t);
-    prevPool.push(...flattenLessons(ds, undefined)); // 全部
+    prevPool.push(...flattenLessons(ds, undefined, t)); // 全部課，保留學期代碼
   }
   return { currentPool, prevPool, prevTerms };
 }
@@ -124,7 +138,7 @@ function getWeight(){ const v=parseInt(weightSel?.value||'75',10); return (v===5
 function updateWeightUI(){
   const term = getTerm();
   const isCross = TERM_ORDER.indexOf(term) > 0; // 不是最早期就會跨學期
-  weightRow.style.display = isCross ? 'flex' : 'none';
+  if (weightRow) weightRow.style.display = isCross ? 'flex' : 'none';
 
   const N = getMaxLesson();
   const W = getWeight();
@@ -134,9 +148,11 @@ function updateWeightUI(){
   const prevLabel = prevTerms.length ? `（${prevTerms.join('、')}）` : '';
   const curRangeLabel = `${term}(1～${N})`;
 
-  mixPreviewEl.textContent = isCross
-    ? `${curRangeLabel} ${W}%｜其餘 ${remain}% ${prevLabel}`
-    : `${term}(1～${N}) 100%`;
+  if (mixPreviewEl) {
+    mixPreviewEl.textContent = isCross
+      ? `${curRangeLabel} ${W}%｜其餘 ${remain}% ${prevLabel}`
+      : `${term}(1～${N}) 100%`;
+  }
 }
 
 // ====== 出題 ======
@@ -161,8 +177,8 @@ function nextWord(){
   // 沒資料就提示
   const allCount = CURRENT_POOL.length + PREV_POOL.length;
   if (allCount === 0){
-    ZHUYIN_EL.textContent='—';
-    LESSON_EL.textContent='';
+    if (ZHUYIN_EL) ZHUYIN_EL.textContent='—';
+    if (LESSON_EL) LESSON_EL.textContent='';
     clearCanvas();
     showInfo('沒有字可出題（請調整年級或範圍）');
     return;
@@ -182,8 +198,12 @@ function nextWord(){
   const item = pickOne(pool);
   currentTarget = item;
 
-  ZHUYIN_EL.textContent = item.zhuyin || '—';
-  LESSON_EL.textContent = item.lesson ? `（第${item.lesson}課）` : '';
+  if (ZHUYIN_EL) ZHUYIN_EL.textContent = item.zhuyin || '—';
+  if (LESSON_EL) {
+    LESSON_EL.textContent = (item.term && item.lesson)
+      ? `（${item.term}第${item.lesson}課）`
+      : (item.lesson ? `（第${item.lesson}課）` : '');
+  }
   passCount = 0;
   locked = true;
   disableNext(true);
@@ -192,7 +212,7 @@ function nextWord(){
   showProgress();
 }
 
-// ====== 畫布與描紅（沿用你現有的） ======
+// ====== 畫布與描紅 ======
 function getTraceBox(){ return { x: 0, y: 0, w: CANVAS.width, h: CANVAS.height }; }
 function clearCanvas(){
   CTX.setTransform(1,0,0,1,0,0);
@@ -220,7 +240,7 @@ function drawTrace(ch){
   CTX.fillText(ch, b.x+b.w/2, b.y+b.h/2);
   CTX.restore();
 }
-function setLineStyle(){ CTX.lineCap='round'; CTX.lineJoin='round'; CTX.strokeStyle=penColor?.value||'#000'; CTX.lineWidth=40; }
+function setLineStyle(){ CTX.lineCap='round'; CTX.lineJoin='round'; CTX.strokeStyle=penColor?.value||'#000'; CTX.lineWidth=PEN_WIDTH_PX; }
 function getPos(e){ const r=CANVAS.getBoundingClientRect(), sx=CANVAS.width/r.width, sy=CANVAS.height/r.height; const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x:x*sx,y:y*sy}; }
 
 CANVAS.addEventListener('pointerdown',e=>{
@@ -238,13 +258,13 @@ window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 
-// ====== 影像工具、走廊/本體、檢查（沿用你現有的動態誤判抑制） ======
-function binarize(imgData, thr=160){
+// ====== 影像工具、走廊/本體、檢查 ======
+function binarize(imgData, thr=BIN_THR){
   const {data,width,height}=imgData; const n=width*height; const mask=new Uint8Array(n);
   for(let i=0, p=0;i<data.length;i+=4, p++){ const v=(data[i]+data[i+1]+data[i+2])/3; mask[p]= (v<thr)?1:0; }
   return {mask,width,height};
 }
-function extractStableRegion(ctx, size=128){
+function extractStableRegion(ctx, size=INPUT_SIZE){
   const b=getTraceBox();
   const img = ctx.getImageData(b.x, b.y, b.w, b.h);
   const tmp=document.createElement('canvas'); tmp.width=b.w; tmp.height=b.h;
@@ -256,7 +276,7 @@ function extractStableRegion(ctx, size=128){
   const bin=binarize(oimg);
   return {mask:bin.mask, empty:false};
 }
-function makeTraceBand(char, size=128){
+function makeTraceBand(char, size=INPUT_SIZE){
   const c=document.createElement('canvas'); c.width=size; c.height=size;
   const g=c.getContext('2d');
   g.fillStyle='#fff'; g.fillRect(0,0,size,size);
@@ -295,7 +315,7 @@ function makeTraceBand(char, size=128){
 }
 
 function checkTracing(){
-  if(!currentTarget){ showInfo('尚未出題'); return; }
+  if(!currentTarget){ showFail('尚未出題'); return; }
 
   const dt = performance.now() - (attemptStart || performance.now());
   if (pathLen < MIN_PATH_LEN){ showFail('筆畫太少，請沿著描紅寫'); return; }
