@@ -1,34 +1,37 @@
-// === app.js (full, updated) ===
-// - Supports term selection: 小一下 / 小二上 / 小二下 / 小三上
-// - Range (第1~N課), cross-term mixing with weights (50/75/100)
-// - Live preview of mixing, practice canvas, recognition
-// - Shows "（學期第N課）" next to zhuyin on the Practice tab
-//
-// Requires: data_g1_tog31.js loaded before this file and exposing window.cnkeys_all
+// === app.js with 「搜尋」分頁 ===
+// 依賴：window.cnkeys_all 來自 data_g1_tog31.js
 
-// ---- Tabs：預設顯示「設定」；用 hash 控制 + .active 切換 ----
+// ---- Tabs：#settings / #practice / #search ----
 (function setupTabs(){
-  const settingsBtn = document.getElementById('tabSettingsBtn');
-  const practiceBtn = document.getElementById('tabPracticeBtn');
-  const settingsPan = document.getElementById('settings');
-  const practicePan = document.getElementById('practice');
-
-  function applyActive(isSettings){
-    settingsBtn?.classList.toggle('active', isSettings);
-    practiceBtn?.classList.toggle('active', !isSettings);
-    settingsPan?.classList.toggle('active', isSettings);
-    practicePan?.classList.toggle('active', !isSettings);
+  const btns = {
+    settings: document.getElementById('tabSettingsBtn'),
+    practice: document.getElementById('tabPracticeBtn'),
+    search:   document.getElementById('tabSearchBtn'),
+  };
+  const pans = {
+    settings: document.getElementById('settings'),
+    practice: document.getElementById('practice'),
+    search:   document.getElementById('search'),
+  };
+  function applyActive(name){
+    ['settings','practice','search'].forEach(key=>{
+      btns[key]?.classList.toggle('active', key===name);
+      pans[key]?.classList.toggle('active', key===name);
+    });
   }
-  function updateByHash(){
+  function parseHash(){
     const h = (location.hash || '#settings').toLowerCase();
-    applyActive(h === '#settings');
+    if (h==='#practice') return 'practice';
+    if (h==='#search') return 'search';
+    return 'settings';
   }
-  window.addEventListener('hashchange', updateByHash);
-  if (!location.hash) location.replace('#settings'); // 預設 settings
-  updateByHash();
+  function update(){ applyActive(parseHash()); }
+  window.addEventListener('hashchange', update);
+  if (!location.hash) location.replace('#settings');
+  update();
 })();
 
-// ====== UI ======
+// ====== 練習區相關（維持你現有行為；略去與搜尋無關的細節） ======
 const ZHUYIN_EL    = document.getElementById('zhuyin');
 const LESSON_EL    = document.getElementById('lessonInfo');
 const CANVAS       = document.getElementById('pad');
@@ -48,10 +51,12 @@ const mixPreviewEl = document.getElementById('mixPreview');
 const btnRecognize = document.getElementById('btnRecognize');
 const recogList    = document.getElementById('recogList');
 
-// 覆蓋率（UI 不顯示）
-const SHOW_LIVE = false;
+// ====== 搜尋分頁 ======
+const charQueryInput = document.getElementById('charQuery');
+const btnDoSearch    = document.getElementById('btnDoSearch');
+const searchResultEl = document.getElementById('searchResult');
 
-// ====== 統計：累計完成題數（本次開啟期間，重新載入會歸零）======
+// ====== 統計 ======
 let statsTotal = 0;
 const statsTotalEl = document.getElementById('statsTotal');
 const btnResetStats = document.getElementById('btnResetStats');
@@ -61,29 +66,25 @@ function resetStats(){ statsTotal = 0; updateStatsUI(); }
 btnResetStats?.addEventListener('click', resetStats);
 resetStats();
 
-// ====== 描紅狀態/參數 ======
+// ====== 參數 ======
 let drawing=false, last=null, currentTarget=null;
 let pathLen=0, attemptStart=0;
 let passCount=0;
+let currentBand=null;
+let locked=true;
 
-let currentBand=null;      // { band, bandCount, fill, fillCount }
-let locked=true;           // 未達成次數前，鎖定同一題
-
-// *** 描紅區=整個畫布（無外圍空白） ***
-const TRACE_RATIO       = 1.0;
 const TRACE_ALPHA       = 0.15;
 const TRACE_FONT        = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
-
 const INPUT_SIZE        = 128;
 const BIN_THR           = 160;
-const PEN_WIDTH_PX      = 40; // 更粗
-const BAND_PX           = 10; // 走廊更寬
-const PASS_COVERAGE     = 0.60;   // 門檻 60%
-const MAX_LEAKAGE       = 0.18;   // 外漏上限
+const PEN_WIDTH_PX      = 40;
+const BAND_PX           = 10;
+const PASS_COVERAGE     = 0.60;
+const MAX_LEAKAGE       = 0.18;
 const MIN_PATH_LEN      = 180;
 const MIN_DURATION_MS   = 700;
 
-// ====== 資料載入（支援新版 cnkeys_all 與舊版 DATA）======
+// ====== 資料工具 ======
 const TERM_ORDER = ["小一下", "小二上", "小二下", "小三上"];
 
 function flattenLessons(ds, upto, code){
@@ -94,12 +95,12 @@ function flattenLessons(ds, upto, code){
     for (const w of (les.words||[])){
       const char   = w['字'] ?? w.hanzi ?? w.char ?? w.word ?? w.c;
       const zhuyin = w['注音'] ?? w.zhuyin ?? w.bopomofo ?? w.phonetic ?? w.z;
-      if (char && zhuyin){
+      if (char){
         arr.push({
           char: String(char),
-          zhuyin: String(zhuyin).trim(),
+          zhuyin: zhuyin ? String(zhuyin).trim() : '',
           lesson: les.lessonNo,
-          term: code || ds.gradeCode,  // 來源學期（小一下/小二上/小二下/小三上）
+          term: code || ds.gradeCode,
           grade: ds.grade
         });
       }
@@ -107,37 +108,31 @@ function flattenLessons(ds, upto, code){
   }
   return arr;
 }
-
 function getDatasetByCode(code){
   if (window.cnkeys_all?.datasets){
     return window.cnkeys_all.datasets.find(d => d.gradeCode === code);
   }
   return null;
 }
-
 function buildPools(term, uptoLesson){
-  // 當期池：此 term 的 1..N 課
   const curDS = getDatasetByCode(term);
   const currentPool = flattenLessons(curDS, uptoLesson, term);
-
-  // 前期池：在 TERM_ORDER 之前的全部 term（完整所有課）
   const prevTerms = TERM_ORDER.filter(t => TERM_ORDER.indexOf(t) < TERM_ORDER.indexOf(term));
   const prevPool = [];
   for (const t of prevTerms){
     const ds = getDatasetByCode(t);
-    prevPool.push(...flattenLessons(ds, undefined, t)); // 全部課，保留學期代碼
+    prevPool.push(...flattenLessons(ds, undefined, t));
   }
   return { currentPool, prevPool, prevTerms };
 }
 
-// ====== 權重/預覽 UI ======
+// 權重/預覽
 function getTerm(){ return termSel?.value || "小三上"; }
 function getMaxLesson(){ const v=parseInt(lessonMaxSel?.value||'12',10); return Number.isFinite(v)?v:12; }
 function getWeight(){ const v=parseInt(weightSel?.value||'75',10); return (v===50||v===75||v===100)?v:75; }
-
 function updateWeightUI(){
   const term = getTerm();
-  const isCross = TERM_ORDER.indexOf(term) > 0; // 不是最早期就會跨學期
+  const isCross = TERM_ORDER.indexOf(term) > 0;
   if (weightRow) weightRow.style.display = isCross ? 'flex' : 'none';
 
   const N = getMaxLesson();
@@ -155,9 +150,8 @@ function updateWeightUI(){
   }
 }
 
-// ====== 出題 ======
+// 出題
 let CURRENT_POOL=[], PREV_POOL=[];
-
 function refreshPools(){
   const term = getTerm();
   const N = getMaxLesson();
@@ -166,44 +160,34 @@ function refreshPools(){
   PREV_POOL = prevPool;
   updateWeightUI();
 }
-
-function pickOne(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
-}
+function pickOne(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
 function nextWord(){
   refreshPools();
-
-  // 沒資料就提示
   const allCount = CURRENT_POOL.length + PREV_POOL.length;
   if (allCount === 0){
-    if (ZHUYIN_EL) ZHUYIN_EL.textContent='—';
-    if (LESSON_EL) LESSON_EL.textContent='';
+    ZHUYIN_EL.textContent='—';
+    LESSON_EL.textContent='';
     clearCanvas();
     showInfo('沒有字可出題（請調整年級或範圍）');
     return;
   }
-
-  // 決定抽題來源（權重）
   let fromCurrent = true;
   const isCross = PREV_POOL.length > 0;
   if (isCross){
-    const W = getWeight(); // 當期 %
+    const W = getWeight();
     fromCurrent = (Math.random()*100) < W;
-    if (fromCurrent && CURRENT_POOL.length===0 && PREV_POOL.length>0) fromCurrent=false;
-    if (!fromCurrent && PREV_POOL.length===0 && CURRENT_POOL.length>0) fromCurrent=true;
+    if (fromCurrent && CURRENT_POOL.length===0) fromCurrent=false;
+    if (!fromCurrent && PREV_POOL.length===0) fromCurrent=true;
   }
-
   const pool = fromCurrent ? CURRENT_POOL : PREV_POOL;
   const item = pickOne(pool);
   currentTarget = item;
 
-  if (ZHUYIN_EL) ZHUYIN_EL.textContent = item.zhuyin || '—';
-  if (LESSON_EL) {
-    LESSON_EL.textContent = (item.term && item.lesson)
-      ? `（${item.term}第${item.lesson}課）`
-      : (item.lesson ? `（第${item.lesson}課）` : '');
-  }
+  ZHUYIN_EL.textContent = item.zhuyin || '—';
+  LESSON_EL.textContent = (item.term && item.lesson)
+    ? `（${item.term}第${item.lesson}課）`
+    : (item.lesson ? `（第${item.lesson}課）` : '');
   passCount = 0;
   locked = true;
   disableNext(true);
@@ -212,7 +196,7 @@ function nextWord(){
   showProgress();
 }
 
-// ====== 畫布與描紅 ======
+// 畫布
 function getTraceBox(){ return { x: 0, y: 0, w: CANVAS.width, h: CANVAS.height }; }
 function clearCanvas(){
   CTX.setTransform(1,0,0,1,0,0);
@@ -258,7 +242,7 @@ window.addEventListener('pointerup',()=>{drawing=false; last=null;});
 CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 
-// ====== 影像工具、走廊/本體、檢查 ======
+// 影像與檢查
 function binarize(imgData, thr=BIN_THR){
   const {data,width,height}=imgData; const n=width*height; const mask=new Uint8Array(n);
   for(let i=0, p=0;i<data.length;i+=4, p++){ const v=(data[i]+data[i+1]+data[i+2])/3; mask[p]= (v<thr)?1:0; }
@@ -316,7 +300,6 @@ function makeTraceBand(char, size=INPUT_SIZE){
 
 function checkTracing(){
   if(!currentTarget){ showFail('尚未出題'); return; }
-
   const dt = performance.now() - (attemptStart || performance.now());
   if (pathLen < MIN_PATH_LEN){ showFail('筆畫太少，請沿著描紅寫'); return; }
   if (dt < MIN_DURATION_MS){ showFail('寫得太快，請慢慢沿著描紅'); return; }
@@ -346,16 +329,11 @@ function checkTracing(){
   const bandFillRatio   = bandCount ? (userCount / bandCount) : 1;
 
   const isSmudge = (bandFillRatio > smudgeThreshold) && (leakage > 0.30) && (coverage < 0.70);
-  if (isSmudge){
-    clearCanvas();
-    showFail('塗抹太多，請沿著描紅書寫');
-    return;
-  }
+  if (isSmudge){ clearCanvas(); showFail('塗抹太多，請沿著描紅書寫'); return; }
 
   if (coverage >= PASS_COVERAGE && leakage <= MAX_LEAKAGE){
     passCount++;
     const need = getRequiredPasses();
-
     if (passCount >= need){
       incStats();
       locked = false;
@@ -373,17 +351,12 @@ function checkTracing(){
     else showFail(`外漏過高，請沿著描紅邊縁書寫`);
   }
 }
-
 function getRequiredPasses(){
   const v = parseInt(reqPassesSel?.value || '3', 10);
   return Math.min(10, Math.max(1, isNaN(v)?3:v));
 }
 
-// ====== 即時覆蓋率（關閉；保留函式避免報錯）======
-function updateLive(_) { /* no-op */ }
-function computeLiveCoverage(){ /* no-op */ }
-
-// ====== UI 呈現/控制 ======
+// UI（練習）
 function showProgress(){
   if(!recogList) return;
   recogList.innerHTML='';
@@ -412,26 +385,110 @@ function disableNext(disabled){
   btnNext.style.opacity = disabled ? '0.5' : '1';
   btnNext.style.cursor  = disabled ? 'not-allowed' : 'pointer';
 }
-
-// ====== 綁定/初始化 ======
 btnClear?.addEventListener('click', ()=>{ clearCanvas(); });
 btnNext?.addEventListener('click', ()=>{
   if (!locked) { nextWord(); return; }
   const need = getRequiredPasses();
   showInfo(`還差 ${Math.max(0, need - passCount)} 次描紅才可換題`);
 });
-
 termSel?.addEventListener('change', ()=>{ nextWord(); });
 lessonMaxSel?.addEventListener('change', ()=>{ nextWord(); });
 weightSel?.addEventListener('change', ()=>{ updateWeightUI(); });
-
 reqPassesSel?.addEventListener('change', ()=>{
   showProgress();
   if (passCount >= getRequiredPasses()) { locked = false; disableNext(false); }
 });
 btnRecognize?.addEventListener('click', checkTracing);
 
-// 初始
+// ====== 「搜尋」索引與行為 ======
+const charIndex = buildCharIndex(); // Map<char, Array<{term,lesson,zhuyin}>>
+
+function buildCharIndex(){
+  const map = new Map();
+  const dsList = (window.cnkeys_all && window.cnkeys_all.datasets) ? window.cnkeys_all.datasets : [];
+  for (const ds of dsList){
+    const code = ds.gradeCode || ds.code || ds.grade || '';
+    const rows = flattenLessons(ds, /*upto*/ undefined, code);
+    for (const r of rows){
+      const key = r.char;
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push({ term: r.term || code, lesson: r.lesson, zhuyin: r.zhuyin || '' });
+    }
+  }
+  // 排序：學期順序 + 課次
+  for (const [k, arr] of map){
+    arr.sort((a,b)=>{
+      const ai = TERM_ORDER.indexOf(a.term), bi = TERM_ORDER.indexOf(b.term);
+      if (ai !== bi) return ai - bi;
+      return (a.lesson||0) - (b.lesson||0);
+    });
+  }
+  return map;
+}
+
+function renderSearchResult(ch){
+  if (!searchResultEl) return;
+
+  searchResultEl.innerHTML = '';
+  const wrap = document.createElement('div');
+
+  const title = document.createElement('div');
+  title.className = 'result-title';
+  title.textContent = `查詢字：「${ch}」`;
+  wrap.appendChild(title);
+
+  const list = document.createElement('div');
+
+  if (!charIndex.has(ch)){
+    const line = document.createElement('div');
+    line.className = 'result-line';
+    line.textContent = '查無此字';
+    list.appendChild(line);
+  } else {
+    const entries = charIndex.get(ch);
+    const zh = entries.find(e=>e.zhuyin)?.zhuyin || '';
+    const head = document.createElement('div');
+    head.className = 'result-line';
+    head.textContent = zh ? `注音：${zh}` : '注音：—';
+    list.appendChild(head);
+
+    const places = document.createElement('div');
+    places.className = 'result-line';
+    places.innerHTML = '出現於：';
+    entries.forEach(e=>{
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.textContent = `${e.term}第${e.lesson}課`;
+      places.appendChild(chip);
+    });
+    list.appendChild(places);
+  }
+
+  wrap.appendChild(list);
+  searchResultEl.appendChild(wrap);
+}
+
+function doSearch(){
+  const raw = (charQueryInput?.value || '').trim();
+  if (!raw){
+    searchResultEl.innerHTML = '<div class="result-line">請先輸入要查的國字</div>';
+    return;
+  }
+  // 僅取第一個 Unicode 字元（避免一次貼入多字）
+  const ch = Array.from(raw)[0];
+  if (!ch){
+    searchResultEl.innerHTML = '<div class="result-line">請輸入有效的國字</div>';
+    return;
+  }
+  renderSearchResult(ch);
+}
+
+btnDoSearch?.addEventListener('click', doSearch);
+charQueryInput?.addEventListener('keydown', (e)=>{
+  if (e.key === 'Enter') doSearch();
+});
+
+// ====== 初始化 ======
 updateWeightUI();
 disableNext(true);
 nextWord();
