@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>三上國字描紅練習</title>
 
-  <!-- PWA 基本 -->
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0ea5e9">
-
-  <!-- iOS 加到主畫面 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="國字描紅">
@@ -29,7 +26,7 @@
     .tab-panel.active{display:block;}
 
     .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;}
-    select,button,input[type="color"]{height:38px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:14px}
+    select,button,input[type="color"],input[type="search"],input[type="text"]{height:38px;padding:0 12px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:14px}
     button{cursor:pointer;background:var(--accent);color:#fff;border:none}
     button.secondary{background:#0f172a}
     .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -45,17 +42,22 @@
     .section{display:flex;flex-direction:column;gap:12px}
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .muted{color:var(--muted);font-size:13px}
+
+    /* 搜尋 */
+    .result-line{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff}
+    .chip{display:inline-block;margin:4px 6px 0 0;padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:#f8fafc;font-size:12px;color:#0f172a}
+    .result-title{font-weight:700;margin-bottom:6px}
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Tabs -->
     <div class="tabs">
       <a id="tabSettingsBtn" class="tab-link active" href="#settings">設定</a>
       <a id="tabPracticeBtn" class="tab-link" href="#practice">練習</a>
+      <a id="tabSearchBtn" class="tab-link" href="#search">搜尋</a>
     </div>
 
-    <!-- 設定分頁（預設 active） -->
+    <!-- 設定 -->
     <div id="settings" class="tab-panel active">
       <div class="card section">
         <div class="row">
@@ -67,49 +69,36 @@
               <option value="小三上" selected>小三上</option>
             </select>
           </label>
-
           <label>範圍：
             <select id="lessonMax" title="選擇測驗到第幾課">
-              <option value="1">第 1 課</option>
-              <option value="2">第 2 課</option>
-              <option value="3">第 3 課</option>
-              <option value="4">第 4 課</option>
-              <option value="5">第 5 課</option>
-              <option value="6">第 6 課</option>
-              <option value="7">第 7 課</option>
-              <option value="8">第 8 課</option>
-              <option value="9">第 9 課</option>
-              <option value="10">第 10 課</option>
-              <option value="11">第 11 課</option>
-              <option value="12" selected>第 12 課</option>
+              <option value="1">第 1 課</option><option value="2">第 2 課</option>
+              <option value="3">第 3 課</option><option value="4">第 4 課</option>
+              <option value="5">第 5 課</option><option value="6">第 6 課</option>
+              <option value="7">第 7 課</option><option value="8">第 8 課</option>
+              <option value="9">第 9 課</option><option value="10">第 10 課</option>
+              <option value="11">第 11 課</option><option value="12" selected>第 12 課</option>
             </select>
           </label>
-
           <label>每字次數：
             <select id="reqPasses" title="每個字需要描紅幾次">
               <option>1</option><option>2</option><option selected>3</option>
               <option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
             </select>
           </label>
-
           <label>筆色：
             <input id="penColor" type="color" value="#000000" title="筆色" />
           </label>
         </div>
 
-        <!-- 當期權重（僅跨學期時顯示） -->
         <div id="weightRow" class="row" style="margin-top:8px; display:none;">
           <label>當期權重：
             <select id="currWeight" title="當期課程出題比例">
-              <option value="50">50%</option>
-              <option value="75" selected>75%</option>
-              <option value="100">100%</option>
+              <option value="50">50%</option><option value="75" selected>75%</option><option value="100">100%</option>
             </select>
           </label>
           <div id="mixPreview" class="muted">—</div>
         </div>
 
-        <!-- 統計資料 -->
         <div class="row" style="margin-top:8px;">
           <div style="font-weight:600;">統計資料：</div>
           <div>累計完成題數：<span id="statsTotal">0</span></div>
@@ -118,7 +107,7 @@
       </div>
     </div>
 
-    <!-- 練習分頁 -->
+    <!-- 練習 -->
     <div id="practice" class="tab-panel">
       <div class="card">
         <div class="row" style="justify-content:space-between">
@@ -127,9 +116,9 @@
             <span class="lesson" id="lessonInfo"></span>
           </div>
           <div class="row">
-            <button id="btnClear" type="button" class="secondary" title="清除畫面">清除</button>
-            <button id="btnRecognize" type="button" title="檢查">檢查</button>
-            <button id="btnNext" type="button" class="secondary" title="下一題">下一題</button>
+            <button id="btnClear" type="button" class="secondary">清除</button>
+            <button id="btnRecognize" type="button">檢查</button>
+            <button id="btnNext" type="button" class="secondary">下一題</button>
           </div>
         </div>
       </div>
@@ -140,20 +129,31 @@
             <canvas id="pad" width="600" height="600"></canvas>
           </div>
         </div>
-
         <div class="card">
           <h3 style="margin: 4px 0 8px;">進度 / 訊息</h3>
           <ul id="recogList" class="list"></ul>
         </div>
       </div>
     </div>
+
+    <!-- 搜尋 -->
+    <div id="search" class="tab-panel">
+      <div class="card section">
+        <div class="row">
+          <input id="charQuery" type="text" placeholder="輸入要查的國字（單一字）" maxlength="2" style="min-width:220px;flex:1">
+          <button id="btnDoSearch" type="button">查詢</button>
+        </div>
+        <div id="searchHint" class="muted">提示：僅支援單一字，會搜尋所有學期與課次。</div>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <div id="searchResult"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- 請確保同資料夾有 data_g1_tog31.js 與 app.js -->
   <script src="./data_g1_tog31.js"></script>
   <script src="./app.js"></script>
-
-  <!-- 註冊 Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js').catch(console.log);
