@@ -87,6 +87,19 @@ const MIN_DURATION_MS   = 700;
 // ====== 資料工具 ======
 const TERM_ORDER = ["小一下", "小二上", "小二下", "小三上"];
 
+// 1~99 轉中文數字（本專案目前用到 1~12）
+function numToZh(n){
+  const x = Number(n);
+  if (!Number.isFinite(x) || x <= 0) return String(n);
+  const d = ['零','一','二','三','四','五','六','七','八','九'];
+  if (x < 10) return d[x];
+  if (x === 10) return '十';
+  if (x < 20) return '十' + d[x % 10];
+  const tens = Math.floor(x / 10);
+  const ones = x % 10;
+  return d[tens] + '十' + (ones ? d[ones] : '');
+}
+
 function flattenLessons(ds, upto, code){
   const arr=[];
   if (!ds) return arr;
@@ -185,9 +198,10 @@ function nextWord(){
   currentTarget = item;
 
   ZHUYIN_EL.textContent = item.zhuyin || '—';
+  // 顯示「學期 + 課次」（例：小二上第八課）
   LESSON_EL.textContent = (item.term && item.lesson)
-    ? `（${item.term}第${item.lesson}課）`
-    : (item.lesson ? `（第${item.lesson}課）` : '');
+    ? `${item.term}第${numToZh(item.lesson)}課`
+    : (item.lesson ? `第${numToZh(item.lesson)}課` : '');
   passCount = 0;
   locked = true;
   disableNext(true);
@@ -458,7 +472,7 @@ function renderSearchResult(ch){
     entries.forEach(e=>{
       const chip = document.createElement('span');
       chip.className = 'chip';
-      chip.textContent = `${e.term}第${e.lesson}課`;
+      chip.textContent = `${e.term}第${numToZh(e.lesson)}課`;
       places.appendChild(chip);
     });
     list.appendChild(places);
