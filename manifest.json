@@ -1,12 +1,12 @@
 {
-  "name": "三上國字描紅練習",
-  "short_name": "國字描紅",
+  "name": "國字學習與描紅練習 2.0",
+  "short_name": "國字練習",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#ffffff",
-  "theme_color": "#0ea5e9",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "./icons/icon-192.png",

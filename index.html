@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>三上國字描紅練習</title>
+  <title>國字學習與描紅練習 2.0</title>
 
   <link rel="manifest" href="./manifest.json">
   <meta name="theme-color" content="#0ea5e9">
@@ -47,6 +47,22 @@
     .result-line{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff}
     .chip{display:inline-block;margin:4px 6px 0 0;padding:4px 8px;border:1px solid var(--border);border-radius:999px;background:#f8fafc;font-size:12px;color:#0f172a}
     .result-title{font-weight:700;margin-bottom:6px}
+  
+    body{background:linear-gradient(180deg,#eff6ff 0,#f8fafc 240px);}
+    .container{max-width:1080px}.tabs{position:sticky;top:0;z-index:10;background:rgba(248,250,252,.92);backdrop-filter:blur(14px);padding-top:8px}
+    .card{box-shadow:0 8px 30px rgba(15,23,42,.06);border-radius:18px}.tab-link{font-size:16px;padding:14px 18px}
+    button{font-weight:700;min-height:42px}.search-card{padding:14px;border:1px solid var(--border);border-radius:16px;background:#fff;margin:10px 0}
+    .search-char{font-size:48px;font-weight:800}.fav-btn{float:right;background:#fff;color:#f59e0b;border:1px solid #fde68a;font-size:20px}
+    .word-chip{display:inline-block;padding:6px 10px;margin:4px;border-radius:999px;background:#e0f2fe;color:#075985}
+    @media (prefers-color-scheme:dark){:root{--card:#111827;--border:#334155;--muted:#94a3b8}body{background:#020617;color:#e5e7eb}.tabs{background:rgba(2,6,23,.9)}select,input,.result-line,.list li,.search-card{background:#111827;color:#e5e7eb}.canvasWrap,canvas{background:#fff}.tab-link{color:#cbd5e1}}
+  
+    body{background:linear-gradient(180deg,#eff6ff 0,#f8fafc 240px);}
+    .container{max-width:1080px}.tabs{position:sticky;top:0;z-index:10;background:rgba(248,250,252,.92);backdrop-filter:blur(14px);padding-top:8px}
+    .card{box-shadow:0 8px 30px rgba(15,23,42,.06);border-radius:18px}.tab-link{font-size:16px;padding:14px 18px}
+    button{font-weight:700;min-height:42px}.search-card{padding:14px;border:1px solid var(--border);border-radius:16px;background:#fff;margin:10px 0}
+    .search-char{font-size:48px;font-weight:800}.fav-btn{float:right;background:#fff;color:#f59e0b;border:1px solid #fde68a;font-size:20px}
+    .word-chip{display:inline-block;padding:6px 10px;margin:4px;border-radius:999px;background:#e0f2fe;color:#075985}
+    @media (prefers-color-scheme:dark){:root{--card:#111827;--border:#334155;--muted:#94a3b8}body{background:#020617;color:#e5e7eb}.tabs{background:rgba(2,6,23,.9)}select,input,.result-line,.list li,.search-card{background:#111827;color:#e5e7eb}.canvasWrap,canvas{background:#fff}.tab-link{color:#cbd5e1}}
   </style>
 </head>
 <body>
@@ -66,7 +82,8 @@
               <option value="小一下">小一下</option>
               <option value="小二上">小二上</option>
               <option value="小二下">小二下</option>
-              <option value="小三上" selected>小三上</option>
+              <option value="小三上">小三上</option>
+              <option value="小三下" selected>小三下</option>
             </select>
           </label>
           <label>範圍：
@@ -97,6 +114,11 @@
             </select>
           </label>
           <div id="mixPreview" class="muted">—</div>
+        </div>
+
+        <div class="row" style="margin-top:8px;">
+          <label>練習模式：<select id="practiceMode"><option value="all">全部生字</option><option value="favorites">收藏字</option><option value="mistakes">錯字加強</option></select></label>
+          <button id="btnStartPractice" type="button">開始練習</button>
         </div>
 
         <div class="row" style="margin-top:8px;">
@@ -140,10 +162,10 @@
     <div id="search" class="tab-panel">
       <div class="card section">
         <div class="row">
-          <input id="charQuery" type="text" placeholder="輸入要查的國字（單一字）" maxlength="2" style="min-width:220px;flex:1">
+          <input id="charQuery" type="text" placeholder="輸入國字、注音或詞語" style="min-width:220px;flex:1">
           <button id="btnDoSearch" type="button">查詢</button>
         </div>
-        <div id="searchHint" class="muted">提示：僅支援單一字，會搜尋所有學期與課次。</div>
+        <div id="searchHint" class="muted">可搜尋國字、注音與詞語；點星號可加入收藏。</div>
       </div>
 
       <div class="card" style="margin-top:12px;">
@@ -152,7 +174,12 @@
     </div>
   </div>
 
-  <script src="./data_g1_tog31.js"></script>
+  <script src="./database/g1s2.js"></script>
+  <script src="./database/g2s1.js"></script>
+  <script src="./database/g2s2.js"></script>
+  <script src="./database/g3s1.js"></script>
+  <script src="./database/g3s2.js"></script>
+  <script src="./database/index.js"></script>
   <script src="./app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {

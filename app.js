@@ -57,12 +57,12 @@ const btnDoSearch    = document.getElementById('btnDoSearch');
 const searchResultEl = document.getElementById('searchResult');
 
 // ====== 統計 ======
-let statsTotal = 0;
+let statsTotal = Number(localStorage.getItem("cnkeys_stats_total")||0);
 const statsTotalEl = document.getElementById('statsTotal');
 const btnResetStats = document.getElementById('btnResetStats');
 function updateStatsUI(){ if(statsTotalEl) statsTotalEl.textContent = String(statsTotal); }
-function incStats(){ statsTotal++; updateStatsUI(); }
-function resetStats(){ statsTotal = 0; updateStatsUI(); }
+function incStats(){ statsTotal++; localStorage.setItem("cnkeys_stats_total",String(statsTotal)); updateStatsUI(); if(currentTarget){ const m=JSON.parse(localStorage.getItem("cnkeys_mistakes")||"{}"); if(m[currentTarget.id]){m[currentTarget.id]=Math.max(0,m[currentTarget.id]-1); localStorage.setItem("cnkeys_mistakes",JSON.stringify(m));}} }
+function resetStats(){ statsTotal = 0; localStorage.setItem("cnkeys_stats_total","0"); updateStatsUI(); }
 btnResetStats?.addEventListener('click', resetStats);
 resetStats();
 
@@ -85,7 +85,7 @@ const MIN_PATH_LEN      = 180;
 const MIN_DURATION_MS   = 700;
 
 // ====== 資料工具 ======
-const TERM_ORDER = ["小一下", "小二上", "小二下", "小三上"];
+const TERM_ORDER = window.cnkeys_all?.termOrder || ["小一下", "小二上", "小二下", "小三上", "小三下"];
 
 // 1~99 轉中文數字（本專案目前用到 1~12）
 function numToZh(n){
@@ -114,7 +114,12 @@ function flattenLessons(ds, upto, code){
           zhuyin: zhuyin ? String(zhuyin).trim() : '',
           lesson: les.lessonNo,
           term: code || ds.gradeCode,
-          grade: ds.grade
+          grade: ds.grade,
+          id: w.id || `${code}-${les.lessonNo}-${char}`,
+          words: Array.isArray(w.words) ? w.words : [],
+          sentences: Array.isArray(w.sentences) ? w.sentences : [],
+          radical: w.radical ?? null,
+          strokes: w.strokes ?? null
         });
       }
     }
@@ -140,7 +145,7 @@ function buildPools(term, uptoLesson){
 }
 
 // 權重/預覽
-function getTerm(){ return termSel?.value || "小三上"; }
+function getTerm(){ return termSel?.value || "小三下"; }
 function getMaxLesson(){ const v=parseInt(lessonMaxSel?.value||'12',10); return Number.isFinite(v)?v:12; }
 function getWeight(){ const v=parseInt(weightSel?.value||'75',10); return (v===50||v===75||v===100)?v:75; }
 function updateWeightUI(){
@@ -169,8 +174,12 @@ function refreshPools(){
   const term = getTerm();
   const N = getMaxLesson();
   const { currentPool, prevPool } = buildPools(term, N);
-  CURRENT_POOL = currentPool;
-  PREV_POOL = prevPool;
+  const mode = document.getElementById('practiceMode')?.value || 'all';
+  const favs = new Set(JSON.parse(localStorage.getItem('cnkeys_favorites')||'[]'));
+  const mistakes = JSON.parse(localStorage.getItem('cnkeys_mistakes')||'{}');
+  const filter = x => mode==='favorites' ? favs.has(x.id) : mode==='mistakes' ? (mistakes[x.id]||0)>0 : true;
+  CURRENT_POOL = currentPool.filter(filter);
+  PREV_POOL = prevPool.filter(filter);
   updateWeightUI();
 }
 function pickOne(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
@@ -387,6 +396,7 @@ function showInfo(text){
   recogList.appendChild(li);
 }
 function showFail(text){
+  if(currentTarget){ const m=JSON.parse(localStorage.getItem("cnkeys_mistakes")||"{}"); m[currentTarget.id]=(m[currentTarget.id]||0)+1; localStorage.setItem("cnkeys_mistakes",JSON.stringify(m)); }
   showProgress();
   const li=document.createElement('li');
   li.textContent = `❌ ${text}`;
@@ -414,94 +424,27 @@ reqPassesSel?.addEventListener('change', ()=>{
 });
 btnRecognize?.addEventListener('click', checkTracing);
 
-// ====== 「搜尋」索引與行為 ======
-const charIndex = buildCharIndex(); // Map<char, Array<{term,lesson,zhuyin}>>
-
-function buildCharIndex(){
-  const map = new Map();
-  const dsList = (window.cnkeys_all && window.cnkeys_all.datasets) ? window.cnkeys_all.datasets : [];
-  for (const ds of dsList){
-    const code = ds.gradeCode || ds.code || ds.grade || '';
-    const rows = flattenLessons(ds, /*upto*/ undefined, code);
-    for (const r of rows){
-      const key = r.char;
-      if (!map.has(key)) map.set(key, []);
-      map.get(key).push({ term: r.term || code, lesson: r.lesson, zhuyin: r.zhuyin || '' });
-    }
-  }
-  // 排序：學期順序 + 課次
-  for (const [k, arr] of map){
-    arr.sort((a,b)=>{
-      const ai = TERM_ORDER.indexOf(a.term), bi = TERM_ORDER.indexOf(b.term);
-      if (ai !== bi) return ai - bi;
-      return (a.lesson||0) - (b.lesson||0);
-    });
-  }
-  return map;
+// ====== 搜尋、收藏與資料卡 ======
+const allRecords = window.cnkeys_all?.records || [];
+function getFavorites(){ return new Set(JSON.parse(localStorage.getItem('cnkeys_favorites')||'[]')); }
+function toggleFavorite(id){ const s=getFavorites(); s.has(id)?s.delete(id):s.add(id); localStorage.setItem('cnkeys_favorites',JSON.stringify([...s])); doSearch(); }
+function escapeHtml(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function recordMatches(r,q){ const hay=[r.char,r.zhuyin,r.term,`第${r.lesson}課`,...(r.words||[]),...(r.sentences||[])].join(' '); return hay.includes(q); }
+function renderCard(r){
+  const fav=getFavorites().has(r.id); const words=(r.words||[]).map(x=>`<span class="word-chip">${escapeHtml(x)}</span>`).join('');
+  const sentences=(r.sentences||[]).map(x=>`<div class="muted">${escapeHtml(x)}</div>`).join('');
+  return `<div class="search-card"><button class="fav-btn" data-fav="${escapeHtml(r.id)}" title="收藏">${fav?'★':'☆'}</button><div class="search-char">${escapeHtml(r.char)}</div><div class="zhuyin">${escapeHtml(r.zhuyin||'—')}</div><div class="lesson">${escapeHtml(r.term)}第${numToZh(r.lesson)}課</div>${r.radical?`<div>部首：${escapeHtml(r.radical)}</div>`:''}${r.strokes?`<div>筆畫：${r.strokes}</div>`:''}<div style="margin-top:8px">${words||'<span class="muted">尚未建立詞語資料</span>'}</div>${sentences}</div>`;
 }
-
-function renderSearchResult(ch){
-  if (!searchResultEl) return;
-
-  searchResultEl.innerHTML = '';
-  const wrap = document.createElement('div');
-
-  const title = document.createElement('div');
-  title.className = 'result-title';
-  title.textContent = `查詢字：「${ch}」`;
-  wrap.appendChild(title);
-
-  const list = document.createElement('div');
-
-  if (!charIndex.has(ch)){
-    const line = document.createElement('div');
-    line.className = 'result-line';
-    line.textContent = '查無此字';
-    list.appendChild(line);
-  } else {
-    const entries = charIndex.get(ch);
-    const zh = entries.find(e=>e.zhuyin)?.zhuyin || '';
-    const head = document.createElement('div');
-    head.className = 'result-line';
-    head.textContent = zh ? `注音：${zh}` : '注音：—';
-    list.appendChild(head);
-
-    const places = document.createElement('div');
-    places.className = 'result-line';
-    places.innerHTML = '出現於：';
-    entries.forEach(e=>{
-      const chip = document.createElement('span');
-      chip.className = 'chip';
-      chip.textContent = `${e.term}第${numToZh(e.lesson)}課`;
-      places.appendChild(chip);
-    });
-    list.appendChild(places);
-  }
-
-  wrap.appendChild(list);
-  searchResultEl.appendChild(wrap);
-}
-
 function doSearch(){
-  const raw = (charQueryInput?.value || '').trim();
-  if (!raw){
-    searchResultEl.innerHTML = '<div class="result-line">請先輸入要查的國字</div>';
-    return;
-  }
-  // 僅取第一個 Unicode 字元（避免一次貼入多字）
-  const ch = Array.from(raw)[0];
-  if (!ch){
-    searchResultEl.innerHTML = '<div class="result-line">請輸入有效的國字</div>';
-    return;
-  }
-  renderSearchResult(ch);
+  const q=(charQueryInput?.value||'').trim(); if(!q){searchResultEl.innerHTML='<div class="result-line">請輸入國字、注音或詞語</div>';return;}
+  const found=allRecords.filter(r=>recordMatches(r,q)).slice(0,80);
+  searchResultEl.innerHTML=found.length?found.map(renderCard).join(''):'<div class="result-line">查無資料</div>';
+  searchResultEl.querySelectorAll('[data-fav]').forEach(b=>b.addEventListener('click',()=>toggleFavorite(b.dataset.fav)));
 }
-
-btnDoSearch?.addEventListener('click', doSearch);
-charQueryInput?.addEventListener('keydown', (e)=>{
-  if (e.key === 'Enter') doSearch();
-});
-
+btnDoSearch?.addEventListener('click',doSearch);
+charQueryInput?.addEventListener('keydown',e=>{if(e.key==='Enter')doSearch();});
+document.getElementById('btnStartPractice')?.addEventListener('click',()=>{location.hash='#practice';nextWord();});
+document.getElementById('practiceMode')?.addEventListener('change',()=>refreshPools());
 // ====== 初始化 ======
 updateWeightUI();
 disableNext(true);
