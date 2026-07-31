@@ -42,6 +42,13 @@ const btnClear     = document.getElementById('btnClear');
 const penColor     = document.getElementById('penColor');
 const lessonMaxSel = document.getElementById('lessonMax');
 const reqPassesSel = document.getElementById('reqPasses');
+const quizTypeSel  = document.getElementById('quizType');
+const traceActions = document.getElementById('traceActions');
+const traceCard    = document.getElementById('traceCard');
+const wordQuizCard = document.getElementById('wordQuizCard');
+const wordQuestion = document.getElementById('wordQuestion');
+const wordOptions  = document.getElementById('wordOptions');
+const wordFeedback = document.getElementById('wordFeedback');
 
 const termSel      = document.getElementById('termSelect');
 const weightRow    = document.getElementById('weightRow');
@@ -72,6 +79,8 @@ let pathLen=0, attemptStart=0;
 let passCount=0;
 let currentBand=null;
 let locked=true;
+let currentQuizWord='';
+let wordQuizAnswered=false;
 
 const TRACE_ALPHA       = 0.15;
 const TRACE_FONT        = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
@@ -148,6 +157,7 @@ function buildPools(term, uptoLesson){
 function getTerm(){ return termSel?.value || "小三下"; }
 function getMaxLesson(){ const v=parseInt(lessonMaxSel?.value||'12',10); return Number.isFinite(v)?v:12; }
 function getWeight(){ const v=parseInt(weightSel?.value||'75',10); return (v===50||v===75||v===100)?v:75; }
+function getQuizType(){ return quizTypeSel?.value || 'tracing'; }
 function updateWeightUI(){
   const term = getTerm();
   const isCross = TERM_ORDER.indexOf(term) > 0;
@@ -183,6 +193,93 @@ function refreshPools(){
   updateWeightUI();
 }
 function pickOne(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){
+  const out=[...arr];
+  for(let i=out.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [out[i],out[j]]=[out[j],out[i]];
+  }
+  return out;
+}
+
+function pickQuizWord(item){
+  const usable=(item.words||[]).filter(word=>String(word).includes(item.char) && String(word).length>1);
+  return usable.length ? String(pickOne(usable)) : '';
+}
+
+function buildDistractors(item, pool){
+  const unique=[...new Map(pool.filter(x=>x.char!==item.char).map(x=>[x.char,x])).values()];
+  const sameZhuyin=shuffle(unique.filter(x=>item.zhuyin && x.zhuyin===item.zhuyin));
+  const sameRadical=shuffle(unique.filter(x=>item.radical && x.radical===item.radical && !sameZhuyin.includes(x)));
+  const others=shuffle(unique.filter(x=>!sameZhuyin.includes(x) && !sameRadical.includes(x)));
+  return [...sameZhuyin,...sameRadical,...others].slice(0,3).map(x=>x.char);
+}
+
+function renderWordQuiz(item, pool){
+  currentQuizWord=pickQuizWord(item);
+  wordQuizAnswered=false;
+  if(!currentQuizWord){
+    showInfo('這個生字沒有可用的詞語，正在換下一題…');
+    setTimeout(nextWord,300);
+    return;
+  }
+  const blank=currentQuizWord.replace(item.char,'＿');
+  const options=shuffle([item.char,...buildDistractors(item,pool)]);
+  wordQuestion.textContent=blank;
+  wordFeedback.textContent='';
+  wordFeedback.style.color='';
+  wordOptions.innerHTML='';
+  options.forEach(ch=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='word-option';
+    button.textContent=ch;
+    button.addEventListener('click',()=>answerWordQuiz(button,ch));
+    wordOptions.appendChild(button);
+  });
+}
+
+function answerWordQuiz(button, selected){
+  if(wordQuizAnswered || !currentTarget) return;
+  if(selected!==currentTarget.char){
+    button.classList.add('wrong');
+    button.disabled=true;
+    const m=JSON.parse(localStorage.getItem("cnkeys_mistakes")||"{}");
+    m[currentTarget.id]=(m[currentTarget.id]||0)+1;
+    localStorage.setItem("cnkeys_mistakes",JSON.stringify(m));
+    wordFeedback.textContent='❌ 再想一想，選另一個字試試看。';
+    wordFeedback.style.color='#b91c1c';
+    showWordQuizProgress('答錯一次，請再選一次');
+    return;
+  }
+  wordQuizAnswered=true;
+  button.classList.add('correct');
+  wordOptions.querySelectorAll('button').forEach(x=>x.disabled=true);
+  wordQuestion.textContent=currentQuizWord;
+  wordFeedback.textContent=`✅ 答對了！「${currentQuizWord}」的「${currentTarget.char}」是${currentTarget.zhuyin||'這個讀音'}。`;
+  wordFeedback.style.color='#166534';
+  incStats();
+  locked=false;
+  showWordQuizProgress(`答對：${currentQuizWord}`);
+  setTimeout(nextWord,1200);
+}
+
+function showWordQuizProgress(message){
+  if(!recogList) return;
+  recogList.innerHTML='';
+  const li=document.createElement('li');
+  li.textContent=message;
+  li.style.fontWeight='600';
+  recogList.appendChild(li);
+}
+
+function updateQuizTypeUI(){
+  const isWord=getQuizType()==='word-choice';
+  if(traceActions) traceActions.style.display=isWord?'none':'flex';
+  if(traceCard) traceCard.style.display=isWord?'none':'block';
+  wordQuizCard?.classList.toggle('active',isWord);
+  reqPassesSel?.closest('label')?.style.setProperty('display',isWord?'none':'inline-flex');
+}
 
 function nextWord(){
   refreshPools();
@@ -214,9 +311,16 @@ function nextWord(){
   passCount = 0;
   locked = true;
   disableNext(true);
-  clearCanvas();
-  currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
-  showProgress();
+  updateQuizTypeUI();
+  if(getQuizType()==='word-choice'){
+    currentBand=null;
+    renderWordQuiz(item,[...CURRENT_POOL,...PREV_POOL]);
+    showWordQuizProgress(`詞語選字｜${item.term}第${numToZh(item.lesson)}課`);
+  }else{
+    clearCanvas();
+    currentBand = makeTraceBand(currentTarget.char, INPUT_SIZE);
+    showProgress();
+  }
 }
 
 // 畫布
@@ -422,6 +526,7 @@ reqPassesSel?.addEventListener('change', ()=>{
   showProgress();
   if (passCount >= getRequiredPasses()) { locked = false; disableNext(false); }
 });
+quizTypeSel?.addEventListener('change',()=>{ updateQuizTypeUI(); nextWord(); });
 btnRecognize?.addEventListener('click', checkTracing);
 
 // ====== 搜尋、收藏與資料卡 ======
@@ -447,5 +552,6 @@ document.getElementById('btnStartPractice')?.addEventListener('click',()=>{locat
 document.getElementById('practiceMode')?.addEventListener('change',()=>refreshPools());
 // ====== 初始化 ======
 updateWeightUI();
+updateQuizTypeUI();
 disableNext(true);
 nextWord();

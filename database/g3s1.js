@@ -6,7 +6,7 @@
   "gradeCode": "小三上",
   "lessons": [
     {
-      "id": "L01",
+      "id": "G3A-L01",
       "lessonNo": 1,
       "title": "第1課",
       "words": [
@@ -20,7 +20,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "泥土",
+            "泥巴",
+            "泥濘",
+            "水泥"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -35,7 +40,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "變化",
+            "化學",
+            "融化",
+            "文化"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -50,7 +60,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "麻雀",
+            "孔雀",
+            "雀鳥",
+            "鴉雀無聲"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -65,7 +80,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "輕快",
+            "輕鬆",
+            "輕聲",
+            "年輕"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -80,7 +100,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "羽毛",
+            "羽球",
+            "羽絨",
+            "羽翼"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -95,7 +120,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "衣服",
+            "雨衣",
+            "毛衣",
+            "衣櫃"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -110,7 +140,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "清脆",
+            "脆弱",
+            "酥脆",
+            "乾脆"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -125,7 +160,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "頭髮",
+            "理髮",
+            "長髮",
+            "白髮"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -140,7 +180,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "到處",
+            "處所",
+            "住處",
+            "相處"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -155,7 +200,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "旅行",
+            "旅客",
+            "旅館",
+            "旅程"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -170,7 +220,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "行走",
+            "行動",
+            "行李",
+            "步行"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -185,7 +240,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "平安",
+            "平地",
+            "公平",
+            "平靜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -200,7 +260,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "男生",
+            "男人",
+            "男孩",
+            "男女"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -215,7 +280,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "晴朗",
+            "朗讀",
+            "開朗",
+            "明朗"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -230,7 +300,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "足球",
+            "手足",
+            "滿足",
+            "足跡"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -238,7 +313,7 @@
       ]
     },
     {
-      "id": "L02",
+      "id": "G3A-L02",
       "lessonNo": 2,
       "title": "第2課",
       "words": [
@@ -252,7 +327,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "訂正",
+            "訂購",
+            "預訂",
+            "裝訂"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -267,7 +347,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "記得",
+            "記錄",
+            "日記",
+            "忘記"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -282,7 +367,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "語言",
+            "發言",
+            "名言",
+            "自言自語"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -297,7 +387,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "保持",
+            "支持",
+            "持續",
+            "堅持"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -312,7 +407,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "提高",
+            "提醒",
+            "提問",
+            "提前"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -327,7 +427,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "年級",
+            "班級",
+            "高級",
+            "升級"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -342,7 +447,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "大約",
+            "約定",
+            "節約",
+            "預約"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -357,7 +467,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "紛紛",
+            "繽紛",
+            "紛亂",
+            "紛飛"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -372,7 +487,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "走廊",
+            "長廊",
+            "畫廊",
+            "迴廊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -387,7 +507,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "班級",
+            "上班",
+            "班長",
+            "班別"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -402,7 +527,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "記錄",
+            "錄音",
+            "目錄",
+            "錄影"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -417,7 +547,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "聊天",
+            "無聊",
+            "閒聊",
+            "聊聊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -432,7 +567,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "熱烈",
+            "強烈",
+            "激烈",
+            "烈日"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -447,7 +587,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "一些",
+            "這些",
+            "那些",
+            "有些"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -462,7 +607,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "發愁",
+            "憂愁",
+            "愁苦",
+            "愁眉苦臉"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -470,7 +620,7 @@
       ]
     },
     {
-      "id": "L03",
+      "id": "G3A-L03",
       "lessonNo": 3,
       "title": "第3課",
       "words": [
@@ -484,7 +634,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "短暫",
+            "短褲",
+            "長短",
+            "縮短"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -499,7 +654,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "時鐘",
+            "鬧鐘",
+            "鐘聲",
+            "鐘樓"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -514,7 +674,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "魔鬼",
+            "鬼怪",
+            "小鬼",
+            "鬼臉"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -529,7 +694,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "熱鬧",
+            "吵鬧",
+            "鬧鐘",
+            "胡鬧"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -544,7 +714,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "準備",
+            "準時",
+            "標準",
+            "準確"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -559,7 +734,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "早朝",
+            "朝向",
+            "朝代",
+            "今朝"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -574,7 +754,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "舞蹈",
+            "手舞足蹈",
+            "赴湯蹈火",
+            "循規蹈矩"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -589,7 +774,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "表示",
+            "表格",
+            "表面",
+            "表演"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -604,7 +794,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "流暢",
+            "舒暢",
+            "暢通",
+            "暢快"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -619,7 +814,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "無法",
+            "無聊",
+            "無數",
+            "無論"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -634,7 +834,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "總是",
+            "總共",
+            "總統",
+            "總結"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -649,7 +854,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "聲響",
+            "響亮",
+            "影響",
+            "回響"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -664,7 +874,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "忘記",
+            "難忘",
+            "遺忘",
+            "忘我"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -679,7 +894,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "盡力",
+            "盡情",
+            "用盡",
+            "盡頭"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -694,7 +914,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "責任",
+            "負責",
+            "責備",
+            "職責"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -702,7 +927,7 @@
       ]
     },
     {
-      "id": "L04",
+      "id": "G3A-L04",
       "lessonNo": 4,
       "title": "第4課",
       "words": [
@@ -716,7 +941,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "手指",
+            "指出",
+            "指導",
+            "指南"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -731,7 +961,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "夕陽",
+            "除夕",
+            "朝夕",
+            "七夕"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -746,7 +981,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "比賽",
+            "競賽",
+            "賽跑",
+            "球賽"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -761,7 +1001,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "緊張",
+            "趕緊",
+            "緊急",
+            "抓緊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -776,7 +1021,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "商店",
+            "書店",
+            "店員",
+            "店面"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -791,7 +1041,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "逗趣",
+            "逗號",
+            "挑逗",
+            "逗留"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -806,7 +1061,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "轉動",
+            "轉身",
+            "轉彎",
+            "轉變"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -821,7 +1081,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "露水",
+            "露營",
+            "透露",
+            "暴露"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -836,7 +1101,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "作業",
+            "工業",
+            "行業",
+            "畢業"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -851,7 +1121,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "專心",
+            "專門",
+            "專家",
+            "專長"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -866,7 +1141,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "勝利",
+            "得勝",
+            "勝負",
+            "名勝"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -881,7 +1161,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "利益",
+            "利用",
+            "順利",
+            "便利"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -896,7 +1181,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "喜悅",
+            "愉悅",
+            "悅耳",
+            "和顏悅色"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -911,7 +1201,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "乖巧",
+            "乖乖",
+            "乖孩子",
+            "乖順"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -926,7 +1221,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "溫暖",
+            "溫度",
+            "溫和",
+            "體溫"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -934,7 +1234,7 @@
       ]
     },
     {
-      "id": "L05",
+      "id": "G3A-L05",
       "lessonNo": 5,
       "title": "第5課",
       "words": [
@@ -948,7 +1248,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "沖洗",
+            "沖泡",
+            "沖淡",
+            "沖水"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -963,7 +1268,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "注意",
+            "注音",
+            "注視",
+            "專注"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -978,7 +1288,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "吐氣",
+            "吐出",
+            "吞吐",
+            "嘔吐"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -993,7 +1308,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "人員",
+            "店員",
+            "隊員",
+            "會員"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1008,7 +1328,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "恐龍",
+            "龍舟",
+            "長龍",
+            "龍王"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1023,7 +1348,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "警察",
+            "警告",
+            "警報",
+            "警覺"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1038,7 +1368,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "原諒",
+            "體諒",
+            "諒解",
+            "見諒"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1053,7 +1388,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "菱角",
+            "菱形",
+            "菱格",
+            "菱花"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1068,7 +1408,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "兄弟",
+            "兄長",
+            "師兄",
+            "兄妹"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1083,7 +1428,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "歪斜",
+            "歪曲",
+            "歪頭",
+            "東倒西歪"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1098,7 +1448,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "防止",
+            "預防",
+            "防守",
+            "國防"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1113,7 +1468,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "鈴聲",
+            "門鈴",
+            "風鈴",
+            "啞鈴"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1128,7 +1488,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "受傷",
+            "傷心",
+            "傷口",
+            "悲傷"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1143,7 +1508,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "死亡",
+            "生死",
+            "死心",
+            "累死"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1158,7 +1528,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "脾氣",
+            "脾臟",
+            "脾性",
+            "發脾氣"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1166,7 +1541,7 @@
       ]
     },
     {
-      "id": "L06",
+      "id": "G3A-L06",
       "lessonNo": 6,
       "title": "第6課",
       "words": [
@@ -1180,7 +1555,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "流動",
+            "河流",
+            "交流",
+            "流汗"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1195,7 +1575,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "溼地",
+            "潮溼",
+            "溼氣",
+            "溼透"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1210,7 +1595,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "透明",
+            "透過",
+            "透氣",
+            "看透"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1225,7 +1615,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "逃跑",
+            "逃走",
+            "逃生",
+            "逃避"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1240,7 +1635,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "布幕",
+            "開幕",
+            "閉幕",
+            "螢幕"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1255,7 +1655,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "杯子",
+            "水杯",
+            "獎杯",
+            "乾杯"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1270,7 +1675,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "碰撞",
+            "撞倒",
+            "撞見",
+            "衝撞"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1285,7 +1695,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "雙手",
+            "雙方",
+            "一雙",
+            "雙胞胎"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1300,7 +1715,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "胸口",
+            "胸部",
+            "胸前",
+            "胸有成竹"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1315,7 +1735,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "負責",
+            "勝負",
+            "負擔",
+            "辜負"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1330,7 +1755,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "慌張",
+            "驚慌",
+            "慌忙",
+            "心慌"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1345,7 +1775,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "辦法",
+            "辦理",
+            "辦公",
+            "舉辦"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1360,7 +1795,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "題目",
+            "問題",
+            "主題",
+            "難題"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1375,7 +1815,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "灰色",
+            "灰塵",
+            "石灰",
+            "心灰意冷"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1390,7 +1835,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "剪刀",
+            "剪紙",
+            "修剪",
+            "剪短"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1398,7 +1848,7 @@
       ]
     },
     {
-      "id": "L07",
+      "id": "G3A-L07",
       "lessonNo": 7,
       "title": "第7課",
       "words": [
@@ -1412,7 +1862,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "躲藏",
+            "收藏",
+            "寶藏",
+            "隱藏"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1427,7 +1882,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "藝術",
+            "才藝",
+            "園藝",
+            "技藝"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1442,7 +1902,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "捏住",
+            "捏造",
+            "揉捏",
+            "捏緊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1457,7 +1922,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "摺紙",
+            "摺疊",
+            "摺痕",
+            "摺扇"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1472,7 +1942,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "背包",
+            "背後",
+            "背心",
+            "背書"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1487,7 +1962,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "斑點",
+            "斑馬",
+            "斑紋",
+            "斑駁"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1502,7 +1982,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "皺紋",
+            "皺眉",
+            "弄皺",
+            "皺巴巴"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1517,7 +2002,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "懂得",
+            "聽懂",
+            "看懂",
+            "似懂非懂"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1532,7 +2022,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "平凡",
+            "凡是",
+            "非凡",
+            "凡人"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1547,7 +2042,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "梳子",
+            "梳頭",
+            "梳理",
+            "木梳"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1562,7 +2062,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "夾子",
+            "夾住",
+            "文件夾",
+            "夾帶"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1577,7 +2082,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "仔細",
+            "仔魚",
+            "牛仔",
+            "幼仔"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1592,7 +2102,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "美術",
+            "技術",
+            "藝術",
+            "手術"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1607,7 +2122,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "雖然",
+            "雖說",
+            "雖是",
+            "雖敗猶榮"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1622,7 +2142,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "創作",
+            "創造",
+            "創意",
+            "開創"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1630,7 +2155,7 @@
       ]
     },
     {
-      "id": "L08",
+      "id": "G3A-L08",
       "lessonNo": 8,
       "title": "第8課",
       "words": [
@@ -1644,7 +2169,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "相框",
+            "門框",
+            "框架",
+            "眼鏡框"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1659,7 +2189,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "水桶",
+            "木桶",
+            "垃圾桶",
+            "一桶"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1674,7 +2209,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "飛機",
+            "機器",
+            "機會",
+            "手機"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1689,7 +2229,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "魔法",
+            "魔術",
+            "魔鬼",
+            "魔力"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1704,7 +2249,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "包圍",
+            "周圍",
+            "圍巾",
+            "圍牆"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1719,7 +2269,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "毛巾",
+            "紙巾",
+            "圍巾",
+            "頭巾"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1734,7 +2289,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "視力",
+            "電視",
+            "重視",
+            "注視"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1749,7 +2309,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "錯誤",
+            "誤會",
+            "耽誤",
+            "失誤"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1764,7 +2329,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "愉快",
+            "愉悅",
+            "歡愉",
+            "愉樂"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1779,7 +2349,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "數學",
+            "數字",
+            "次數",
+            "無數"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1794,7 +2369,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "小刀",
+            "剪刀",
+            "菜刀",
+            "刀片"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1809,7 +2389,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "曾經",
+            "未曾",
+            "何曾",
+            "似曾相識"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1824,7 +2409,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "了解",
+            "解答",
+            "解決",
+            "解開"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1839,7 +2429,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "眼鏡",
+            "鏡子",
+            "望遠鏡",
+            "放大鏡"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1854,7 +2449,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "整齊",
+            "一齊",
+            "齊全",
+            "並駕齊驅"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1862,7 +2462,7 @@
       ]
     },
     {
-      "id": "L09",
+      "id": "G3A-L09",
       "lessonNo": 9,
       "title": "第9課",
       "words": [
@@ -1876,7 +2476,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "蘋果",
+            "蘋果汁",
+            "青蘋果",
+            "蘋果樹"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1891,7 +2496,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "吃藥",
+            "藥品",
+            "中藥",
+            "藥水"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1906,7 +2516,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "醫生",
+            "醫院",
+            "醫療",
+            "醫治"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1921,7 +2536,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "穿衣",
+            "穿過",
+            "穿著",
+            "看穿"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1936,7 +2556,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "長袍",
+            "旗袍",
+            "睡袍",
+            "袍子"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1951,7 +2576,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "穿戴",
+            "佩戴",
+            "戴帽",
+            "愛戴"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1966,7 +2596,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "竹筒",
+            "筆筒",
+            "圓筒",
+            "望遠鏡筒"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1981,7 +2616,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "啄木鳥",
+            "啄食",
+            "啄米",
+            "啄破"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1996,7 +2636,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "準備",
+            "設備",
+            "備用",
+            "預備"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2011,7 +2656,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "樹幹",
+            "幹活",
+            "幹部",
+            "能幹"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2026,7 +2676,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "敲門",
+            "敲打",
+            "推敲",
+            "敲響"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2041,7 +2696,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "毒蛇",
+            "毒藥",
+            "中毒",
+            "病毒"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2056,7 +2716,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "身體",
+            "體育",
+            "體會",
+            "整體"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2071,7 +2736,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "淘氣",
+            "淘汰",
+            "淘米",
+            "淘金"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2086,7 +2756,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "一般",
+            "這般",
+            "百般",
+            "如此這般"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2094,7 +2769,7 @@
       ]
     },
     {
-      "id": "L10",
+      "id": "G3A-L10",
       "lessonNo": 10,
       "title": "第10課",
       "words": [
@@ -2108,7 +2783,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "北極",
+            "積極",
+            "極力",
+            "極端"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2123,7 +2803,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "樹根",
+            "根本",
+            "根據",
+            "一根"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2138,7 +2823,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "頭腦",
+            "電腦",
+            "腦袋",
+            "腦海"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2153,7 +2843,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "皮膚",
+            "肌膚",
+            "膚色",
+            "體無完膚"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2168,7 +2863,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "熊貓",
+            "黑熊",
+            "熊掌",
+            "北極熊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2183,7 +2883,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "小豬",
+            "豬肉",
+            "野豬",
+            "豬舍"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2198,7 +2903,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "大象",
+            "象徵",
+            "現象",
+            "印象"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2213,7 +2923,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "下雪",
+            "雪花",
+            "雪人",
+            "白雪"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2228,7 +2943,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "其實",
+            "實在",
+            "果實",
+            "誠實"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2243,7 +2963,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "反對",
+            "相反",
+            "反應",
+            "反省"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2258,7 +2983,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "射擊",
+            "發射",
+            "照射",
+            "反射"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2273,7 +3003,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "發呆",
+            "呆子",
+            "呆板",
+            "目瞪口呆"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2288,7 +3023,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "印象",
+            "腳印",
+            "列印",
+            "印章"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2303,7 +3043,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "回憶",
+            "記憶",
+            "追憶",
+            "失憶"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2318,7 +3063,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "滾動",
+            "翻滾",
+            "滾開",
+            "滾燙"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2326,7 +3076,7 @@
       ]
     },
     {
-      "id": "L11",
+      "id": "G3A-L11",
       "lessonNo": 11,
       "title": "第11課",
       "words": [
@@ -2340,7 +3090,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "額頭",
+            "金額",
+            "名額",
+            "超額"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2355,7 +3110,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "種類",
+            "分類",
+            "人類",
+            "類似"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2370,7 +3130,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "老虎",
+            "壁虎",
+            "虎口",
+            "馬虎"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2385,7 +3150,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "小貓",
+            "熊貓",
+            "花貓",
+            "貓頭鷹"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2400,7 +3170,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "臺灣",
+            "陽臺",
+            "講臺",
+            "舞臺"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2415,7 +3190,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "臺灣",
+            "海灣",
+            "港灣",
+            "灣岸"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2430,7 +3210,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "單獨",
+            "獨立",
+            "獨特",
+            "孤獨"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2445,7 +3230,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "萬一",
+            "千萬",
+            "萬物",
+            "成千上萬"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2460,7 +3250,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "祖先",
+            "祖父",
+            "祖母",
+            "祖國"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2475,7 +3270,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "青蛙",
+            "蛙鳴",
+            "樹蛙",
+            "井底之蛙"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2490,7 +3290,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "捉住",
+            "捕捉",
+            "捉弄",
+            "捉迷藏"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2505,7 +3310,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "占有",
+            "占用",
+            "占領",
+            "占據"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2520,7 +3330,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "公雞",
+            "母雞",
+            "雞蛋",
+            "雞肉"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2535,7 +3350,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "肌肉",
+            "牛肉",
+            "肉類",
+            "果肉"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2550,7 +3370,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "威風",
+            "威力",
+            "威脅",
+            "權威"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2558,7 +3383,7 @@
       ]
     },
     {
-      "id": "L12",
+      "id": "G3A-L12",
       "lessonNo": 12,
       "title": "第12課",
       "words": [
@@ -2572,7 +3397,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "攻擊",
+            "進攻",
+            "攻讀",
+            "攻打"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2587,7 +3417,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "敵人",
+            "敵軍",
+            "天敵",
+            "敵對"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2602,7 +3437,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "打擊",
+            "攻擊",
+            "射擊",
+            "目擊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2617,7 +3457,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "技術",
+            "科技",
+            "技巧",
+            "技藝"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2632,7 +3477,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "昆蟲",
+            "昆仲",
+            "昆布",
+            "昆曲"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2647,7 +3497,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "生命",
+            "命令",
+            "命運",
+            "救命"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2662,7 +3517,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "周圍",
+            "四周",
+            "周到",
+            "周末"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2677,7 +3537,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "竹子",
+            "竹林",
+            "竹筍",
+            "竹竿"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2692,7 +3557,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "節日",
+            "季節",
+            "節目",
+            "關節"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2707,7 +3577,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "表演",
+            "演出",
+            "演員",
+            "演奏"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2722,7 +3597,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "逼近",
+            "逼迫",
+            "逼真",
+            "咄咄逼人"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2737,7 +3617,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "後退",
+            "退步",
+            "退回",
+            "退休"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2752,7 +3637,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "保護",
+            "保持",
+            "保證",
+            "環保"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2767,7 +3657,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "翅膀",
+            "雞翅",
+            "展翅",
+            "魚翅"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2782,7 +3677,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小三上",
-          "words": [],
+          "words": [
+            "屁股",
+            "放屁",
+            "屁話",
+            "跟屁蟲"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null

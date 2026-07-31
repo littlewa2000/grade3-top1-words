@@ -54,6 +54,18 @@
     button{font-weight:700;min-height:42px}.search-card{padding:14px;border:1px solid var(--border);border-radius:16px;background:#fff;margin:10px 0}
     .search-char{font-size:48px;font-weight:800}.fav-btn{float:right;background:#fff;color:#f59e0b;border:1px solid #fde68a;font-size:20px}
     .word-chip{display:inline-block;padding:6px 10px;margin:4px;border-radius:999px;background:#e0f2fe;color:#075985}
+    .word-quiz{display:none;text-align:center;padding:28px 16px}
+    .word-quiz.active{display:block}
+    .word-prompt{font-size:18px;color:var(--muted);margin-bottom:12px}
+    .word-question{font-size:58px;font-weight:800;letter-spacing:8px;margin:12px 0 26px}
+    .word-options{display:grid;grid-template-columns:repeat(2,minmax(100px,180px));gap:14px;justify-content:center}
+    .word-option{height:72px;font-size:34px;border:2px solid #bae6fd;background:#fff;color:#0f172a}
+    .word-option:hover{background:#e0f2fe}
+    .word-option.wrong{background:#fee2e2;color:#991b1b;border-color:#fca5a5}
+    .word-option.correct{background:#dcfce7;color:#166534;border-color:#86efac}
+    .word-option:disabled{cursor:not-allowed}
+    .word-feedback{min-height:34px;margin-top:22px;font-size:18px;font-weight:700}
+    @media (max-width:520px){.word-question{font-size:46px}.word-option{height:64px;font-size:30px}}
     @media (prefers-color-scheme:dark){:root{--card:#111827;--border:#334155;--muted:#94a3b8}body{background:#020617;color:#e5e7eb}.tabs{background:rgba(2,6,23,.9)}select,input,.result-line,.list li,.search-card{background:#111827;color:#e5e7eb}.canvasWrap,canvas{background:#fff}.tab-link{color:#cbd5e1}}
   
     body{background:linear-gradient(180deg,#eff6ff 0,#f8fafc 240px);}
@@ -102,6 +114,12 @@
               <option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
             </select>
           </label>
+          <label>練習題型：
+            <select id="quizType" title="選擇練習題型">
+              <option value="tracing">生字描紅</option>
+              <option value="word-choice">詞語選字</option>
+            </select>
+          </label>
           <label>筆色：
             <input id="penColor" type="color" value="#000000" title="筆色" />
           </label>
@@ -137,7 +155,7 @@
             <span class="zhuyin" id="zhuyin">—</span>
             <span class="lesson" id="lessonInfo"></span>
           </div>
-          <div class="row">
+          <div id="traceActions" class="row">
             <button id="btnClear" type="button" class="secondary">清除</button>
             <button id="btnRecognize" type="button">檢查</button>
             <button id="btnNext" type="button" class="secondary">下一題</button>
@@ -146,10 +164,16 @@
       </div>
 
       <div class="grid" style="margin-top:12px;">
-        <div class="card">
+        <div id="traceCard" class="card">
           <div class="canvasWrap">
             <canvas id="pad" width="600" height="600"></canvas>
           </div>
+        </div>
+        <div id="wordQuizCard" class="card word-quiz" aria-live="polite">
+          <div class="word-prompt">請選出詞語中缺少的正確國字</div>
+          <div id="wordQuestion" class="word-question">—</div>
+          <div id="wordOptions" class="word-options"></div>
+          <div id="wordFeedback" class="word-feedback"></div>
         </div>
         <div class="card">
           <h3 style="margin: 4px 0 8px;">進度 / 訊息</h3>

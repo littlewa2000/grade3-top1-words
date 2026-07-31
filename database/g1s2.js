@@ -20,7 +20,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "太陽",
+            "太空",
+            "太太",
+            "太平"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -35,7 +40,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "充電",
+            "充滿",
+            "補充",
+            "充分"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -50,7 +60,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "電話",
+            "電燈",
+            "電視",
+            "電腦"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -65,7 +80,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "下雨",
+            "大雨",
+            "雨水",
+            "風雨"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -80,7 +100,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "過去",
+            "經過",
+            "過年",
+            "走過"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -95,7 +120,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "後面",
+            "以後",
+            "後來",
+            "最後"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -110,7 +140,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "因為",
+            "成為",
+            "以為",
+            "為了"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -125,7 +160,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "冬天",
+            "冬季",
+            "冬至",
+            "寒冬"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -140,7 +180,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "土地",
+            "泥土",
+            "土壤",
+            "本土"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -155,7 +200,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "小草",
+            "草地",
+            "青草",
+            "草原"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -170,7 +220,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "感冒",
+            "冒險",
+            "冒出",
+            "冒雨"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -185,7 +240,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "大哭",
+            "哭泣",
+            "哭聲",
+            "哭笑不得"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -200,7 +260,12 @@
           "semester": 2,
           "lesson": 1,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "開心",
+            "小心",
+            "愛心",
+            "心情"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -222,7 +287,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "顏色",
+            "顏料",
+            "笑顏",
+            "容顏"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -237,7 +307,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "顏色",
+            "彩色",
+            "紅色",
+            "色彩"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -252,7 +327,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "仔細",
+            "細心",
+            "細小",
+            "細雨"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -267,7 +347,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "看著",
+            "聽著",
+            "接著",
+            "穿著"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -282,7 +367,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "問題",
+            "提問",
+            "請問",
+            "問好"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -297,7 +387,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "小鳥",
+            "飛鳥",
+            "鳥兒",
+            "鳥類"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -312,7 +407,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "綠色",
+            "綠地",
+            "綠草",
+            "綠葉"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -327,7 +427,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "看見",
+            "好看",
+            "看書",
+            "觀看"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -342,7 +447,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "藍色",
+            "藍天",
+            "深藍",
+            "蔚藍"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -357,7 +467,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "天空",
+            "空氣",
+            "太空",
+            "空地"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -372,7 +487,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "媽媽",
+            "爸媽",
+            "媽咪",
+            "大媽"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -387,7 +507,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "彩色",
+            "彩虹",
+            "色彩",
+            "精彩"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -402,7 +527,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "中間",
+            "中心",
+            "中文",
+            "空中"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -417,7 +547,12 @@
           "semester": 2,
           "lesson": 2,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "彩虹",
+            "霓虹",
+            "虹橋",
+            "彩虹橋"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -439,7 +574,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "音樂",
+            "聲音",
+            "錄音",
+            "音符"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -454,7 +594,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "快樂",
+            "音樂",
+            "樂園",
+            "樂趣"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -469,7 +614,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "開會",
+            "學會",
+            "機會",
+            "音樂會"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -484,7 +634,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "山坡",
+            "下坡",
+            "斜坡",
+            "土坡"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -499,7 +654,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "幫忙",
+            "忙碌",
+            "急忙",
+            "連忙"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -514,7 +674,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "白布",
+            "花布",
+            "公布",
+            "布置"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -529,7 +694,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "操場",
+            "市場",
+            "廣場",
+            "球場"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -544,7 +714,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "入口",
+            "進入",
+            "加入",
+            "出入"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -559,7 +734,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "門口",
+            "路口",
+            "入口",
+            "口水"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -574,7 +754,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "河水",
+            "河邊",
+            "河流",
+            "小河"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -589,7 +774,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "樹林",
+            "森林",
+            "竹林",
+            "林間"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -604,7 +794,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "中間",
+            "房間",
+            "時間",
+            "人間"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -619,7 +814,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "大風",
+            "風雨",
+            "風景",
+            "微風"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -634,7 +834,12 @@
           "semester": 2,
           "lesson": 3,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "跑步",
+            "跑道",
+            "奔跑",
+            "跑走"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -656,7 +861,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "書本",
+            "看書",
+            "讀書",
+            "書包"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -671,7 +881,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "打開",
+            "打球",
+            "打字",
+            "打掃"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -686,7 +901,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "跳高",
+            "跳遠",
+            "跳舞",
+            "跳繩"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -701,7 +921,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "陪伴",
+            "陪同",
+            "陪著",
+            "作陪"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -716,7 +941,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "去年",
+            "過去",
+            "出去",
+            "回去"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -731,7 +961,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "危險",
+            "冒險",
+            "驚險",
+            "保險"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -746,7 +981,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "大海",
+            "海邊",
+            "海水",
+            "海洋"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -761,7 +1001,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "找到",
+            "尋找",
+            "找出",
+            "找人"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -776,7 +1021,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "喜歡",
+            "歡樂",
+            "歡迎",
+            "歡呼"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -791,7 +1041,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "神奇",
+            "神明",
+            "精神",
+            "眼神"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -806,7 +1061,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "神奇",
+            "好奇",
+            "奇怪",
+            "驚奇"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -821,7 +1081,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "猜想",
+            "猜謎",
+            "猜拳",
+            "猜一猜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -836,7 +1101,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "一次",
+            "下次",
+            "次數",
+            "再次"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -851,7 +1121,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "誰的",
+            "是誰",
+            "誰來",
+            "誰知道"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -866,7 +1141,12 @@
           "semester": 2,
           "lesson": 4,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "跟著",
+            "跟前",
+            "跟上",
+            "跟從"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -888,7 +1168,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "喜歡",
+            "歡喜",
+            "喜愛",
+            "驚喜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -903,7 +1188,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "帶來",
+            "帶走",
+            "帶著",
+            "帶領"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -918,7 +1208,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "天氣",
+            "空氣",
+            "生氣",
+            "力氣"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -933,7 +1228,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "皮球",
+            "地球",
+            "足球",
+            "氣球"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -948,7 +1248,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "開始",
+            "始終",
+            "原始",
+            "起始"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -963,7 +1268,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "吹風",
+            "吹氣",
+            "吹走",
+            "吹起"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -978,7 +1288,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "突然",
+            "突出",
+            "突破",
+            "衝突"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -993,7 +1308,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "突然",
+            "然後",
+            "自然",
+            "當然"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1008,7 +1328,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "得到",
+            "覺得",
+            "記得",
+            "值得"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1023,7 +1348,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "高興",
+            "高大",
+            "高山",
+            "提高"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1038,7 +1368,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "大樹",
+            "樹木",
+            "樹葉",
+            "樹林"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1053,7 +1388,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "送給",
+            "交給",
+            "給你",
+            "給予"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1068,7 +1408,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "可以",
+            "可是",
+            "可愛",
+            "可能"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1083,7 +1428,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "道理",
+            "整理",
+            "理由",
+            "理想"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1098,7 +1448,12 @@
           "semester": 2,
           "lesson": 5,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "只有",
+            "只好",
+            "只要",
+            "只剩"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1120,7 +1475,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "鄰居",
+            "居住",
+            "居然",
+            "家居"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1135,7 +1495,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "孩子",
+            "小孩",
+            "男孩",
+            "女孩"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1150,7 +1515,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "常常",
+            "平常",
+            "經常",
+            "非常"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1165,7 +1535,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "躲藏",
+            "躲開",
+            "躲雨",
+            "閃躲"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1180,7 +1555,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "發現",
+            "發生",
+            "出發",
+            "頭髮"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1195,7 +1575,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "現在",
+            "發現",
+            "出現",
+            "表現"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1210,7 +1595,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "就是",
+            "成就",
+            "就好",
+            "就近"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1225,7 +1615,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "頭髮",
+            "石頭",
+            "抬頭",
+            "低頭"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1240,7 +1635,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "回家",
+            "回去",
+            "回答",
+            "回來"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1255,7 +1655,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "想法",
+            "想像",
+            "想念",
+            "心想"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1270,7 +1675,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "但是",
+            "不但",
+            "但願",
+            "但凡"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1285,7 +1695,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "怎麼",
+            "怎樣",
+            "怎辦",
+            "怎會"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1300,7 +1715,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "知道",
+            "知識",
+            "通知",
+            "知心"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1315,7 +1735,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "知道",
+            "道路",
+            "跑道",
+            "味道"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1330,7 +1755,12 @@
           "semester": 2,
           "lesson": 6,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "先生",
+            "首先",
+            "先後",
+            "事先"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1352,7 +1782,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "畫畫",
+            "圖畫",
+            "畫家",
+            "畫筆"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1367,7 +1802,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "可愛",
+            "愛心",
+            "喜愛",
+            "愛護"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1382,7 +1822,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "送給",
+            "送走",
+            "送信",
+            "送行"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1397,7 +1842,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "寫字",
+            "書寫",
+            "寫作",
+            "寫信"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1412,7 +1862,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "祝福",
+            "祝賀",
+            "慶祝",
+            "祝願"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1427,7 +1882,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "一張",
+            "張開",
+            "緊張",
+            "誇張"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1442,7 +1902,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "笑臉",
+            "臉色",
+            "臉蛋",
+            "洗臉"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1457,7 +1922,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "感謝",
+            "感動",
+            "感覺",
+            "感冒"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1472,7 +1942,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "謝謝",
+            "感謝",
+            "道謝",
+            "謝意"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1487,7 +1962,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "老師",
+            "老人",
+            "老家",
+            "老朋友"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1502,7 +1982,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "老師",
+            "教師",
+            "師生",
+            "大師"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1517,7 +2002,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "好啊",
+            "是啊",
+            "走啊",
+            "啊一聲"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1532,7 +2022,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "還是",
+            "還有",
+            "還給",
+            "歸還"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1547,7 +2042,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "漂亮",
+            "漂流",
+            "漂浮",
+            "漂走"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1562,7 +2062,12 @@
           "semester": 2,
           "lesson": 7,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "明亮",
+            "月亮",
+            "漂亮",
+            "亮光"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1584,7 +2089,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "卡片",
+            "卡通",
+            "卡車",
+            "打卡"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1599,7 +2109,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "一片",
+            "卡片",
+            "照片",
+            "葉片"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1614,7 +2129,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "秋天",
+            "秋季",
+            "中秋",
+            "深秋"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1629,7 +2149,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "採收",
+            "採用",
+            "採花",
+            "採果"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1644,7 +2169,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "水果",
+            "蘋果",
+            "果子",
+            "結果"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1659,7 +2189,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "吃飯",
+            "好吃",
+            "吃完",
+            "小吃"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1674,7 +2209,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "吃飽",
+            "飽滿",
+            "溫飽",
+            "飽足"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1689,7 +2229,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "方向",
+            "地方",
+            "方法",
+            "前方"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1704,7 +2249,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "埋下",
+            "埋進",
+            "埋藏",
+            "掩埋"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1719,7 +2269,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "進入",
+            "進步",
+            "前進",
+            "走進"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1734,7 +2289,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "很多",
+            "很好",
+            "很少",
+            "很快"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1749,7 +2309,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "很久",
+            "不久",
+            "長久",
+            "多久"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1764,7 +2329,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "好嗎",
+            "是嗎",
+            "對嗎",
+            "可以嗎"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1779,7 +2349,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "長大",
+            "長高",
+            "長久",
+            "成長"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1794,7 +2369,12 @@
           "semester": 2,
           "lesson": 8,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "尊敬",
+            "敬愛",
+            "敬禮",
+            "敬重"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1816,7 +2396,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "牛奶",
+            "奶奶",
+            "奶油",
+            "奶粉"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1831,7 +2416,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "寶貝",
+            "貝殼",
+            "扇貝",
+            "分貝"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1846,7 +2436,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "早上",
+            "早餐",
+            "早安",
+            "提早"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1861,7 +2456,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "學校",
+            "校園",
+            "校長",
+            "全校"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1876,7 +2476,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "公園",
+            "校園",
+            "花園",
+            "樂園"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1891,7 +2496,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "工作",
+            "工人",
+            "工地",
+            "手工"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1906,7 +2516,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "工作",
+            "作業",
+            "作文",
+            "作品"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1921,7 +2536,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "她們",
+            "看著她",
+            "跟她說",
+            "送給她"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1936,7 +2556,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "旁邊",
+            "河邊",
+            "海邊",
+            "路邊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1951,7 +2576,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "汗水",
+            "流汗",
+            "滿頭大汗",
+            "冷汗"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1966,7 +2596,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "學生",
+            "學校",
+            "學習",
+            "同學"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1981,7 +2616,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "您好",
+            "謝謝您",
+            "請問您",
+            "祝福您"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1996,7 +2636,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "一樣",
+            "這樣",
+            "怎樣",
+            "樣子"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2011,7 +2656,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "當時",
+            "當成",
+            "當心",
+            "當天"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2026,7 +2676,12 @@
           "semester": 2,
           "lesson": 9,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "成為",
+            "成功",
+            "完成",
+            "成長"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2048,7 +2703,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "水井",
+            "井水",
+            "油井",
+            "井口"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2063,7 +2723,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "集合",
+            "收集",
+            "市集",
+            "集中"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2078,7 +2743,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "除了",
+            "除去",
+            "清除",
+            "除法"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2093,7 +2763,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "睡覺",
+            "睡著",
+            "睡衣",
+            "入睡"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2108,7 +2783,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "睡覺",
+            "覺得",
+            "感覺",
+            "發覺"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2123,7 +2803,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "東方",
+            "東西",
+            "東邊",
+            "房東"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2138,7 +2823,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "東西",
+            "西方",
+            "西邊",
+            "西瓜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2153,7 +2843,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "拍手",
+            "拍照",
+            "拍球",
+            "拍打"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2168,7 +2863,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "肚子",
+            "肚皮",
+            "肚臍",
+            "拉肚子"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2183,7 +2883,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "唉呀",
+            "唉唷",
+            "唉聲嘆氣",
+            "唉一聲"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2198,7 +2903,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "幾個",
+            "幾天",
+            "幾次",
+            "幾乎"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2213,7 +2923,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "世界",
+            "世上",
+            "世代",
+            "世間"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2228,7 +2943,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "世界",
+            "外界",
+            "邊界",
+            "界線"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2243,7 +2963,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "連忙",
+            "連續",
+            "連接",
+            "相連"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2258,7 +2983,12 @@
           "semester": 2,
           "lesson": 10,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "服裝",
+            "包裝",
+            "裝飾",
+            "安裝"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2280,7 +3010,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "星星",
+            "星期",
+            "明星",
+            "流星"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2295,7 +3030,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "裡面",
+            "外面",
+            "前面",
+            "地面"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2310,7 +3050,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "也許",
+            "許多",
+            "允許",
+            "許願"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2325,7 +3070,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "水池",
+            "電池",
+            "泳池",
+            "池塘"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2340,7 +3090,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "圓圈",
+            "一圈",
+            "圈圈",
+            "花圈"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2355,7 +3110,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "水波",
+            "波浪",
+            "風波",
+            "聲波"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2370,7 +3130,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "花紋",
+            "波紋",
+            "條紋",
+            "指紋"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2385,7 +3150,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "看見",
+            "再見",
+            "見面",
+            "聽見"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2400,7 +3170,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "快樂",
+            "趕快",
+            "快速",
+            "飛快"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2415,7 +3190,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "告訴",
+            "報告",
+            "公告",
+            "告別"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2430,7 +3210,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "告訴",
+            "訴說",
+            "哭訴",
+            "申訴"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2445,7 +3230,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "陽光",
+            "月光",
+            "亮光",
+            "時光"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2460,7 +3250,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "拉開",
+            "拉手",
+            "拉車",
+            "拉長"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2475,7 +3270,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "奇怪",
+            "怪物",
+            "難怪",
+            "責怪"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2490,7 +3290,12 @@
           "semester": 2,
           "lesson": 11,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "好呀",
+            "來呀",
+            "走呀",
+            "唉呀"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2512,7 +3317,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "停止",
+            "阻止",
+            "禁止",
+            "止步"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2527,7 +3337,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "一半",
+            "半年",
+            "半天",
+            "半夜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2542,7 +3357,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "山羊",
+            "綿羊",
+            "羊毛",
+            "小羊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2557,7 +3377,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "田地",
+            "農田",
+            "稻田",
+            "田野"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2572,7 +3397,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "再見",
+            "再次",
+            "再來",
+            "不再"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2587,7 +3417,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "西瓜",
+            "南瓜",
+            "地瓜",
+            "木瓜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2602,7 +3437,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "樹苗",
+            "幼苗",
+            "秧苗",
+            "禾苗"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2617,7 +3457,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "辛苦",
+            "辛勞",
+            "辛勤",
+            "辛酸"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2632,7 +3477,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "辛苦",
+            "苦瓜",
+            "苦笑",
+            "苦味"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2647,7 +3497,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "加油",
+            "汽油",
+            "油燈",
+            "油畫"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2662,7 +3517,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "能力",
+            "可能",
+            "能夠",
+            "功能"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2677,7 +3537,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "收到",
+            "收下",
+            "回收",
+            "收拾"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2692,7 +3557,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "香甜",
+            "甜美",
+            "甜點",
+            "甜味"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2707,7 +3577,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "分享",
+            "分開",
+            "分數",
+            "十分"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2722,7 +3597,12 @@
           "semester": 2,
           "lesson": 12,
           "term": "小一下",
-          "words": [],
+          "words": [
+            "分享",
+            "享受",
+            "享用",
+            "共享"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null

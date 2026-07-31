@@ -20,7 +20,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "呼吸",
+            "呼叫",
+            "歡呼",
+            "呼喊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -35,7 +40,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "白色",
+            "白天",
+            "白雲",
+            "雪白"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -50,7 +60,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "白雲",
+            "烏雲",
+            "雲朵",
+            "雲海"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -65,7 +80,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "溫柔",
+            "柔軟",
+            "柔和",
+            "輕柔"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -80,7 +100,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "前面",
+            "前方",
+            "前天",
+            "以前"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -95,7 +120,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "游泳",
+            "上游",
+            "下游",
+            "游水"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -110,7 +140,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "噴水",
+            "噴泉",
+            "噴出",
+            "噴灑"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -125,7 +160,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "美麗",
+            "美好",
+            "美食",
+            "完美"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -140,7 +180,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "美麗",
+            "亮麗",
+            "華麗",
+            "秀麗"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -155,7 +200,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "柱子",
+            "石柱",
+            "水柱",
+            "圓柱"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -170,7 +220,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "考試",
+            "試用",
+            "嘗試",
+            "試一試"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -185,7 +240,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "呼吸",
+            "吸收",
+            "吸管",
+            "吸氣"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -200,7 +260,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "使用",
+            "用力",
+            "用品",
+            "有用"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -215,7 +280,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "力量",
+            "用力",
+            "努力",
+            "力氣"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -230,7 +300,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "哇哇大哭",
+            "哇哇叫",
+            "好哇",
+            "哇一聲"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -245,7 +320,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "又大又圓",
+            "又高又大",
+            "又香又甜",
+            "又說又笑"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -260,7 +340,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "第一",
+            "第二",
+            "次第",
+            "及第"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -275,7 +360,12 @@
           "semester": 1,
           "lesson": 1,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "成功",
+            "功課",
+            "功夫",
+            "用功"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -297,7 +387,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "爬山",
+            "爬行",
+            "爬樹",
+            "爬坡"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -312,7 +407,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "樓梯",
+            "電梯",
+            "階梯",
+            "溜滑梯"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -327,7 +427,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "白紙",
+            "報紙",
+            "色紙",
+            "紙條"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -342,7 +447,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "紙條",
+            "線條",
+            "布條",
+            "條件"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -357,7 +467,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "直線",
+            "毛線",
+            "電線",
+            "線條"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -372,7 +487,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "好像",
+            "想像",
+            "畫像",
+            "圖像"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -387,7 +507,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "身體",
+            "身高",
+            "全身",
+            "身邊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -402,7 +527,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "學生",
+            "生活",
+            "生日",
+            "先生"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -417,7 +547,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "迫不及待",
+            "強迫",
+            "被迫",
+            "急迫"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -432,7 +567,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "及時",
+            "來不及",
+            "以及",
+            "及早"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -447,7 +587,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "等待",
+            "期待",
+            "對待",
+            "招待"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -462,7 +607,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "車站",
+            "站立",
+            "站好",
+            "站住"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -477,7 +627,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "沿路",
+            "沿著",
+            "沿途",
+            "沿岸"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -492,7 +647,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "屋頂",
+            "山頂",
+            "頭頂",
+            "頂端"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -507,7 +667,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "方格",
+            "合格",
+            "格子",
+            "性格"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -522,7 +687,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "哪裡",
+            "哪個",
+            "哪天",
+            "哪邊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -537,7 +707,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "剛才",
+            "才能",
+            "天才",
+            "才藝"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -552,7 +727,12 @@
           "semester": 1,
           "lesson": 2,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "最好",
+            "最後",
+            "最近",
+            "最美"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -574,7 +754,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "勇敢",
+            "勇氣",
+            "勇士",
+            "英勇"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -589,7 +774,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "教室",
+            "教學",
+            "教師",
+            "請教"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -604,7 +794,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "教室",
+            "寢室",
+            "室內",
+            "浴室"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -619,7 +814,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "一棵樹",
+            "兩棵樹",
+            "棵棵大樹",
+            "一棵小草"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -634,7 +834,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "葉子",
+            "樹葉",
+            "落葉",
+            "枝葉"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -649,7 +854,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "克服",
+            "公克",
+            "克制",
+            "一克"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -664,7 +874,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "衣服",
+            "舒服",
+            "服裝",
+            "克服"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -679,7 +894,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "害怕",
+            "傷害",
+            "害蟲",
+            "災害"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -694,7 +914,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "害怕",
+            "可怕",
+            "不怕",
+            "怕生"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -709,7 +934,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "努力",
+            "努力學習",
+            "努力向上",
+            "一起努力"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -724,7 +954,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "完成",
+            "完全",
+            "做完",
+            "完美"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -739,7 +974,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "事情",
+            "故事",
+            "做事",
+            "好事"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -754,7 +994,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "跌倒",
+            "倒下",
+            "倒水",
+            "倒立"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -769,7 +1014,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "時間",
+            "小時",
+            "有時",
+            "當時"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -784,7 +1034,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "黑色",
+            "黑白",
+            "黑夜",
+            "烏黑"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -799,7 +1054,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "低頭",
+            "高低",
+            "低聲",
+            "降低"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -814,7 +1074,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "聲音",
+            "大聲",
+            "歌聲",
+            "笑聲"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -829,7 +1094,12 @@
           "semester": 1,
           "lesson": 3,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "故事",
+            "故意",
+            "故鄉",
+            "事故"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -851,7 +1121,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "一塊",
+            "石塊",
+            "冰塊",
+            "土塊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -866,7 +1141,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "圓形",
+            "圓圈",
+            "團圓",
+            "湯圓"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -881,7 +1161,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "形狀",
+            "圓形",
+            "外形",
+            "圖形"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -896,7 +1181,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "芝麻",
+            "靈芝",
+            "芝麻油",
+            "芝麻餅"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -911,7 +1201,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "芝麻",
+            "麻煩",
+            "麻雀",
+            "麻油"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -926,7 +1221,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "餅乾",
+            "月餅",
+            "燒餅",
+            "鬆餅"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -941,7 +1241,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "咬住",
+            "咬牙",
+            "咬一口",
+            "叮咬"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -956,7 +1261,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "吃飯",
+            "白飯",
+            "米飯",
+            "飯菜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -971,7 +1281,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "做事",
+            "做好",
+            "做完",
+            "做飯"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -986,7 +1301,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "上課",
+            "下課",
+            "功課",
+            "課本"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1001,7 +1321,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "洗手",
+            "洗澡",
+            "清洗",
+            "洗衣"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1016,7 +1341,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "洗澡",
+            "泡澡",
+            "沖澡",
+            "熱水澡"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1031,7 +1361,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "收拾",
+            "撿拾",
+            "拾起",
+            "拾金不昧"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1046,7 +1381,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "整理",
+            "整齊",
+            "完整",
+            "整天"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1061,7 +1401,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "書包",
+            "麵包",
+            "包子",
+            "包裝"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1076,7 +1421,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "遊戲",
+            "旅遊",
+            "出遊",
+            "遊客"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1091,7 +1441,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "遊戲",
+            "看戲",
+            "戲院",
+            "戲水"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1106,7 +1461,12 @@
           "semester": 1,
           "lesson": 4,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "剩下",
+            "剩飯",
+            "剩餘",
+            "吃剩"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1128,7 +1488,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "昆蟲",
+            "小蟲",
+            "害蟲",
+            "毛毛蟲"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1143,7 +1508,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "森林",
+            "森森",
+            "陰森",
+            "森林公園"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1158,7 +1528,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "動物",
+            "運動",
+            "動作",
+            "活動"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1173,7 +1548,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "動物",
+            "植物",
+            "食物",
+            "禮物"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1188,7 +1568,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "國王",
+            "王子",
+            "女王",
+            "大王"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1203,7 +1588,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "坐下",
+            "坐好",
+            "乘坐",
+            "坐車"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1218,7 +1608,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "上午",
+            "中午",
+            "下午",
+            "午餐"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1233,7 +1628,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "停止",
+            "停車",
+            "停下",
+            "停留"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1248,7 +1648,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "座位",
+            "一座山",
+            "星座",
+            "寶座"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1263,7 +1668,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "大橋",
+            "小橋",
+            "吊橋",
+            "天橋"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1278,7 +1688,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "著急",
+            "急忙",
+            "緊急",
+            "急救"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1293,7 +1708,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "原來",
+            "原因",
+            "原本",
+            "草原"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1308,7 +1728,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "從前",
+            "從此",
+            "從小",
+            "跟從"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1323,7 +1748,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "從此",
+            "因此",
+            "彼此",
+            "如此"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1338,7 +1768,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "水管",
+            "管理",
+            "不管",
+            "吸管"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1353,7 +1788,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "一百",
+            "百貨",
+            "百合",
+            "百年"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1368,7 +1808,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "科學",
+            "科目",
+            "百科",
+            "外科"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1383,7 +1828,12 @@
           "semester": 1,
           "lesson": 5,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "全部",
+            "安全",
+            "完全",
+            "全家"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1405,7 +1855,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "自己",
+            "自然",
+            "自由",
+            "親自"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1420,7 +1875,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "自己",
+            "知己",
+            "一己",
+            "己見"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1435,7 +1895,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "沙灘",
+            "沙子",
+            "沙漠",
+            "沙包"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1450,7 +1915,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "撿拾",
+            "撿起",
+            "撿到",
+            "撿垃圾"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1465,7 +1935,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "垃圾",
+            "垃圾桶",
+            "垃圾車",
+            "垃圾袋"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1480,7 +1955,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "垃圾",
+            "垃圾桶",
+            "垃圾車",
+            "垃圾袋"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1495,7 +1975,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "眼睛",
+            "眼淚",
+            "眼前",
+            "眼鏡"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1510,7 +1995,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "膠水",
+            "膠帶",
+            "塑膠",
+            "橡膠"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1525,7 +2015,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "對面",
+            "對手",
+            "面對",
+            "答對"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1540,7 +2035,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "牠們",
+            "看著牠",
+            "跟牠玩",
+            "餵牠吃"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1555,7 +2055,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "安全",
+            "平安",
+            "安心",
+            "安靜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1570,7 +2075,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "好吧",
+            "走吧",
+            "來吧",
+            "去吧"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1585,7 +2095,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "如果",
+            "如何",
+            "比如",
+            "如同"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1600,7 +2115,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "應該",
+            "不該",
+            "該不該",
+            "活該"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1615,7 +2135,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "留下",
+            "保留",
+            "停留",
+            "留心"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1630,7 +2155,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "方便",
+            "便當",
+            "便利",
+            "便宜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1645,7 +2175,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "減少",
+            "減法",
+            "減輕",
+            "減半"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1660,7 +2195,12 @@
           "semester": 1,
           "lesson": 6,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "多少",
+            "很少",
+            "少數",
+            "減少"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1682,7 +2222,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "等待",
+            "等候",
+            "平等",
+            "等一下"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1697,7 +2242,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "兔子",
+            "白兔",
+            "野兔",
+            "小兔"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1712,7 +2262,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "農夫",
+            "農田",
+            "農民",
+            "農村"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1727,7 +2282,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "農夫",
+            "夫人",
+            "夫妻",
+            "功夫"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1742,7 +2302,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "種子",
+            "種田",
+            "種花",
+            "各種"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1757,7 +2322,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "夏天",
+            "夏日",
+            "夏季",
+            "初夏"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1772,7 +2342,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "剛才",
+            "剛好",
+            "剛剛",
+            "金剛"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1787,7 +2362,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "趕快",
+            "趕路",
+            "趕上",
+            "趕走"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1802,7 +2382,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "馬路",
+            "道路",
+            "路口",
+            "走路"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1817,7 +2402,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "幸福",
+            "幸運",
+            "幸好",
+            "不幸"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1832,7 +2422,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "運動",
+            "幸運",
+            "運送",
+            "運氣"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1847,7 +2442,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "以前",
+            "以後",
+            "可以",
+            "所以"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1862,7 +2462,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "耕田",
+            "耕地",
+            "耕作",
+            "農耕"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1877,7 +2482,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "守護",
+            "遵守",
+            "看守",
+            "守住"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1892,7 +2502,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "夜晚",
+            "半夜",
+            "夜空",
+            "黑夜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1907,7 +2522,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "晚上",
+            "晚餐",
+            "晚安",
+            "夜晚"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1922,7 +2542,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "北方",
+            "北風",
+            "北部",
+            "向北"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1937,7 +2562,12 @@
           "semester": 1,
           "lesson": 7,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "搖頭",
+            "搖晃",
+            "搖擺",
+            "動搖"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1959,7 +2589,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "角落",
+            "三角形",
+            "牛角",
+            "主角"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1974,7 +2609,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "腳步",
+            "雙腳",
+            "手腳",
+            "山腳"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -1989,7 +2629,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "口渴",
+            "解渴",
+            "止渴",
+            "渴望"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2004,7 +2649,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "小鹿",
+            "梅花鹿",
+            "公鹿",
+            "長頸鹿"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2019,7 +2669,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "喝水",
+            "喝茶",
+            "喝完",
+            "喝一口"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2034,7 +2689,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "影子",
+            "電影",
+            "倒影",
+            "身影"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2049,7 +2709,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "意思",
+            "注意",
+            "同意",
+            "心意"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2064,7 +2729,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "冷卻",
+            "退卻",
+            "忘卻",
+            "卻步"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2079,7 +2749,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "獅子",
+            "石獅",
+            "舞獅",
+            "獅王"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2094,7 +2769,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "追趕",
+            "追上",
+            "追求",
+            "追問"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2109,7 +2789,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "棉被",
+            "被子",
+            "被迫",
+            "被動"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2124,7 +2809,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "樹枝",
+            "枝葉",
+            "花枝",
+            "枝條"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2139,7 +2829,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "掙脫",
+            "掙扎",
+            "掙開",
+            "掙錢"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2154,7 +2849,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "脫下",
+            "脫掉",
+            "掙脫",
+            "脫落"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2169,7 +2869,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "速度",
+            "快速",
+            "加速",
+            "迅速"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2184,7 +2889,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "速度",
+            "溫度",
+            "高度",
+            "角度"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2199,7 +2909,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "一直",
+            "直線",
+            "正直",
+            "直走"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2214,7 +2929,12 @@
           "semester": 1,
           "lesson": 8,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "救人",
+            "急救",
+            "救命",
+            "救火"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2236,7 +2956,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "赤腳",
+            "赤道",
+            "赤色",
+            "赤子"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2251,7 +2976,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "國家",
+            "國王",
+            "全國",
+            "外國"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2266,7 +2996,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "熱水",
+            "炎熱",
+            "熱心",
+            "熱鬧"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2281,7 +3016,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "皇宮",
+            "故宮",
+            "迷宮",
+            "宮殿"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2296,7 +3036,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "涼快",
+            "清涼",
+            "冰涼",
+            "涼風"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2311,7 +3056,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "踩到",
+            "踩踏",
+            "踩水",
+            "踩住"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2326,7 +3076,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "毛毯",
+            "地毯",
+            "毯子",
+            "紅毯"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2341,7 +3096,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "溫暖",
+            "暖和",
+            "保暖",
+            "暖氣"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2356,7 +3116,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "馬上",
+            "馬路",
+            "白馬",
+            "木馬"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2371,7 +3136,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "壞人",
+            "壞事",
+            "壞掉",
+            "破壞"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2386,7 +3156,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "困難",
+            "難過",
+            "難題",
+            "難忘"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2401,7 +3176,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "一定",
+            "決定",
+            "安定",
+            "固定"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2416,7 +3196,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "更加",
+            "更好",
+            "更換",
+            "更正"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2431,7 +3216,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "隨便",
+            "隨時",
+            "隨身",
+            "跟隨"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2446,7 +3236,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "主人",
+            "主要",
+            "公主",
+            "主角"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2461,7 +3256,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "方法",
+            "辦法",
+            "魔法",
+            "加法"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2476,7 +3276,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "終於",
+            "由於",
+            "於是",
+            "對於"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2491,7 +3296,12 @@
           "semester": 1,
           "lesson": 9,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "舒服",
+            "舒適",
+            "舒展",
+            "舒心"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2513,7 +3323,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "一群",
+            "人群",
+            "羊群",
+            "群體"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2528,7 +3343,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "安靜",
+            "平靜",
+            "冷靜",
+            "寧靜"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2543,7 +3363,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "抬頭",
+            "抬起",
+            "抬高",
+            "抬手"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2558,7 +3383,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "非常",
+            "除非",
+            "是非",
+            "非洲"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2573,7 +3403,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "有趣",
+            "興趣",
+            "樂趣",
+            "趣味"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2588,7 +3423,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "最近",
+            "附近",
+            "接近",
+            "遠近"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2603,7 +3443,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "一堆",
+            "堆積",
+            "堆高",
+            "土堆"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2618,7 +3463,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "棉花",
+            "棉被",
+            "棉布",
+            "棉花糖"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2633,7 +3483,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "遠方",
+            "永遠",
+            "遙遠",
+            "遠近"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2648,7 +3503,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "風景",
+            "美景",
+            "景色",
+            "背景"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2663,7 +3523,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "忽然",
+            "忽略",
+            "忽快忽慢",
+            "忽高忽低"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2678,7 +3543,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "聽見",
+            "聽說",
+            "好聽",
+            "聽話"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2693,7 +3563,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "揮手",
+            "揮動",
+            "揮舞",
+            "指揮"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2708,7 +3583,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "慢慢",
+            "緩慢",
+            "快慢",
+            "慢跑"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2723,7 +3603,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "依照",
+            "依然",
+            "依靠",
+            "依依不捨"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2738,7 +3623,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "不捨",
+            "捨不得",
+            "捨棄",
+            "取捨"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2753,7 +3643,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "放下",
+            "開放",
+            "放學",
+            "放心"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2768,7 +3663,12 @@
           "semester": 1,
           "lesson": 10,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "放假",
+            "假日",
+            "暑假",
+            "請假"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2790,7 +3690,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "熱湯",
+            "湯圓",
+            "雞湯",
+            "湯匙"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2805,7 +3710,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "今天",
+            "今年",
+            "如今",
+            "古今"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2820,7 +3730,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "至少",
+            "至今",
+            "甚至",
+            "冬至"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2835,7 +3750,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "妹妹",
+            "姊妹",
+            "小妹",
+            "兄妹"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2850,7 +3770,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "上升",
+            "升高",
+            "升起",
+            "公升"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2865,7 +3790,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "太陽",
+            "陽光",
+            "夕陽",
+            "陽台"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2880,7 +3810,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "因為",
+            "因此",
+            "原因",
+            "因果"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2895,7 +3830,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "日期",
+            "星期",
+            "期待",
+            "學期"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2910,7 +3850,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "盯著",
+            "盯住",
+            "盯緊",
+            "盯人"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2925,7 +3870,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "白米",
+            "米飯",
+            "玉米",
+            "米粉"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2940,7 +3890,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "一團",
+            "團圓",
+            "團結",
+            "樂團"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2955,7 +3910,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "米粉",
+            "麵粉",
+            "粉紅",
+            "花粉"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2970,7 +3930,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "南方",
+            "南部",
+            "向南",
+            "東南"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -2985,7 +3950,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "黃色",
+            "黃豆",
+            "金黃",
+            "黃昏"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3000,7 +3970,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "真的",
+            "認真",
+            "真正",
+            "天真"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3015,7 +3990,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "呵呵笑",
+            "笑呵呵",
+            "呵護",
+            "呵欠"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3030,7 +4010,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "接著",
+            "接到",
+            "接受",
+            "接住"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3045,7 +4030,12 @@
           "semester": 1,
           "lesson": 11,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "水牛",
+            "牛奶",
+            "牛肉",
+            "小牛"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3067,7 +4057,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "野外",
+            "野生",
+            "田野",
+            "野草"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3082,7 +4077,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "本來",
+            "原本",
+            "書本",
+            "課本"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3097,7 +4097,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "模型",
+            "模樣",
+            "模仿",
+            "模糊"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3112,7 +4117,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "模型",
+            "外型",
+            "大型",
+            "小型"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3127,7 +4137,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "蜂蜜",
+            "蜜蜂",
+            "甜蜜",
+            "水蜜桃"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3142,7 +4157,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "蜜蜂",
+            "蜂蜜",
+            "蜂巢",
+            "黃蜂"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3157,7 +4177,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "蝴蝶",
+            "蝴蝶結",
+            "蝴蝶蘭",
+            "花蝴蝶"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3172,7 +4197,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "蝴蝶",
+            "蝴蝶結",
+            "彩蝶",
+            "粉蝶"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3187,7 +4217,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "飛機",
+            "飛行",
+            "起飛",
+            "飛走"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3202,7 +4237,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "生活",
+            "活動",
+            "活力",
+            "活潑"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3217,7 +4257,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "圖畫",
+            "地圖",
+            "圖書",
+            "圖片"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3232,7 +4277,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "鉛筆",
+            "毛筆",
+            "畫筆",
+            "筆記"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3247,7 +4297,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "材料",
+            "飲料",
+            "料理",
+            "不料"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3262,7 +4317,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "湖水",
+            "湖邊",
+            "湖面",
+            "西湖"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3277,7 +4337,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "調整",
+            "調查",
+            "空調",
+            "聲調"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3292,7 +4357,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "迷路",
+            "迷人",
+            "入迷",
+            "球迷"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3307,7 +4377,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "逛街",
+            "閒逛",
+            "逛逛",
+            "逛市場"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
@@ -3322,7 +4397,12 @@
           "semester": 1,
           "lesson": 12,
           "term": "小二上",
-          "words": [],
+          "words": [
+            "兒子",
+            "女兒",
+            "兒童",
+            "幼兒"
+          ],
           "sentences": [],
           "radical": null,
           "strokes": null
