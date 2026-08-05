@@ -65,13 +65,42 @@ const searchResultEl = document.getElementById('searchResult');
 
 // ====== 統計 ======
 let statsTotal = Number(localStorage.getItem("cnkeys_stats_total")||0);
+let statsWordFirstTotal = Number(localStorage.getItem("cnkeys_stats_word_first_total")||0);
+let statsWordFirstWrong = Number(localStorage.getItem("cnkeys_stats_word_first_wrong")||0);
 const statsTotalEl = document.getElementById('statsTotal');
+const statsFirstWrongEl = document.getElementById('statsFirstWrong');
+const statsFirstCorrectRateEl = document.getElementById('statsFirstCorrectRate');
 const btnResetStats = document.getElementById('btnResetStats');
-function updateStatsUI(){ if(statsTotalEl) statsTotalEl.textContent = String(statsTotal); }
+function formatPercent(value){
+  const rounded=Math.round(value*10)/10;
+  return `${Number.isInteger(rounded)?rounded.toFixed(0):rounded.toFixed(1)}%`;
+}
+function updateStatsUI(){
+  if(statsTotalEl) statsTotalEl.textContent=String(statsTotal);
+  const wrongRate=statsWordFirstTotal ? statsWordFirstWrong/statsWordFirstTotal*100 : 0;
+  const correctRate=statsWordFirstTotal ? (statsWordFirstTotal-statsWordFirstWrong)/statsWordFirstTotal*100 : 0;
+  if(statsFirstWrongEl) statsFirstWrongEl.textContent=`${statsWordFirstWrong} / ${statsWordFirstTotal}（${formatPercent(wrongRate)}）`;
+  if(statsFirstCorrectRateEl) statsFirstCorrectRateEl.textContent=formatPercent(correctRate);
+}
 function incStats(){ statsTotal++; localStorage.setItem("cnkeys_stats_total",String(statsTotal)); updateStatsUI(); if(currentTarget){ const m=JSON.parse(localStorage.getItem("cnkeys_mistakes")||"{}"); if(m[currentTarget.id]){m[currentTarget.id]=Math.max(0,m[currentTarget.id]-1); localStorage.setItem("cnkeys_mistakes",JSON.stringify(m));}} }
-function resetStats(){ statsTotal = 0; localStorage.setItem("cnkeys_stats_total","0"); updateStatsUI(); }
+function recordWordFirstAttempt(isWrong){
+  statsWordFirstTotal++;
+  if(isWrong) statsWordFirstWrong++;
+  localStorage.setItem("cnkeys_stats_word_first_total",String(statsWordFirstTotal));
+  localStorage.setItem("cnkeys_stats_word_first_wrong",String(statsWordFirstWrong));
+  updateStatsUI();
+}
+function resetStats(){
+  statsTotal=0;
+  statsWordFirstTotal=0;
+  statsWordFirstWrong=0;
+  localStorage.setItem("cnkeys_stats_total","0");
+  localStorage.setItem("cnkeys_stats_word_first_total","0");
+  localStorage.setItem("cnkeys_stats_word_first_wrong","0");
+  updateStatsUI();
+}
 btnResetStats?.addEventListener('click', resetStats);
-resetStats();
+updateStatsUI();
 
 // ====== 參數 ======
 let drawing=false, last=null, currentTarget=null;
@@ -81,6 +110,7 @@ let currentBand=null;
 let locked=true;
 let currentQuizWord='';
 let wordQuizAnswered=false;
+let wordQuizFirstAttemptRecorded=false;
 
 const TRACE_ALPHA       = 0.15;
 const TRACE_FONT        = `"TW-Kai","BiauKai","Kaiti TC","STKaiti","DFKai-SB","Noto Serif TC",serif`;
@@ -218,6 +248,7 @@ function buildDistractors(item, pool){
 function renderWordQuiz(item, pool){
   currentQuizWord=pickQuizWord(item);
   wordQuizAnswered=false;
+  wordQuizFirstAttemptRecorded=false;
   if(!currentQuizWord){
     showInfo('這個生字沒有可用的詞語，正在換下一題…');
     setTimeout(nextWord,300);
@@ -241,6 +272,10 @@ function renderWordQuiz(item, pool){
 
 function answerWordQuiz(button, selected){
   if(wordQuizAnswered || !currentTarget) return;
+  if(!wordQuizFirstAttemptRecorded){
+    recordWordFirstAttempt(selected!==currentTarget.char);
+    wordQuizFirstAttemptRecorded=true;
+  }
   if(selected!==currentTarget.char){
     button.classList.add('wrong');
     button.disabled=true;
