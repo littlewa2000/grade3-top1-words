@@ -114,6 +114,9 @@
               <option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
             </select>
           </label>
+        </div>
+
+        <div class="row" style="margin-top:8px;">
           <label>練習題型：
             <select id="quizType" title="選擇練習題型">
               <option value="tracing">生字描紅</option>
@@ -142,6 +145,8 @@
         <div class="row" style="margin-top:8px;">
           <div style="font-weight:600;">統計資料：</div>
           <div>累計完成題數：<span id="statsTotal">0</span></div>
+          <div>詞語選字首次答錯：<span id="statsFirstWrong">0 / 0（0%）</span></div>
+          <div>首次答對率：<span id="statsFirstCorrectRate">0%</span></div>
           <button id="btnResetStats" type="button" class="secondary" title="清除統計">清除統計</button>
         </div>
       </div>
