@@ -405,9 +405,18 @@ CANVAS.addEventListener('touchstart', e=>e.preventDefault(), {passive:false});
 CANVAS.addEventListener('touchmove', e=>e.preventDefault(), {passive:false});
 
 // 影像與檢查
+// 深色筆用亮度判斷；亮色彩筆則用 RGB 色差判斷。
+// 描紅底字是灰階（R≈G≈B），因此不會被彩色判斷誤認成使用者筆畫。
 function binarize(imgData, thr=BIN_THR){
   const {data,width,height}=imgData; const n=width*height; const mask=new Uint8Array(n);
-  for(let i=0, p=0;i<data.length;i+=4, p++){ const v=(data[i]+data[i+1]+data[i+2])/3; mask[p]= (v<thr)?1:0; }
+  for(let i=0, p=0;i<data.length;i+=4, p++){
+    const r=data[i], g=data[i+1], b=data[i+2];
+    const v=(r+g+b)/3;
+    const chroma=Math.max(r,g,b)-Math.min(r,g,b);
+    const isDark=v<thr;
+    const isColored=chroma>=24 && Math.min(r,g,b)<248;
+    mask[p]=(isDark||isColored)?1:0;
+  }
   return {mask,width,height};
 }
 function extractStableRegion(ctx, size=INPUT_SIZE){
