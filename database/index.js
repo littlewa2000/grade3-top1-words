@@ -1,12 +1,12 @@
 // Allan Learning System v3 database aggregator
 (function(){
   const source = window.CNKEYS_DATASETS || {};
-  const order = ["小一下","小二上","小二下","小三上","小三下"];
-  const keys = ["g1s2","g2s1","g2s2","g3s1","g3s2"];
+  const order = ["小一下","小二上","小二下","小三上","小三下","小四上"];
+  const keys = ["g1s2","g2s1","g2s2","g3s1","g3s2","g4s1"];
   const datasets = keys.map(k=>source[k]).filter(Boolean);
   const records=[];
   for(const ds of datasets){
-    const pair = ds.gradeCode==="小一下"?[1,2]:ds.gradeCode==="小二上"?[2,1]:ds.gradeCode==="小二下"?[2,2]:ds.gradeCode==="小三上"?[3,1]:ds.gradeCode==="小三下"?[3,2]:[null,null];
+    const pair = ds.gradeCode==="小一下"?[1,2]:ds.gradeCode==="小二上"?[2,1]:ds.gradeCode==="小二下"?[2,2]:ds.gradeCode==="小三上"?[3,1]:ds.gradeCode==="小三下"?[3,2]:ds.gradeCode==="小四上"?[4,1]:[null,null];
     for(const les of ds.lessons||[]){
       (les.words||[]).forEach((w,idx)=>{
         const item = w;
