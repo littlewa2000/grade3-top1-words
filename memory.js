@@ -47,6 +47,7 @@ function display(){
 }
 function clear(){const c=$('memoryCanvas');const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.strokeStyle='#cbd5e1';g.strokeRect(1,1,c.width-2,c.height-2)}
 function start(){
+ location.hash='#practice';
  const all=eligible(),db=read(),due=all.filter(x=>db[x.id]&&db[x.id].nextReview<=today());
  const unseen=all.filter(x=>!db[x.id]);
  queue=[...due,...unseen.slice(0,Math.max(0,5-due.length))];
