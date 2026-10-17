@@ -37,6 +37,7 @@
     @media (max-width:900px){.grid{grid-template-columns:1fr}}
     .canvasWrap{position:relative;border:1px dashed #cbd5e1;border-radius:12px;background:#fff;min-height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden}
     canvas{width:100%;height:auto;max-height:70vh;touch-action:none;background:#fff}
+    [hidden]{display:none !important}
     .list{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:8px}
     .list li{border:1px solid var(--border);border-radius:10px;padding:8px 10px;background:#fff;display:flex;justify-content:space-between;align-items:center}
     .section{display:flex;flex-direction:column;gap:12px}
@@ -144,6 +145,11 @@
           <button id="btnStartPractice" type="button">開始練習</button>
         </div>
 
+        <div class="card" style="margin-top:8px;background:#f0fdf4;color:#14532d">
+          <strong>記憶強化學習</strong>　今日待複習：<span id="memoryDueCount">0</span> 字｜已學習：<span id="memoryLearnedCount">0</span> 字
+          <div class="row" style="margin-top:8px"><button id="memoryStart" type="button">開始今日遮字默寫（優先複習到期字）</button></div>
+          <div class="muted">每天優先複習到期字，再加入最多 5 個新字；紀錄僅儲存在目前裝置。</div>
+        </div>
         <div class="row" style="margin-top:8px;">
           <div style="font-weight:600;">統計資料：</div>
           <div>累計完成題數：<span id="statsTotal">0</span></div>
@@ -189,6 +195,24 @@
       </div>
     </div>
 
+    <!-- 獨立遮字默寫：不改動原本描紅/選字 -->
+    <div id="memoryPanel" class="card section" style="margin-top:12px">
+      <h3 style="margin:0">遮字默寫與智慧複習</h3>
+      <div id="memoryMeta" class="muted"></div>
+      <div id="memoryHint" style="font-size:76px;text-align:center;min-height:100px">請開始記憶練習</div>
+      <div id="memoryPrompt" style="text-align:center"></div>
+      <canvas id="memoryCanvas" width="420" height="420" style="display:block;max-width:420px;width:100%;height:auto;margin:auto;border:1px solid #cbd5e1;border-radius:12px;touch-action:none" hidden></canvas>
+      <div id="memoryAnswer" hidden>請比較正確國字與剛才默寫的筆畫、部件。</div>
+      <div class="row" style="justify-content:center">
+        <button id="memoryCheck" hidden>遮住國字，開始默寫</button>
+        <button id="memoryClear" class="secondary" hidden>清除畫布</button>
+        <button id="memoryReveal" hidden>核對答案</button>
+        <span id="memoryGrade" hidden><button id="memoryCorrect">寫對了</button> <button id="memoryWrong" class="secondary">需要再寫</button></span>
+        <button id="memoryNext" hidden>下一個字</button>
+      </div>
+      <div id="memoryFeedback" class="muted" role="status">在設定頁按「開始今日遮字默寫」即可開始。</div>
+    </div>
+
     <!-- 搜尋 -->
     <div id="search" class="tab-panel">
       <div class="card section">
@@ -213,6 +237,7 @@
   <script src="./database/g4s1.js"></script>
   <script src="./database/index.js"></script>
   <script src="./app.js"></script>
+  <script src="./memory.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js').catch(console.log);
