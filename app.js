@@ -6,15 +6,17 @@
   const btns = {
     settings: document.getElementById('tabSettingsBtn'),
     practice: document.getElementById('tabPracticeBtn'),
+    memory: document.getElementById('tabMemoryBtn'),
     search:   document.getElementById('tabSearchBtn'),
   };
   const pans = {
     settings: document.getElementById('settings'),
     practice: document.getElementById('practice'),
+    memory: document.getElementById('memory'),
     search:   document.getElementById('search'),
   };
   function applyActive(name){
-    ['settings','practice','search'].forEach(key=>{
+    ['settings','practice','memory','search'].forEach(key=>{
       btns[key]?.classList.toggle('active', key===name);
       pans[key]?.classList.toggle('active', key===name);
     });
@@ -22,6 +24,7 @@
   function parseHash(){
     const h = (location.hash || '#settings').toLowerCase();
     if (h==='#practice') return 'practice';
+    if (h==='#memory') return 'memory';
     if (h==='#search') return 'search';
     return 'settings';
   }
