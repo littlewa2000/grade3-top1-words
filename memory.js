@@ -81,7 +81,10 @@ function init(){
  canvas.addEventListener('pointerdown',e=>{if(phase!=='write')return;drawing=true;last=point(e);canvas.setPointerCapture(e.pointerId);e.preventDefault()});
  canvas.addEventListener('pointermove',e=>{if(!drawing||phase!=='write')return;const p=point(e),g=canvas.getContext('2d');g.strokeStyle='#111827';g.lineWidth=7;g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(last.x,last.y);g.lineTo(p.x,p.y);g.stroke();last=p;e.preventDefault()});
  canvas.addEventListener('pointerup',()=>drawing=false);canvas.addEventListener('pointercancel',()=>drawing=false);
- $('memoryStart').addEventListener('click',start);
+ const openMemory=()=>{if(location.hash==='#memory')start()};
+ $('tabMemoryBtn').addEventListener('click',()=>{if(location.hash==='#memory')start()});
+ window.addEventListener('hashchange',openMemory);
+ if(location.hash==='#memory')start();
  $('memoryCheck').addEventListener('click',()=>{phase='write';clear();display();status('國字已遮住，請在白色畫布上默寫。')});
  $('memoryReveal').addEventListener('click',()=>{phase='reveal';display();status('請對照答案評分；若寫錯，選「需要再寫」。')});
  $('memoryCorrect').addEventListener('click',()=>grade(true));
