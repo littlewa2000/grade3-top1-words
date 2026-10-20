@@ -25,8 +25,8 @@ function eligible(){
 }
 function updateCounts(){
  const records=read(),all=eligible(),due=all.filter(x=>records[x.id]&&records[x.id].nextReview<=today());
- $('memoryDueCount').textContent=String(due.length);
- $('memoryLearnedCount').textContent=String(all.filter(x=>records[x.id]).length);
+ if($('memoryDueCount'))$('memoryDueCount').textContent=String(due.length);
+ if($('memoryLearnedCount'))$('memoryLearnedCount').textContent=String(all.filter(x=>records[x.id]).length);
 }
 function display(){
  const hint=$('memoryHint'),answer=$('memoryAnswer'),check=$('memoryCheck'),next=$('memoryNext'),reveal=$('memoryReveal');
@@ -84,7 +84,6 @@ function init(){
  const openMemory=()=>{if(location.hash==='#memory')start()};
  $('tabMemoryBtn').addEventListener('click',()=>{if(location.hash==='#memory')start()});
  window.addEventListener('hashchange',openMemory);
- if(location.hash==='#memory')start();
  $('memoryCheck').addEventListener('click',()=>{phase='write';clear();display();status('國字已遮住，請在白色畫布上默寫。')});
  $('memoryReveal').addEventListener('click',()=>{phase='reveal';display();status('請對照答案評分；若寫錯，選「需要再寫」。')});
  $('memoryCorrect').addEventListener('click',()=>grade(true));
@@ -94,6 +93,7 @@ function init(){
  $('termSelect').addEventListener('change',updateCounts);
  $('lessonMax').addEventListener('change',updateCounts);
  updateCounts();display();clear();
+ if(location.hash==='#memory')start();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
