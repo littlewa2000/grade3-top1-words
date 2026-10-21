@@ -52,7 +52,11 @@ function start(){
  const unseen=all.filter(x=>!db[x.id]);
  queue=[...due,...unseen.slice(0,Math.max(0,5-due.length))];
  index=0;seen.clear();
- if(!queue.length){target=null;display();status('今天沒有到期字，也沒有尚未學習的新字。');return}
+ if(!queue.length){
+  // 已學習且尚未到期時，仍允許從本學期字庫直接練習。
+  queue=all.slice(0,5);
+ }
+ if(!queue.length){target=null;display();status('目前選擇的年級與課次沒有生字，請回設定調整範圍。');return}
  load();
 }
 function load(){
@@ -82,7 +86,8 @@ function init(){
  canvas.addEventListener('pointermove',e=>{if(!drawing||phase!=='write')return;const p=point(e),g=canvas.getContext('2d');g.strokeStyle='#111827';g.lineWidth=7;g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(last.x,last.y);g.lineTo(p.x,p.y);g.stroke();last=p;e.preventDefault()});
  canvas.addEventListener('pointerup',()=>drawing=false);canvas.addEventListener('pointercancel',()=>drawing=false);
  const openMemory=()=>{if(location.hash==='#memory')start()};
- $('tabMemoryBtn').addEventListener('click',()=>{if(location.hash==='#memory')start()});
+ // 直接點擊分頁也要啟動，不依賴 Safari 是否派送 hashchange。
+ $('tabMemoryBtn').addEventListener('click',()=>start());
  window.addEventListener('hashchange',openMemory);
  $('memoryCheck').addEventListener('click',()=>{phase='write';clear();display();status('國字已遮住，請在白色畫布上默寫。')});
  $('memoryReveal').addEventListener('click',()=>{phase='reveal';display();status('請對照答案評分；若寫錯，選「需要再寫」。')});
