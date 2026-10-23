@@ -80,11 +80,49 @@ function grade(correct){
 function next(){if(phase!=='graded')return;index++;load()}
 function init(){
  const canvas=$('memoryCanvas');if(!canvas)return;
- let drawing=false,last=null;
- function point(e){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height}}
- canvas.addEventListener('pointerdown',e=>{if(phase!=='write')return;drawing=true;last=point(e);canvas.setPointerCapture(e.pointerId);e.preventDefault()});
- canvas.addEventListener('pointermove',e=>{if(!drawing||phase!=='write')return;const p=point(e),g=canvas.getContext('2d');g.strokeStyle='#111827';g.lineWidth=7;g.lineCap='round';g.lineJoin='round';g.beginPath();g.moveTo(last.x,last.y);g.lineTo(p.x,p.y);g.stroke();last=p;e.preventDefault()});
- canvas.addEventListener('pointerup',()=>drawing=false);canvas.addEventListener('pointercancel',()=>drawing=false);
+ let drawing=false,last=null,activePointer=null;
+ const ctx=canvas.getContext('2d');
+ canvas.style.touchAction='none';
+ function point(e){
+  const r=canvas.getBoundingClientRect();
+  if(!r.width||!r.height)return null;
+  return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height};
+ }
+ function beginStroke(e){
+  if(phase!=='write'||(drawing&&activePointer!==e.pointerId))return;
+  const p=point(e);if(!p)return;
+  drawing=true;activePointer=e.pointerId;last=p;
+  ctx.strokeStyle='#111827';ctx.lineWidth=7;ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.beginPath();ctx.arc(p.x,p.y,ctx.lineWidth/2,0,Math.PI*2);ctx.fillStyle='#111827';ctx.fill();
+  try{canvas.setPointerCapture(e.pointerId)}catch(_){}
+  if(e.cancelable)e.preventDefault();
+ }
+ function moveStroke(e){
+  if(!drawing||phase!=='write'||activePointer!==e.pointerId)return;
+  const p=point(e);if(!p)return;
+  ctx.strokeStyle='#111827';ctx.lineWidth=7;ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;
+  if(e.cancelable)e.preventDefault();
+ }
+ function endStroke(e){
+  if(activePointer!==e.pointerId)return;
+  drawing=false;last=null;activePointer=null;
+  try{if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId)}catch(_){}
+ }
+ canvas.addEventListener('pointerdown',beginStroke,{passive:false});
+ canvas.addEventListener('pointermove',moveStroke,{passive:false});
+ canvas.addEventListener('pointerup',endStroke);
+ canvas.addEventListener('pointercancel',endStroke);
+ canvas.addEventListener('lostpointercapture',()=>{drawing=false;last=null;activePointer=null});
+ // Older iOS Safari: touch events are a fallback only when PointerEvent is unavailable.
+ if(!window.PointerEvent){
+  let touchId=null;
+  function touchPoint(e){const t=[...e.changedTouches].find(x=>x.identifier===touchId)||e.changedTouches[0];return t?{clientX:t.clientX,clientY:t.clientY,pointerId:t.identifier,cancelable:e.cancelable,preventDefault:()=>e.preventDefault()}:null}
+  canvas.addEventListener('touchstart',e=>{const t=e.changedTouches[0];if(!t)return;touchId=t.identifier;beginStroke(touchPoint(e));if(e.cancelable)e.preventDefault()},{passive:false});
+  canvas.addEventListener('touchmove',e=>{if(touchId===null)return;moveStroke(touchPoint(e));if(e.cancelable)e.preventDefault()},{passive:false});
+  const stop=e=>{if(touchId===null)return;endStroke({pointerId:touchId});touchId=null;if(e.cancelable)e.preventDefault()};
+  canvas.addEventListener('touchend',stop,{passive:false});canvas.addEventListener('touchcancel',stop,{passive:false});
+ }
  const openMemory=()=>{if(location.hash==='#memory')start()};
  // 直接點擊分頁也要啟動，不依賴 Safari 是否派送 hashchange。
  $('tabMemoryBtn').addEventListener('click',()=>start());
