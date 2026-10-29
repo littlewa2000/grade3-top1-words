@@ -10,18 +10,49 @@ function save(x){try{localStorage.setItem(KEY,JSON.stringify(x));return true}cat
 function dueDate(days){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+days);return dateKey(d)}
 function status(s){if($('memoryFeedback'))$('memoryFeedback').textContent=s}
 let target=null,phase='idle',mistakes=0,first=null,queue=[],index=0,seen=new Set();
-function eligible(){
+function eligiblePools(){
  const term=$('termSelect')?.value,limit=Number($('lessonMax')?.value||12);
  const terms=window.cnkeys_all?.termOrder||[];
  const ds=window.cnkeys_all?.datasets||[];
- const selected=ds.filter(d=>d.gradeCode===term);
- const rows=[];
- for(const d of selected)for(const l of d.lessons||[])if(l.lessonNo<=limit)for(const w of l.words||[]){
- const char=String(w['字']??w.hanzi??w.char??w.word??w.c??'');
- if(!char)continue;
- rows.push({id:w.id||d.gradeCode+'-'+l.lessonNo+'-'+char,char,zhuyin:String(w['注音']??w.zhuyin??w.bopomofo??w.phonetic??w.z??''),words:w.words||[],term:d.gradeCode,lesson:l.lessonNo});
+ function collect(d, upto){
+  const rows=[];
+  for(const l of d.lessons||[])if(upto===null||l.lessonNo<=upto)for(const w of l.words||[]){
+   const char=String(w['字']??w.hanzi??w.char??w.word??w.c??'');
+   if(!char)continue;
+   rows.push({id:w.id||d.gradeCode+'-'+l.lessonNo+'-'+char,char,zhuyin:String(w['注音']??w.zhuyin??w.bopomofo??w.phonetic??w.z??''),words:w.words||[],term:d.gradeCode,lesson:l.lessonNo});
+  }
+  return rows;
  }
- return rows;
+ const pos=terms.indexOf(term);
+ return {
+  current:ds.filter(d=>d.gradeCode===term).flatMap(d=>collect(d,limit)),
+  previous:pos<1?[]:ds.filter(d=>terms.indexOf(d.gradeCode)>=0&&terms.indexOf(d.gradeCode)<pos).flatMap(d=>collect(d,null))
+ };
+}
+function eligible(){const p=eligiblePools();return [...p.current,...p.previous]}
+function shuffle(items){
+ const out=[...items];
+ for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]]}
+ return out;
+}
+function weightedQueue(pools,db,count=5){
+ const weight=Number($('currWeight')?.value||75);
+ const current=shuffle(pools.current),previous=shuffle(pools.previous);
+ const result=[],used=new Set();
+ function take(pool){
+  const available=pool.filter(x=>!used.has(x.id));
+  if(!available.length)return false;
+  const due=available.filter(x=>db[x.id]&&db[x.id].nextReview<=today());
+  const unseen=available.filter(x=>!db[x.id]);
+  const rest=available.filter(x=>db[x.id]&&db[x.id].nextReview>today());
+  const chosen=(due[0]||unseen[0]||rest[0]);
+  used.add(chosen.id);result.push(chosen);return true;
+ }
+ while(result.length<count&&used.size<current.length+previous.length){
+  const preferCurrent=!previous.length||(current.length>0&&Math.random()*100<weight);
+  if(!(preferCurrent?take(current):take(previous)))if(!(preferCurrent?take(previous):take(current)))break;
+ }
+ return result;
 }
 function updateCounts(){
  const records=read(),all=eligible(),due=all.filter(x=>records[x.id]&&records[x.id].nextReview<=today());
@@ -48,14 +79,9 @@ function display(){
 function clear(){const c=$('memoryCanvas');const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.strokeStyle='#cbd5e1';g.strokeRect(1,1,c.width-2,c.height-2)}
 function start(){
  location.hash='#memory';
- const all=eligible(),db=read(),due=all.filter(x=>db[x.id]&&db[x.id].nextReview<=today());
- const unseen=all.filter(x=>!db[x.id]);
- queue=[...due,...unseen.slice(0,Math.max(0,5-due.length))];
+ const pools=eligiblePools(),db=read();
+ queue=weightedQueue(pools,db);
  index=0;seen.clear();
- if(!queue.length){
-  // 已學習且尚未到期時，仍允許從本學期字庫直接練習。
-  queue=all.slice(0,5);
- }
  if(!queue.length){target=null;display();status('目前選擇的年級與課次沒有生字，請回設定調整範圍。');return}
  load();
 }
@@ -135,6 +161,7 @@ function init(){
  $('memoryClear').addEventListener('click',clear);
  $('termSelect').addEventListener('change',updateCounts);
  $('lessonMax').addEventListener('change',updateCounts);
+ $('currWeight')?.addEventListener('change',updateCounts);
  updateCounts();display();clear();
  if(location.hash==='#memory')start();
 }
