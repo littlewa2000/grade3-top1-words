@@ -1,5 +1,5 @@
 /* Allan Learning System service worker */
-const CACHE_NAME = 'cnkeys-v3.3.3';
+const CACHE_NAME = 'cnkeys-v3.3.4';
 const CORE_ASSETS = [
   './', './index.html', './app.js', './memory.js', './manifest.json',
   './database/g1s2.js', './database/g2s1.js', './database/g2s2.js',
@@ -16,10 +16,11 @@ self.addEventListener('activate', event => {
 });
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-  event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
+  event.respondWith(fetch(event.request).then(response => {
     if (response && response.ok && new URL(event.request.url).origin === self.location.origin) {
       caches.open(CACHE_NAME).then(cache => cache.put(event.request, response.clone()));
     }
     return response;
-  })));
+  }).catch(() => caches.match(event.request)));
+
 });
