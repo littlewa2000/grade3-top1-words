@@ -26,7 +26,7 @@ function eligiblePools(){
  const pos=terms.indexOf(term);
  return {
   current:ds.filter(d=>d.gradeCode===term).flatMap(d=>collect(d,limit)),
-  previous:pos<1?[]:ds.filter(d=>terms.indexOf(d.gradeCode)>=0&&terms.indexOf(d.gradeCode)<pos).flatMap(d=>collect(d,null))
+  previous:pos<1?[]:ds.filter(d=>terms.indexOf(d.gradeCode)>=0&&terms.indexOf(d.gradeCode)<pos).flatMap(d=>collect(d,limit))
  };
 }
 function eligible(){const p=eligiblePools();return [...p.current,...p.previous]}
@@ -36,7 +36,7 @@ function shuffle(items){
  return out;
 }
 function weightedQueue(pools,db,count=5){
- const weight=Number($('currWeight')?.value||75);
+ const weight=[50,75,100].includes(Number($('currWeight')?.value))?Number($('currWeight').value):75;
  const current=shuffle(pools.current),previous=shuffle(pools.previous);
  const result=[],used=new Set();
  function take(pool){
@@ -81,6 +81,9 @@ function start(){
  location.hash='#memory';
  const pools=eligiblePools(),db=read();
  queue=weightedQueue(pools,db);
+ // Guard against any item outside the selected lesson range, including previous terms.
+ const limit=Number($('lessonMax')?.value||12);
+ queue=queue.filter(x=>Number(x.lesson)>=1&&Number(x.lesson)<=limit);
  index=0;seen.clear();
  if(!queue.length){target=null;display();status('目前選擇的年級與課次沒有生字，請回設定調整範圍。');return}
  load();
