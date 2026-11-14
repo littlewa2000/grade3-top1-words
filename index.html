@@ -198,7 +198,7 @@
       <div id="memoryMeta" class="muted"></div>
       <div id="memoryHint" style="font-size:76px;text-align:center;min-height:100px">請開始記憶練習</div>
       <div id="memoryPrompt" style="text-align:center"></div>
-      <canvas id="memoryCanvas" width="420" height="420" style="display:block;max-width:420px;width:100%;height:auto;margin:auto;border:1px solid #cbd5e1;border-radius:12px;touch-action:none" hidden></canvas>
+      <canvas id="memoryCanvas" width="420" height="420" style="max-width:420px;width:100%;height:auto;margin:auto;border:1px solid #cbd5e1;border-radius:12px;touch-action:none" hidden></canvas>
       <div id="memoryAnswer" hidden>請比較正確國字與剛才默寫的筆畫、部件。</div>
       <div class="row" style="justify-content:center">
         <button id="memoryCheck" hidden>遮住國字，開始默寫</button>
@@ -236,7 +236,7 @@
   <script src="./database/g4s1.js"></script>
   <script src="./database/index.js"></script>
   <script src="./app.js"></script>
-  <script src="./memory.js?v=3.3.4"></script>
+  <script src="./memory.js?v=3.3.5"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js').catch(console.log);
