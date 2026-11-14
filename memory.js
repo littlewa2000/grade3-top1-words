@@ -62,14 +62,14 @@ function updateCounts(){
 function display(){
  const hint=$('memoryHint'),answer=$('memoryAnswer'),check=$('memoryCheck'),next=$('memoryNext'),reveal=$('memoryReveal');
  if(!target){hint.textContent='請開始記憶練習';answer.hidden=true;check.hidden=true;next.hidden=true;reveal.hidden=true;return}
- const words=(target.words||[]).filter(w=>String(w).includes(target.char));
+ const words=(target.words||[]).filter(w=>String(w).includes(target.char)&&String(w).length>1);
  $('memoryMeta').textContent=target.term+' 第'+target.lesson+'課';
  if(phase==='study'){
  hint.textContent=target.char;
  $('memoryPrompt').textContent='先觀察字形與部件，再按「遮住國字」。'+(words.length?' 例詞：'+words.slice(0,2).join('、'):'');
  }else{
- hint.textContent=phase==='reveal'?target.char:'？';
- $('memoryPrompt').textContent=phase==='reveal'?'請核對剛才寫的字，誠實評估是否正確。':'請依注音默寫：'+(target.zhuyin||'（無注音）')+(words.length?'｜詞語提示：'+words[0].replace(target.char,'＿'):'');
+ hint.textContent=phase==='reveal'?target.char:(words.length?String(words[0]).replace(target.char,'？'):'？');
+ $('memoryPrompt').textContent=phase==='reveal'?'請核對剛才寫的字，誠實評估是否正確。':'請依注音默寫：'+(target.zhuyin||'（無注音）');
  }
  answer.hidden=phase!=='reveal';check.hidden=phase!=='study';reveal.hidden=phase!=='write';next.hidden=phase!=='graded';
  $('memoryCanvas').hidden=phase==='study'||phase==='idle';
@@ -118,6 +118,7 @@ function init(){
   return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height};
  }
  function beginStroke(e){
+  if(e.pointerType==='touch')return;
   if(phase!=='write'||(drawing&&activePointer!==e.pointerId))return;
   const p=point(e);if(!p)return;
   drawing=true;activePointer=e.pointerId;last=p;
@@ -127,6 +128,7 @@ function init(){
   if(e.cancelable)e.preventDefault();
  }
  function moveStroke(e){
+  if(e.pointerType==='touch')return;
   if(!drawing||phase!=='write'||activePointer!==e.pointerId)return;
   const p=point(e);if(!p)return;
   ctx.strokeStyle='#111827';ctx.lineWidth=7;ctx.lineCap='round';ctx.lineJoin='round';
@@ -134,6 +136,7 @@ function init(){
   if(e.cancelable)e.preventDefault();
  }
  function endStroke(e){
+  if(e.pointerType==='touch')return;
   if(activePointer!==e.pointerId)return;
   drawing=false;last=null;activePointer=null;
   try{if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId)}catch(_){}
@@ -143,33 +146,35 @@ function init(){
  canvas.addEventListener('pointerup',endStroke);
  canvas.addEventListener('pointercancel',endStroke);
  canvas.addEventListener('lostpointercapture',()=>{drawing=false;last=null;activePointer=null});
- // iPad Safari: handle direct finger touch even when PointerEvent exists.
- // Ignore synthetic touch fallback while a pointer stroke is already active.
- let touchId=null;
- function touchPoint(t){return {clientX:t.clientX,clientY:t.clientY,pointerId:'touch-'+t.identifier,cancelable:true,preventDefault:()=>{}}}
+ // Use native Touch Events as the single finger-input path on iPad Safari.
+ // Avoid mixing synthesized Pointer Events with Touch Events, which can cancel strokes.
+ let touchId=null,touchLast=null;
+ function touchCoords(t){return point(t)}
  canvas.addEventListener('touchstart',e=>{
   if(phase!=='write')return;
   if(e.cancelable)e.preventDefault();
-  if(drawing)return;
+  if(touchId!==null)return;
   const t=e.changedTouches[0];if(!t)return;
-  touchId=t.identifier;beginStroke(touchPoint(t));
+  touchId=t.identifier;touchLast=touchCoords(t);
+  if(!touchLast)return;
+  ctx.fillStyle='#111827';ctx.beginPath();ctx.arc(touchLast.x,touchLast.y,3.5,0,Math.PI*2);ctx.fill();
  },{passive:false});
  canvas.addEventListener('touchmove',e=>{
-  if(phase!=='write')return;
+  if(phase!=='write'||touchId===null)return;
   if(e.cancelable)e.preventDefault();
-  if(touchId===null)return;
-  const t=Array.from(e.changedTouches).find(x=>x.identifier===touchId);
-  if(t)moveStroke(touchPoint(t));
- },{passive:false});
- const stopTouch=e=>{
-  if(touchId===null)return;
   const t=Array.from(e.changedTouches).find(x=>x.identifier===touchId);
   if(!t)return;
-  endStroke(touchPoint(t));touchId=null;
+  const p=touchCoords(t);if(!p||!touchLast)return;
+  ctx.strokeStyle='#111827';ctx.lineWidth=7;ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.beginPath();ctx.moveTo(touchLast.x,touchLast.y);ctx.lineTo(p.x,p.y);ctx.stroke();touchLast=p;
+ },{passive:false});
+ function finishTouch(e){
+  if(touchId===null)return;
+  if(Array.from(e.changedTouches).some(t=>t.identifier===touchId)){touchId=null;touchLast=null;}
   if(e.cancelable)e.preventDefault();
- };
- canvas.addEventListener('touchend',stopTouch,{passive:false});
- canvas.addEventListener('touchcancel',stopTouch,{passive:false});
+ }
+ canvas.addEventListener('touchend',finishTouch,{passive:false});
+ canvas.addEventListener('touchcancel',finishTouch,{passive:false});
  const openMemory=()=>{if(location.hash==='#memory')start()};
  // 直接點擊分頁也要啟動，不依賴 Safari 是否派送 hashchange。
  $('tabMemoryBtn').addEventListener('click',()=>start());
