@@ -1,5 +1,5 @@
 /* Allan Learning System service worker */
-const CACHE_NAME = 'cnkeys-v3.3.4';
+const CACHE_NAME = 'cnkeys-v3.3.5';
 const CORE_ASSETS = [
   './', './index.html', './app.js', './memory.js', './manifest.json',
   './database/g1s2.js', './database/g2s1.js', './database/g2s2.js',
