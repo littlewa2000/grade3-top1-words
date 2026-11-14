@@ -72,11 +72,11 @@ function display(){
  $('memoryPrompt').textContent=phase==='reveal'?'請核對剛才寫的字，誠實評估是否正確。':'請依注音默寫：'+(target.zhuyin||'（無注音）')+(words.length?'｜詞語提示：'+words[0].replace(target.char,'＿'):'');
  }
  answer.hidden=phase!=='reveal';check.hidden=phase!=='study';reveal.hidden=phase!=='write';next.hidden=phase!=='graded';
- $('memoryCanvas').hidden=phase==='study';
+ $('memoryCanvas').hidden=phase==='study'||phase==='idle';
  $('memoryGrade').hidden=phase!=='reveal';
  $('memoryClear').hidden=phase==='study'||phase==='graded';
 }
-function clear(){const c=$('memoryCanvas');const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.strokeStyle='#cbd5e1';g.strokeRect(1,1,c.width-2,c.height-2)}
+function clear(){const c=$('memoryCanvas');const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.strokeStyle='#cbd5e1';g.strokeRect(1,1,c.width-2,c.height-2)}
 function start(){
  location.hash='#memory';
  const pools=eligiblePools(),db=read();
@@ -143,15 +143,33 @@ function init(){
  canvas.addEventListener('pointerup',endStroke);
  canvas.addEventListener('pointercancel',endStroke);
  canvas.addEventListener('lostpointercapture',()=>{drawing=false;last=null;activePointer=null});
- // Older iOS Safari: touch events are a fallback only when PointerEvent is unavailable.
- if(!window.PointerEvent){
-  let touchId=null;
-  function touchPoint(e){const t=[...e.changedTouches].find(x=>x.identifier===touchId)||e.changedTouches[0];return t?{clientX:t.clientX,clientY:t.clientY,pointerId:t.identifier,cancelable:e.cancelable,preventDefault:()=>e.preventDefault()}:null}
-  canvas.addEventListener('touchstart',e=>{const t=e.changedTouches[0];if(!t)return;touchId=t.identifier;beginStroke(touchPoint(e));if(e.cancelable)e.preventDefault()},{passive:false});
-  canvas.addEventListener('touchmove',e=>{if(touchId===null)return;moveStroke(touchPoint(e));if(e.cancelable)e.preventDefault()},{passive:false});
-  const stop=e=>{if(touchId===null)return;endStroke({pointerId:touchId});touchId=null;if(e.cancelable)e.preventDefault()};
-  canvas.addEventListener('touchend',stop,{passive:false});canvas.addEventListener('touchcancel',stop,{passive:false});
- }
+ // iPad Safari: handle direct finger touch even when PointerEvent exists.
+ // Ignore synthetic touch fallback while a pointer stroke is already active.
+ let touchId=null;
+ function touchPoint(t){return {clientX:t.clientX,clientY:t.clientY,pointerId:'touch-'+t.identifier,cancelable:true,preventDefault:()=>{}}}
+ canvas.addEventListener('touchstart',e=>{
+  if(phase!=='write')return;
+  if(e.cancelable)e.preventDefault();
+  if(drawing)return;
+  const t=e.changedTouches[0];if(!t)return;
+  touchId=t.identifier;beginStroke(touchPoint(t));
+ },{passive:false});
+ canvas.addEventListener('touchmove',e=>{
+  if(phase!=='write')return;
+  if(e.cancelable)e.preventDefault();
+  if(touchId===null)return;
+  const t=Array.from(e.changedTouches).find(x=>x.identifier===touchId);
+  if(t)moveStroke(touchPoint(t));
+ },{passive:false});
+ const stopTouch=e=>{
+  if(touchId===null)return;
+  const t=Array.from(e.changedTouches).find(x=>x.identifier===touchId);
+  if(!t)return;
+  endStroke(touchPoint(t));touchId=null;
+  if(e.cancelable)e.preventDefault();
+ };
+ canvas.addEventListener('touchend',stopTouch,{passive:false});
+ canvas.addEventListener('touchcancel',stopTouch,{passive:false});
  const openMemory=()=>{if(location.hash==='#memory')start()};
  // 直接點擊分頁也要啟動，不依賴 Safari 是否派送 hashchange。
  $('tabMemoryBtn').addEventListener('click',()=>start());
