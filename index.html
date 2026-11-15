@@ -196,8 +196,12 @@
     <div id="memoryPanel" class="card section" style="margin-top:12px">
       <h3 style="margin:0">遮字默寫與智慧複習</h3>
       <div id="memoryMeta" class="muted"></div>
-      <div id="memoryHint" style="font-size:76px;text-align:center;min-height:100px">請開始記憶練習</div>
-      <div id="memoryPrompt" style="text-align:center"></div>
+      <div id="memoryQuestion" style="display:flex;align-items:center;justify-content:center;gap:16px;min-height:150px;padding:12px 8px">
+        <div id="memoryHint" style="font-size:clamp(76px,12vw,130px);line-height:1.25;text-align:center;overflow-wrap:anywhere">請開始記憶練習</div>
+        <div id="memoryZhuyin" style="font-size:clamp(26px,4vw,42px);line-height:1.5;white-space:pre-line;writing-mode:vertical-rl;flex-shrink:0"></div>
+      </div>
+      <div id="memoryPrompt" style="font-size:clamp(22px,3.5vw,34px);line-height:1.55;text-align:center;margin:20px auto 8px;max-width:900px"></div>
+      <div id="memoryExamples" style="font-size:clamp(24px,4vw,38px);line-height:1.6;text-align:center;margin:8px auto 26px;max-width:900px;overflow-wrap:anywhere"></div>
       <canvas id="memoryCanvas" width="420" height="420" style="max-width:420px;width:100%;height:auto;margin:auto;border:1px solid #cbd5e1;border-radius:12px;touch-action:none" hidden></canvas>
       <div id="memoryAnswer" hidden>請比較正確國字與剛才默寫的筆畫、部件。</div>
       <div class="row" style="justify-content:center">
@@ -236,7 +240,7 @@
   <script src="./database/g4s1.js"></script>
   <script src="./database/index.js"></script>
   <script src="./app.js"></script>
-  <script src="./memory.js?v=3.3.7"></script>
+  <script src="./memory.js?v=3.3.8"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js').catch(console.log);
