@@ -104,7 +104,7 @@ function grade(correct){
  const intervals=[1,1,3,7,14,30];
  const entry={date:today(),firstCorrect:clean,errors:mistakes,review:!!old.attempts};
  db[target.id]={...old,attempts:old.attempts+1,firstCorrect:old.firstCorrect+(clean?1:0),errors:old.errors+mistakes,level,lastReviewed:today(),nextReview:dueDate(intervals[level]),history:[...(old.history||[]).slice(-49),entry]};
- if(save(db)){phase='graded';display();status('已儲存：'+(clean?'首次默寫正確':'經更正後完成')+'。下次複習：'+db[target.id].nextReview);updateCounts()}
+ if(save(db)){updateCounts();index++;load();}
 }
 function next(){if(phase!=='graded')return;index++;load()}
 function init(){
