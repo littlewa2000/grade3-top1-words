@@ -64,12 +64,16 @@ function display(){
  if(!target){hint.textContent='請開始記憶練習';answer.hidden=true;check.hidden=true;next.hidden=true;reveal.hidden=true;return}
  const words=(target.words||[]).filter(w=>String(w).includes(target.char)&&String(w).length>1);
  $('memoryMeta').textContent=target.term+' 第'+target.lesson+'課';
+ const prompt=$('memoryPrompt'),examples=$('memoryExamples'),pronunciation=$('memoryZhuyin');
+ pronunciation.textContent=target.zhuyin||'';
  if(phase==='study'){
- hint.textContent=target.char;
- $('memoryPrompt').textContent='先觀察字形與部件，再按「遮住國字」。'+(words.length?' 例詞：'+words.slice(0,2).join('、'):'');
+  hint.textContent=target.char;
+  prompt.textContent='先觀察字形與部件，再按「遮住國字」。';
+  examples.textContent=words.length?'例詞：'+words.slice(0,2).join('、'):'';
  }else{
- hint.textContent=phase==='reveal'?target.char:(words.length?String(words[0]).replace(target.char,'？'):'？');
- $('memoryPrompt').textContent=phase==='reveal'?'請核對剛才寫的字，誠實評估是否正確。':'請依注音默寫：'+(target.zhuyin||'（無注音）');
+  hint.textContent=phase==='reveal'?target.char:(words.length?String(words[0]).replace(target.char,'？'):'？');
+  prompt.textContent=phase==='reveal'?'請核對剛才寫的字，誠實評估是否正確。':'請依注音默寫。';
+  examples.textContent=words.length?'例詞：'+words.slice(0,2).join('、'):'';
  }
  answer.hidden=phase!=='reveal';check.hidden=phase!=='study';reveal.hidden=phase!=='write';next.hidden=phase!=='graded';
  $('memoryCanvas').hidden=phase==='study'||phase==='idle';
