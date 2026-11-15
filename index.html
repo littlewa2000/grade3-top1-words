@@ -77,6 +77,33 @@
     .search-char{font-size:48px;font-weight:800}.fav-btn{float:right;background:#fff;color:#f59e0b;border:1px solid #fde68a;font-size:20px}
     .word-chip{display:inline-block;padding:6px 10px;margin:4px;border-radius:999px;background:#e0f2fe;color:#075985}
     @media (prefers-color-scheme:dark){:root{--card:#111827;--border:#334155;--muted:#94a3b8}body{background:#020617;color:#e5e7eb}.tabs{background:rgba(2,6,23,.9)}select,input,.result-line,.list li,.search-card{background:#111827;color:#e5e7eb}.canvasWrap,canvas{background:#fff}.tab-link{color:#cbd5e1}}
+    #memoryQuestion {display:flex;align-items:center;justify-content:center;gap:16px;min-height:150px;padding:12px 8px}
+    #memoryHint {font-size:clamp(76px,12vw,130px);line-height:1.25;text-align:center;overflow-wrap:anywhere}
+    #memoryZhuyin {font-size:clamp(26px,4vw,42px);line-height:1.5;white-space:pre-line;writing-mode:vertical-rl;flex-shrink:0}
+    #memoryPrompt {font-size:clamp(22px,3.5vw,34px);line-height:1.55;text-align:center;margin:20px auto 8px;max-width:900px}
+    #memoryExamples {font-size:clamp(34px,5.5vw,54px);font-weight:700;line-height:1.6;text-align:center;margin:8px auto 30px;max-width:900px;overflow-wrap:anywhere}
+    #memoryCanvas {max-width:420px;margin:auto;border:1px solid #cbd5e1;border-radius:12px}
+    #memoryPanel {margin-top:12px}
+    #memoryCheck {
+      height:auto;
+      max-width:100%;
+      padding:12px clamp(12px,4vw,26px);
+      font-size:clamp(20px,3.6vw,34px);
+      line-height:1.25;
+      text-align:center;
+    }
+    @media (max-width:600px) {
+      #memoryPanel[data-phase="write"] {gap:6px;margin-top:0}
+      #memoryPanel[data-phase="write"] #memoryQuestion {min-height:0;padding:2px 4px;gap:8px}
+      #memoryPanel[data-phase="write"] #memoryHint {font-size:clamp(34px,9vw,46px);line-height:1.2}
+      #memoryPanel[data-phase="write"] #memoryZhuyin {font-size:17px;line-height:1.25}
+      #memoryPanel[data-phase="write"] #memoryPrompt {font-size:16px;line-height:1.25;margin:0}
+      #memoryPanel[data-phase="write"] #memoryExamples {font-size:18px;line-height:1.3;margin:0}
+      #memoryPanel[data-phase="write"] #memoryCanvas {
+        width:min(100%,39vh);
+        width:min(100%,39svh);
+      }
+    }
   </style>
 </head>
 <body>
@@ -193,19 +220,19 @@
     </div>
 
     <div id="memory" class="tab-panel">    <!-- 獨立遮字默寫：不改動原本描紅/選字 -->
-    <div id="memoryPanel" class="card section" style="margin-top:12px">
+    <div id="memoryPanel" class="card section">
       <h3 style="margin:0">遮字默寫與智慧複習</h3>
       <div id="memoryMeta" class="muted"></div>
-      <div id="memoryQuestion" style="display:flex;align-items:center;justify-content:center;gap:16px;min-height:150px;padding:12px 8px">
-        <div id="memoryHint" style="font-size:clamp(76px,12vw,130px);line-height:1.25;text-align:center;overflow-wrap:anywhere">請開始記憶練習</div>
-        <div id="memoryZhuyin" style="font-size:clamp(26px,4vw,42px);line-height:1.5;white-space:pre-line;writing-mode:vertical-rl;flex-shrink:0"></div>
+      <div id="memoryQuestion">
+        <div id="memoryHint">請開始記憶練習</div>
+        <div id="memoryZhuyin"></div>
       </div>
-      <div id="memoryPrompt" style="font-size:clamp(22px,3.5vw,34px);line-height:1.55;text-align:center;margin:20px auto 8px;max-width:900px"></div>
-      <div id="memoryExamples" style="font-size:clamp(34px,5.5vw,54px);font-weight:700;line-height:1.6;text-align:center;margin:8px auto 30px;max-width:900px;overflow-wrap:anywhere"></div>
-      <canvas id="memoryCanvas" width="420" height="420" style="max-width:420px;width:100%;height:auto;margin:auto;border:1px solid #cbd5e1;border-radius:12px;touch-action:none" hidden></canvas>
+      <div id="memoryPrompt"></div>
+      <div id="memoryExamples"></div>
+      <canvas id="memoryCanvas" width="420" height="420" hidden></canvas>
       <div id="memoryAnswer" hidden>請比較正確國字與剛才默寫的筆畫、部件。</div>
       <div class="row" style="justify-content:center">
-        <button id="memoryCheck" style="font-size:clamp(23px,3.6vw,34px);font-weight:700;padding:18px 26px;line-height:1.4" hidden>遮住國字，開始默寫</button>
+        <button id="memoryCheck" hidden>遮住國字，開始默寫</button>
         <button id="memoryClear" class="secondary" hidden>清除畫布</button>
         <button id="memoryReveal" hidden>核對答案</button>
         <span id="memoryGrade" hidden><button id="memoryCorrect">寫對了</button> <button id="memoryWrong" class="secondary">需要再寫</button></span>
@@ -240,7 +267,7 @@
   <script src="./database/g4s1.js"></script>
   <script src="./database/index.js"></script>
   <script src="./app.js"></script>
-  <script src="./memory.js?v=3.3.9"></script>
+  <script src="./memory.js?v=3.3.10"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js').catch(console.log);

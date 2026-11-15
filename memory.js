@@ -60,6 +60,7 @@ function updateCounts(){
  if($('memoryLearnedCount'))$('memoryLearnedCount').textContent=String(all.filter(x=>records[x.id]).length);
 }
 function display(){
+ $('memoryPanel').dataset.phase=phase;
  const hint=$('memoryHint'),answer=$('memoryAnswer'),check=$('memoryCheck'),next=$('memoryNext'),reveal=$('memoryReveal');
  if(!target){hint.textContent='請開始記憶練習';answer.hidden=true;check.hidden=true;next.hidden=true;reveal.hidden=true;return}
  const words=(target.words||[]).filter(w=>String(w).includes(target.char)&&String(w).length>1);
