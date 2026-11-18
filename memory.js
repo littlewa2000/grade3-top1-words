@@ -60,12 +60,19 @@ function updateCounts(){
  if($('memoryLearnedCount'))$('memoryLearnedCount').textContent=String(all.filter(x=>records[x.id]).length);
 }
 function display(){
- $('memoryPanel').dataset.phase=phase;
+ $('memoryPanel').dataset.phase=target?phase:'idle';
  const hint=$('memoryHint'),answer=$('memoryAnswer'),check=$('memoryCheck'),next=$('memoryNext'),reveal=$('memoryReveal');
- if(!target){hint.textContent='請開始記憶練習';answer.hidden=true;check.hidden=true;next.hidden=true;reveal.hidden=true;return}
+ const prompt=$('memoryPrompt'),examples=$('memoryExamples'),pronunciation=$('memoryZhuyin');
+ const canvas=$('memoryCanvas'),gradeButtons=$('memoryGrade'),clearButton=$('memoryClear');
+ prompt.hidden=examples.hidden=pronunciation.hidden=!target;
+ if(!target){
+  hint.textContent='請開始記憶練習';
+  $('memoryMeta').textContent='';
+  answer.hidden=check.hidden=next.hidden=reveal.hidden=canvas.hidden=gradeButtons.hidden=clearButton.hidden=true;
+  return;
+ }
  const words=(target.words||[]).filter(w=>String(w).includes(target.char)&&String(w).length>1);
  $('memoryMeta').textContent=target.term+' 第'+target.lesson+'課';
- const prompt=$('memoryPrompt'),examples=$('memoryExamples'),pronunciation=$('memoryZhuyin');
  pronunciation.textContent=target.zhuyin||'';
  if(phase==='study'){
   hint.textContent=target.char;
@@ -77,9 +84,9 @@ function display(){
   examples.textContent=words.length?'例詞：'+words.slice(0,2).join('、'):'';
  }
  answer.hidden=phase!=='reveal';check.hidden=phase!=='study';reveal.hidden=phase!=='write';next.hidden=phase!=='graded';
- $('memoryCanvas').hidden=phase==='study'||phase==='idle';
- $('memoryGrade').hidden=phase!=='reveal';
- $('memoryClear').hidden=phase==='study'||phase==='graded';
+ canvas.hidden=phase==='study'||phase==='idle';
+ gradeButtons.hidden=phase!=='reveal';
+ clearButton.hidden=phase==='study'||phase==='graded';
 }
 function clear(){const c=$('memoryCanvas');const g=c.getContext('2d');g.clearRect(0,0,c.width,c.height);g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.strokeStyle='#cbd5e1';g.strokeRect(1,1,c.width-2,c.height-2)}
 function start(){
