@@ -63,10 +63,12 @@ function display(){
  $('memoryPanel').dataset.phase=target?phase:'idle';
  const hint=$('memoryHint'),answer=$('memoryAnswer'),check=$('memoryCheck'),next=$('memoryNext'),reveal=$('memoryReveal');
  const prompt=$('memoryPrompt'),examples=$('memoryExamples'),pronunciation=$('memoryZhuyin');
+ $('memoryStart').hidden=!!target;
  const canvas=$('memoryCanvas'),gradeButtons=$('memoryGrade'),clearButton=$('memoryClear');
  prompt.hidden=examples.hidden=pronunciation.hidden=!target;
  if(!target){
-  hint.textContent='請開始記憶練習';
+  hint.textContent=queue.length?'本輪練習完成！':'請開始記憶練習';
+  $('memoryStart').textContent=queue.length?'開始下一輪':'開始記憶練習';
   $('memoryMeta').textContent='';
   answer.hidden=check.hidden=next.hidden=reveal.hidden=canvas.hidden=gradeButtons.hidden=clearButton.hidden=true;
   return;
@@ -102,7 +104,7 @@ function start(){
 }
 function load(){
  target=queue[index]||null;phase=target?'study':'idle';mistakes=0;first=null;
- clear();display();status(target?'第 '+(index+1)+' / '+queue.length+' 字：先觀察，再遮字默寫。':'本輪練習完成！');
+ clear();display();status(target?'第 '+(index+1)+' / '+queue.length+' 字：先觀察，再遮字默寫。':'');
 }
 function grade(correct){
  if(phase!=='reveal'||!target)return;
@@ -191,6 +193,7 @@ function init(){
  // 直接點擊分頁也要啟動，不依賴 Safari 是否派送 hashchange。
  $('tabMemoryBtn').addEventListener('click',()=>start());
  window.addEventListener('hashchange',openMemory);
+ $('memoryStart').addEventListener('click',start);
  $('memoryCheck').addEventListener('click',()=>{phase='write';clear();display();status('國字已遮住，請在白色畫布上默寫。')});
  $('memoryReveal').addEventListener('click',()=>{phase='reveal';display();status('請對照答案評分；若寫錯，選「需要再寫」。')});
  $('memoryCorrect').addEventListener('click',()=>grade(true));

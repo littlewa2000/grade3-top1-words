@@ -242,6 +242,7 @@
       <canvas id="memoryCanvas" width="420" height="420" hidden></canvas>
       <div id="memoryAnswer" hidden>請比較正確國字與剛才默寫的筆畫、部件。</div>
       <div class="row" style="justify-content:center">
+        <button id="memoryStart" type="button">開始記憶練習</button>
         <button id="memoryCheck" hidden>遮住國字，開始默寫</button>
         <button id="memoryClear" class="secondary" hidden>清除畫布</button>
         <button id="memoryReveal" hidden>核對答案</button>
@@ -277,7 +278,7 @@
   <script src="./database/g4s1.js"></script>
   <script src="./database/index.js"></script>
   <script src="./app.js"></script>
-  <script src="./memory.js?v=3.3.11"></script>
+  <script src="./memory.js?v=3.3.12"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js').catch(console.log);
